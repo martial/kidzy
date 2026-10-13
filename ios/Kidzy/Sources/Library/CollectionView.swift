@@ -13,15 +13,6 @@ struct CollectionView: View {
             let inner = TileMetrics.innerWidth(for: geo.size.width)
             ScrollView {
                 VStack(spacing: 0) {
-                    ZStack(alignment: .topTrailing) {
-                        HStack {
-                            Spacer()
-                            StarsRow(lit: model.stars)
-                        }
-                        .padding(.horizontal, 20)
-                        .padding(.top, 16)
-                    }
-                    .frame(height: 70)
                     ZStack {
                         Circle().fill(Theme.ink).offset(x: 5, y: 5)
                         RemoteImage(url: model.mediaURL(collection.posterUrl), maxPixel: 200)
@@ -33,7 +24,7 @@ struct CollectionView: View {
                         Circle().fill(Color(hex: collection.color)).overlay(Circle().stroke(Theme.ink, lineWidth: 4)).frame(width: 26, height: 26).offset(x: 6, y: 4)
                     }
                     .rotationEffect(.degrees(-4))
-                    .padding(.top, -20)
+                    .padding(.top, 28)
                     .accessibilityLabel("Collection \(collection.title)")
                     LazyVGrid(columns: columns, spacing: 30) {
                         ForEach(Array(model.currentItems.enumerated()), id: \.element.id) { index, item in

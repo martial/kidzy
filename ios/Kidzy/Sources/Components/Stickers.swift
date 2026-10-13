@@ -69,24 +69,6 @@ struct PressStyle: ButtonStyle {
     }
 }
 
-/// Five stars: the time left today. They go out one by one.
-struct StarsRow: View {
-    var lit: Int
-    var total = 5
-
-    var body: some View {
-        HStack(spacing: 4) {
-            ForEach(0..<total, id: \.self) { i in
-                Image(systemName: "star.fill")
-                    .font(.system(size: 26))
-                    .foregroundStyle(i < lit ? Theme.lemon : Theme.starOff)
-                    .overlay(Image(systemName: "star").font(.system(size: 26, weight: .medium)).foregroundStyle(i < lit ? Theme.ink : Theme.starOffStroke))
-            }
-        }
-        .accessibilityLabel("Temps restant aujourd'hui : \(lit) étoiles sur \(total)")
-    }
-}
-
 /// Soft clouds behind the tiles.
 struct Cloud: View {
     var body: some View {

@@ -16,4 +16,4 @@ xcodebuild -project Kidzy/Kidzy.xcodeproj -scheme Kidzy -configuration Debug \
 APP="$DD/Build/Products/Debug-iphoneos/Kidzy.app"
 [ -d "$APP" ] || { echo "no app bundle at $APP" >&2; exit 1; }
 xcrun devicectl device install app --device "$DEVICE" "$APP"
-xcrun devicectl device process launch --device "$DEVICE" com.screenclub.kidzy
+xcrun devicectl device process launch --terminate-existing --device "$DEVICE" com.screenclub.kidzy

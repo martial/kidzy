@@ -24,13 +24,6 @@ public enum TimeLimitRules {
         return max(0, rules.dailySeconds - watchedToday)
     }
 
-    /// Stars shown in the library: 5 when nothing was watched, 0 when the quota is used.
-    public static func stars(watchedToday: Int, rules: Rules, total: Int = 5) -> Int {
-        guard rules.dailySeconds > 0 else { return total }
-        let left = Double(max(0, rules.dailySeconds - watchedToday)) / Double(rules.dailySeconds)
-        return Int((left * Double(total)).rounded(.up))
-    }
-
     public static func inBedtime(now: Date, bedtime: Bedtime, calendar: Calendar = .current) -> Bool {
         guard let start = minutes(bedtime.start), let end = minutes(bedtime.end), start != end else { return false }
         let parts = calendar.dateComponents([.hour, .minute], from: now)

@@ -43,14 +43,6 @@ final class TimeLimitRulesTests: XCTestCase {
         XCTAssertNil(TimeLimitRules.remainingSeconds(watchedToday: 1000, rules: Rules()))
     }
 
-    func testStars() {
-        let rules = Rules(dailySeconds: 3000)
-        XCTAssertEqual(TimeLimitRules.stars(watchedToday: 0, rules: rules), 5)
-        XCTAssertEqual(TimeLimitRules.stars(watchedToday: 1380, rules: rules), 3)
-        XCTAssertEqual(TimeLimitRules.stars(watchedToday: 2999, rules: rules), 1)
-        XCTAssertEqual(TimeLimitRules.stars(watchedToday: 3000, rules: rules), 0)
-        XCTAssertEqual(TimeLimitRules.stars(watchedToday: 5000, rules: Rules()), 5)
-    }
 }
 
 final class AutoplayQueueTests: XCTestCase {

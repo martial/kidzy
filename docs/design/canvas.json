@@ -34,7 +34,7 @@
     "t-enfant": { "x": 0, "y": -240, "text": "Écrans enfant (iPhone, portrait)", "kind": "title1", "maxW": 2270 },
     "t-lecteur": { "x": 0, "y": 964, "text": "Lecteur (paysage)", "kind": "title1", "maxW": 2692 },
     "t-admin": { "x": 0, "y": 1714, "text": "Admin sur le Mac (navigateur)", "kind": "title1", "maxW": 4000 },
-    "n-biblio": { "x": 2370, "y": 0, "w": 300, "text": "Rien à lire : chaque tuile est la vignette de la collection ou de la vidéo. Les cinq étoiles en haut à droite montrent le temps qu'il reste aujourd'hui : elles s'éteignent une à une. Les tuiles sont des autocollants : contour marine, ombre franche, légère inclinaison.", "fill": "blue" },
+    "n-biblio": { "x": 2370, "y": 0, "w": 300, "text": "Rien à lire, rien d'autre que les tuiles : chaque tuile est la vignette de la collection ou de la vidéo. Le temps restant ne se voit que dans l'espace parent (Martial, 13/10). Les tuiles sont des autocollants : contour marine, ombre franche, légère inclinaison.", "fill": "blue" },
     "n-coin": { "x": 2792, "y": 1204, "w": 300, "text": "Coin secret : 4 touches en haut à gauche en moins de 2,5 secondes. Depuis le lecteur : retour à la bibliothèque. Depuis la bibliothèque : le code parent. Aucun retour visuel avant la 4e touche ; une touche ailleurs remet le compte à zéro.", "fill": "orange" },
     "n-admin": { "x": 4100, "y": 1954, "w": 300, "text": "Semantic UI, en français. On dépose les vidéos, le serveur les convertit en MP4 pour l'iPhone, tout se met à jour en direct. Les vignettes sont des exemples dessinés : dans l'app ce sont les vraies images des vidéos.", "fill": "green" }
   },

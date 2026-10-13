@@ -13,13 +13,6 @@ struct LibraryView: View {
             let inner = TileMetrics.innerWidth(for: geo.size.width)
             ScrollView {
                 VStack(spacing: 0) {
-                    HStack {
-                        Spacer()
-                        StarsRow(lit: model.stars)
-                    }
-                    .padding(.horizontal, 20)
-                    .padding(.top, 16)
-                    .frame(height: 70)
                     if model.collections.isEmpty {
                         VStack(spacing: 12) {
                             SunMascot()
@@ -44,21 +37,18 @@ struct LibraryView: View {
                             }
                         }
                         .padding(.horizontal, 24)
-                        .padding(.top, 36)
-                        .padding(.bottom, 140)
+                        .padding(.top, 60)
+                        HStack {
+                            SunMascot().padding(.leading, 10)
+                            Spacer()
+                        }
+                        .padding(.top, 24)
+                        .padding(.bottom, 20)
                     }
                 }
             }
             .scrollIndicators(.hidden)
             }
-            VStack {
-                Spacer()
-                HStack {
-                    SunMascot().offset(x: 10, y: 30)
-                    Spacer()
-                }
-            }
-            .allowsHitTesting(false)
             SecretCorner { model.openGate(from: .library) }
         }
         .onAppear { Orientation.set(.portrait) }

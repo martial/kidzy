@@ -50,8 +50,6 @@ final class AppModel {
         TimeLimitRules.block(now: Date(), watchedToday: watchedToday, rules: rules) != nil
     }
 
-    var stars: Int { TimeLimitRules.stars(watchedToday: watchedToday, rules: rules) }
-
     // MARK: - lifecycle
 
     func start() {

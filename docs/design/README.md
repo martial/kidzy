@@ -10,7 +10,7 @@ layout). They are static markup; the canvas renders them.
 
 | File | Screen | Notes |
 |---|---|---|
-| `Main.dc.html` | Bibliothèque (kid) | sticker tiles, five stars = time left, sun mascot, no text |
+| `Main.dc.html` | Bibliothèque (kid) | sticker tiles and the sun mascot, nothing else (stars removed 2026-10-13 at Martial's request) |
 | `Collection.dc.html` | Collection (kid) | episode tiles 16:9, house button back to the library |
 | `Lecteur.dc.html` | Lecteur (landscape) | video only; a tap does nothing (no pause, Martial 2026-10-13) |
 | `LecteurCoins.dc.html` | Lecteur, zones | for the parent: the secret corner and the tap zones |
