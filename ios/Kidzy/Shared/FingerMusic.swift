@@ -36,3 +36,12 @@ public enum FingerMusic {
         return FingerVoice(frequency: freq, amplitude: amp, pan: min(1, max(-1, (x - 0.5) * 1.6)), vibrato: 0.01, brightness: 0.2)
     }
 }
+
+public extension FingerMusic {
+    /// A tile's note: row picks the pentatonic degree (top = high), column pans and colours it.
+    static func tileVoice(column: Int, row: Int, columns: Int, rows: Int) -> FingerVoice {
+        let degree = min(notes.count - 1, max(0, Int(Double(rows - 1 - row) / Double(max(1, rows - 1)) * Double(notes.count - 1) + 0.5)))
+        let pan = columns > 1 ? Double(column) / Double(columns - 1) * 2 - 1 : 0
+        return FingerVoice(frequency: frequency(midi: Double(notes[degree])), amplitude: 0.7, pan: pan * 0.8, vibrato: 0.004, brightness: columns > 1 ? Double(column) / Double(columns - 1) : 0.5)
+    }
+}

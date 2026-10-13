@@ -12,6 +12,7 @@ enum Sketches {
     static let all: [SketchEntry] = [
         SketchEntry(id: "sea", title: "La mer") { AnyView(SeaSketchView()) },
         SketchEntry(id: "paint", title: "Peinture") { AnyView(PaintSketchView()) },
+        SketchEntry(id: "tiles", title: "Formes") { AnyView(TilesSketchView()) },
     ]
 
     static func entry(_ id: String) -> SketchEntry? { all.first { $0.id == id } }

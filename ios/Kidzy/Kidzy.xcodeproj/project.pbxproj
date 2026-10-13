@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		12CFE05C31D5AD7F2CABC577 /* chime.wav in Resources */ = {isa = PBXBuildFile; fileRef = 45215ED7D7D437750A574294 /* chime.wav */; };
 		143F28582EC427FF8F83C7A0 /* PlayerScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C40730CBF9D8B126D05ADB /* PlayerScreen.swift */; };
+		159353C33009686126B260F4 /* TileGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EECA9298BD176444F1DF330 /* TileGrid.swift */; };
 		1DFC81263C3BA7F1A7C5DBFD /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43AE27D54B177F77731121D9 /* Theme.swift */; };
 		22006F94D3331D0D9C1A055F /* SeaSketchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2374B82562AC9B343A63DC9C /* SeaSketchView.swift */; };
 		284EC61C9F5D0A66A3A55D3D /* RemoteImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 936281E75DBF6F2603C5898D /* RemoteImage.swift */; };
@@ -39,6 +40,7 @@
 		9CA243C19F1FA375BC436841 /* ServerEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E658EAB2246C4B5526E606F /* ServerEndpoint.swift */; };
 		9F835D27BD968204C8FBDEC8 /* splash.wav in Resources */ = {isa = PBXBuildFile; fileRef = 554B7DE512176C1EA085394A /* splash.wav */; };
 		A04CEB5111DE886FB11193A6 /* giggle.wav in Resources */ = {isa = PBXBuildFile; fileRef = C4B64EF88C3F31496B258E5B /* giggle.wav */; };
+		B55D3BE257C65A96E2745909 /* TilesSketchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2EA61BA832DB24F7B1E4FF0 /* TilesSketchView.swift */; };
 		BE0A3080DB2A6A5AA1908A9C /* SeaArt.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8AF07CD05D7D3B3311602C0 /* SeaArt.swift */; };
 		BFCCCC8F74E39690B31C72EE /* CollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F90DA23659D702FB6E0F460A /* CollectionView.swift */; };
 		C560E0BC0663F0ED9A2CB59E /* Stickers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54A371CE75B7A09EE278F39D /* Stickers.swift */; };
@@ -58,6 +60,7 @@
 		078AB587C150B1AF1F5CD8D4 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		0A3EACF700EC5D4C19DC6AF8 /* SeaSimulation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeaSimulation.swift; sourceTree = "<group>"; };
 		0E658EAB2246C4B5526E606F /* ServerEndpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerEndpoint.swift; sourceTree = "<group>"; };
+		0EECA9298BD176444F1DF330 /* TileGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TileGrid.swift; sourceTree = "<group>"; };
 		1A124B32590A410A93D5A243 /* ServerBrowser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerBrowser.swift; sourceTree = "<group>"; };
 		1E776E01FC5B79E5EE26AE3B /* Sketch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sketch.swift; sourceTree = "<group>"; };
 		2044C18AF59D762E0ACFA3B6 /* AppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModel.swift; sourceTree = "<group>"; };
@@ -85,6 +88,7 @@
 		93428ED4F170B70CB47D4252 /* PinEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinEntry.swift; sourceTree = "<group>"; };
 		936281E75DBF6F2603C5898D /* RemoteImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteImage.swift; sourceTree = "<group>"; };
 		98EDC8490E4ECF31B3677087 /* FingerMusic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FingerMusic.swift; sourceTree = "<group>"; };
+		A2EA61BA832DB24F7B1E4FF0 /* TilesSketchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TilesSketchView.swift; sourceTree = "<group>"; };
 		A6078E8289DE998A2FBA4A75 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
 		AAEB9E89C8C931C8CD91BFED /* AutoplayQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoplayQueue.swift; sourceTree = "<group>"; };
 		ABAE7E4920DFF7E6AD93C6D1 /* PlayerLayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerLayerView.swift; sourceTree = "<group>"; };
@@ -105,6 +109,14 @@
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
+		090FB0E52A69C9D1CB7A6455 /* Tiles */ = {
+			isa = PBXGroup;
+			children = (
+				A2EA61BA832DB24F7B1E4FF0 /* TilesSketchView.swift */,
+			);
+			path = Tiles;
+			sourceTree = "<group>";
+		};
 		1151200F8318004509A980BC /* Shared */ = {
 			isa = PBXGroup;
 			children = (
@@ -117,6 +129,7 @@
 				93428ED4F170B70CB47D4252 /* PinEntry.swift */,
 				0A3EACF700EC5D4C19DC6AF8 /* SeaSimulation.swift */,
 				0E658EAB2246C4B5526E606F /* ServerEndpoint.swift */,
+				0EECA9298BD176444F1DF330 /* TileGrid.swift */,
 				72DE41B1BB919859F656F785 /* TimeLimitRules.swift */,
 				343C066AEE9AF918FFCD8434 /* TimelineReporter.swift */,
 			);
@@ -279,6 +292,7 @@
 				ECCDBBE818B2775C2E55D86B /* SketchHost.swift */,
 				8C2C896C1DD388925BF6F7AE /* Paint */,
 				7BA8DF735D8794D56032AAF1 /* Sea */,
+				090FB0E52A69C9D1CB7A6455 /* Tiles */,
 			);
 			path = Sketches;
 			sourceTree = "<group>";
@@ -429,6 +443,8 @@
 				E392888CE65306442F9A1B30 /* SoundBank.swift in Sources */,
 				C560E0BC0663F0ED9A2CB59E /* Stickers.swift in Sources */,
 				1DFC81263C3BA7F1A7C5DBFD /* Theme.swift in Sources */,
+				159353C33009686126B260F4 /* TileGrid.swift in Sources */,
+				B55D3BE257C65A96E2745909 /* TilesSketchView.swift in Sources */,
 				FE130E3207D0B77D666463A7 /* TiltSensor.swift in Sources */,
 				57C9B65F389355B69CB25900 /* TimeLimitRules.swift in Sources */,
 				83760FC22C15A2BA822D97C4 /* TimelineReporter.swift in Sources */,
