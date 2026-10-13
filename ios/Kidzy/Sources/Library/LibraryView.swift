@@ -66,7 +66,7 @@ struct LibraryView: View {
                                         }
                                     }
                                     .buttonStyle(PressStyle())
-                                    .accessibilityLabel("Jouet : \(entry.title)")
+                                    .accessibilityLabel("Jouet : \(String(localized: entry.title))")
                                 }
                             }
                         }

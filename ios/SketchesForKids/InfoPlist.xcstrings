@@ -1,0 +1,13 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "NSMicrophoneUsageDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "The parrot listens to your voice to repeat it. Nothing is recorded or sent." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Le perroquet écoute ta voix pour la répéter. Rien n'est enregistré ni envoyé." } }
+      }
+    }
+  },
+  "version" : "1.0"
+}

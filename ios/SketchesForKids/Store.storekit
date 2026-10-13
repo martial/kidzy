@@ -1,0 +1,45 @@
+{
+  "identifier" : "5C3A9E1B",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+    {
+      "displayPrice" : "2.99",
+      "familyShareable" : true,
+      "internalID" : "7D2F4A91",
+      "localizations" : [
+        {
+          "description" : "Paint, Shapes, Guitar and Parrot",
+          "displayName" : "All toys",
+          "locale" : "en_US"
+        },
+        {
+          "description" : "Peinture, Formes, Guitare et Perroquet",
+          "displayName" : "Tous les jouets",
+          "locale" : "fr_FR"
+        }
+      ],
+      "productID" : "com.screenclub.sketchesforkids.alltoys",
+      "referenceName" : "All toys",
+      "type" : "NonConsumable"
+    }
+  ],
+  "settings" : {
+    "_applicationInternalID" : "",
+    "_developerTeamID" : "",
+    "_failTransactionsEnabled" : false,
+    "_locale" : "fr_FR",
+    "_storefront" : "FRA",
+    "_storeKitErrors" : [
+
+    ]
+  },
+  "subscriptionGroups" : [
+
+  ],
+  "version" : {
+    "major" : 3,
+    "minor" : 0
+  }
+}

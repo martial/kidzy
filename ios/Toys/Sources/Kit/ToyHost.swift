@@ -25,7 +25,7 @@ struct ToyHost: View {
             case .secretCorner:
                 SecretCorner(onUnlock: onExit)
             case .backSticker:
-                StickerButton(size: 52, systemImage: "house.fill", label: "Retour", action: onExit)
+                StickerButton(size: 52, systemImage: "house.fill", label: String(localized: "toy.back", defaultValue: "Back to the toys", table: "Toys"), action: onExit)
                     .padding(16)
             }
         }

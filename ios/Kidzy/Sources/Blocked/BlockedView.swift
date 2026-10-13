@@ -21,7 +21,7 @@ struct BlockedView: View {
                         Spacer()
                         HStack(spacing: 8) {
                             ForEach(Toys.all.reversed()) { entry in
-                                StickerButton(size: 48, systemImage: entry.symbol, label: entry.title) { model.openSketch(entry.id) }
+                                StickerButton(size: 48, systemImage: entry.symbol, label: String(localized: entry.title)) { model.openSketch(entry.id) }
                             }
                         }
                         .padding(24)

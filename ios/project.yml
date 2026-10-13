@@ -24,6 +24,7 @@ targets:
       - path: Toys/Sources
       - path: Toys/Resources
         buildPhase: resources
+      - path: Toys/Toys.xcstrings
       - path: Kidzy/Assets.xcassets
       - path: Kidzy/PrivacyInfo.xcprivacy
     configFiles:
@@ -35,3 +36,42 @@ targets:
         INFOPLIST_FILE: Kidzy/Config/Info.plist
         ENABLE_PREVIEWS: YES
     scheme: {}
+  SketchesForKids:
+    type: application
+    platform: iOS
+    sources:
+      - path: SketchesForKids/Sources
+      - path: Kidzy/Shared/Toys
+      - path: Toys/Sources
+      - path: Toys/Resources
+        buildPhase: resources
+      - path: Toys/Toys.xcstrings
+      - path: SketchesForKids/Assets.xcassets
+      - path: SketchesForKids/PrivacyInfo.xcprivacy
+      - path: SketchesForKids/Localizable.xcstrings
+      - path: SketchesForKids/InfoPlist.xcstrings
+      - path: SketchesForKids/Store.storekit
+        buildPhase: none
+    configFiles:
+      Debug: SketchesForKids/Config/App.xcconfig
+      Release: SketchesForKids/Config/App.xcconfig
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: NO
+        INFOPLIST_FILE: SketchesForKids/Config/Info.plist
+        ENABLE_PREVIEWS: YES
+    scheme:
+      storeKitConfiguration: SketchesForKids/Store.storekit
+      testTargets:
+        - SketchesForKidsTests
+  SketchesForKidsTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: SketchesForKids/Tests
+      - path: SketchesForKids/Store.storekit
+    dependencies:
+      - target: SketchesForKids
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES

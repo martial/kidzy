@@ -51,6 +51,10 @@ struct ParrotSketchView: View {
                     .animation(.spring(duration: 0.3, bounce: 0.5), value: pop)
                     .accessibilityLabel("Le perroquet")
                     ParrotFX(notes: notes, listening: ear.state == .listening ? ear.level : 0, beak: beak, now: t)
+                    if ear.state == .listening {
+                        ListeningBadge(pulse: 0.5 + 0.5 * sin(t * 3))
+                            .position(x: w - 44, y: h - 60)
+                    }
                 }
             }
         }
@@ -95,6 +99,23 @@ struct ParrotSketchView: View {
             pop = false
         }
         if !ear.replay() { squawk.play() }
+    }
+}
+
+/// A small ear sticker that breathes while the microphone is on.
+struct ListeningBadge: View {
+    let pulse: Double
+
+    var body: some View {
+        ZStack {
+            Circle().fill(Theme.ink).offset(x: 4, y: 4)
+            Circle().fill(Theme.paper).overlay(Circle().stroke(Theme.ink, lineWidth: 4))
+            Image(systemName: "ear.fill").font(.system(size: 20, weight: .bold)).foregroundStyle(Theme.ink)
+        }
+        .frame(width: 44, height: 44)
+        .scaleEffect(1 + 0.08 * pulse)
+        .opacity(0.75 + 0.25 * pulse)
+        .accessibilityHidden(true)
     }
 }
 
