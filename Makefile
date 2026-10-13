@@ -3,11 +3,12 @@
 
 build: admin server          ## admin bundle then the Go binary with it embedded
 
-admin:
+admin:                       ## clears old assets, keeps dist/.gitkeep for go:embed
+	rm -rf server/internal/web/dist/assets server/internal/web/dist/index.html
 	npm --prefix admin run build
 
 server:
-	cd server && go build -o bin/kidzy ./cmd/kidzy
+	cd server && go build -ldflags "-X main.version=$$(git rev-parse --short HEAD)" -o bin/kidzy ./cmd/kidzy
 
 test: test-go test-admin test-ios
 
