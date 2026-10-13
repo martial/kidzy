@@ -14,8 +14,6 @@
 	<true/>
 	<key>ProcessType</key>
 	<string>Interactive</string>
-	<key>EnvironmentFile</key>
-	<string>__HOME__/.config/kidzy/kidzy.env</string>
 	<key>StandardOutPath</key>
 	<string>__HOME__/Library/Logs/Kidzy/kidzy.log</string>
 	<key>StandardErrorPath</key>

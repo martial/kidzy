@@ -12,7 +12,7 @@ layout). They are static markup; the canvas renders them.
 |---|---|---|
 | `Main.dc.html` | Bibliothèque (kid) | sticker tiles, five stars = time left, sun mascot, no text |
 | `Collection.dc.html` | Collection (kid) | episode tiles 16:9, house button back to the library |
-| `Lecteur.dc.html` | Lecteur (landscape) | video only; a tap shows the pause button 2.5 s |
+| `Lecteur.dc.html` | Lecteur (landscape) | video only; a tap does nothing (no pause, Martial 2026-10-13) |
 | `LecteurCoins.dc.html` | Lecteur, zones | for the parent: the secret corner and the tap zones |
 | `Suivant.dc.html` | Suivant | end of a video: next tile with a 5 s ring, tap = play now |
 | `CodeParent.dc.html` | Code parent | keypad after 4 taps top-left on the library |
