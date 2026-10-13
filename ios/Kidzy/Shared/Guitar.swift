@@ -1,24 +1,30 @@
 import Foundation
 
 /// A chord as the MIDI note of each of the six strings (low E first); nil = muted.
+/// Each chord carries the colour of its mood: majors warm, F calm, minors violet.
 public struct Chord: Equatable, Sendable {
     public let name: String
     public let notes: [Int?]
-    public init(_ name: String, _ notes: [Int?]) {
+    public let colorHex: String
+    public init(_ name: String, _ notes: [Int?], color: String) {
         self.name = name
         self.notes = notes
+        colorHex = color
     }
 
-    public static let c = Chord("C", [nil, 48, 52, 55, 60, 64])
-    public static let g = Chord("G", [43, 47, 50, 55, 59, 67])
-    public static let am = Chord("Am", [nil, 45, 52, 57, 60, 64])
-    public static let f = Chord("F", [41, 48, 53, 57, 60, 65])
-    public static let d = Chord("D", [nil, nil, 50, 57, 62, 66])
-    public static let a = Chord("A", [nil, 45, 52, 57, 61, 64])
-    public static let em = Chord("Em", [40, 47, 52, 55, 59, 64])
-    public static let e = Chord("E", [40, 47, 52, 56, 59, 64])
-    public static let c7 = Chord("C7", [nil, 48, 52, 58, 60, 64])
-    public static let bb = Chord("Bb", [nil, 46, 53, 58, 62, 65])
+    public static let c = Chord("C", [nil, 48, 52, 55, 60, 64], color: "FFD23F")
+    public static let g = Chord("G", [43, 47, 50, 55, 59, 67], color: "5FD068")
+    public static let d = Chord("D", [nil, nil, 50, 57, 62, 66], color: "FFA62B")
+    public static let a = Chord("A", [nil, 45, 52, 57, 61, 64], color: "FF6B6B")
+    public static let e = Chord("E", [40, 47, 52, 56, 59, 64], color: "FF8FAB")
+    public static let f = Chord("F", [41, 48, 53, 57, 60, 65], color: "4D96FF")
+    public static let am = Chord("Am", [nil, 45, 52, 57, 60, 64], color: "9B5DE5")
+    public static let em = Chord("Em", [40, 47, 52, 55, 59, 64], color: "5B6FD9")
+    public static let c7 = Chord("C7", [nil, 48, 52, 58, 60, 64], color: "FF9A5C")
+    public static let bb = Chord("Bb", [nil, 46, 53, 58, 62, 65], color: "3BB8B0")
+
+    /// The stickers offered on screen, two rows of four.
+    public static let palette: [Chord] = [.c, .g, .d, .a, .e, .f, .am, .em]
 
     public static func frequency(midi: Int) -> Double { 440 * pow(2, Double(midi - 69) / 12) }
 }
@@ -69,7 +75,6 @@ public struct GuitarModel: Sendable {
     public init() {}
 
     public var song: Song { Song.all[songIndex] }
-    public var chord: Chord { song.chords[chordIndex] }
 
     /// The x of each string across a width, low E on the left. `spread` 0...1 goes
     /// from the narrow nut (0) to the wide bridge (1), so strings fan out.
@@ -98,80 +103,41 @@ public struct GuitarModel: Sendable {
         return notes[i]
     }
 
-    /// A sticker tap: that chord holds for a few seconds, then the song resumes.
+    public private(set) var heldChord: Chord?
+
+    /// The chord that sounds: a held sticker, else the song's current chord.
+    public var chord: Chord { heldChord ?? song.chords[chordIndex] }
+
+    /// A sticker tap: that chord holds for a few seconds, then the song resumes
+    /// (from that chord when it belongs to the song).
     public mutating func choose(chord: Chord, at time: Double) {
         if let i = song.chords.firstIndex(of: chord) { chordIndex = i }
+        heldChord = chord
         manualUntil = time + 6
+    }
+
+    /// Call with the clock: releases a held sticker once its time is over.
+    public mutating func tick(at time: Double) {
+        if heldChord != nil, time >= manualUntil { heldChord = nil }
     }
 
     public mutating func pluckedStrings(_ n: Int) { strumsInGesture += n }
 
-    /// End of a finger gesture (the sequencer drives the song; this only resets the count).
-    public mutating func gestureEnded(at time: Double) {
-        strumsInGesture = 0
-    }
-
-    /// The sequencer's turn: next chord unless a sticker is being held.
-    public mutating func advanceChord(at time: Double) {
-        guard time >= manualUntil else { return }
+    /// End of a finger gesture: a real strum (3+ strings) moves the song forward,
+    /// unless a sticker is being held. Returns true when the chord changed.
+    @discardableResult
+    public mutating func gestureEnded(at time: Double) -> Bool {
+        defer { strumsInGesture = 0 }
+        guard strumsInGesture >= 3, time >= manualUntil else { return false }
         chordIndex = (chordIndex + 1) % song.chords.count
+        return true
     }
 
     public mutating func nextSong() {
         songIndex = (songIndex + 1) % Song.all.count
         chordIndex = 0
         manualUntil = -1
+        heldChord = nil
     }
 }
 
-
-/// Fingerpicking that never stops: eight steps per bar, a chord every two bars.
-public struct Sequencer: Sendable {
-    public struct Event: Equatable, Sendable {
-        public let string: Int      // which of the six strings to pluck softly
-        public let accent: Bool     // the bass on the beat
-    }
-
-    public var bpm = 96.0
-    public private(set) var step = 0          // eighth notes since the start
-    private var accumulator = 0.0
-
-    public init() {}
-
-    public var secondsPerStep: Double { 60 / bpm / 2 }
-
-    /// Advances by wall-clock time; returns the plucks due now and whether a chord change is due.
-    public mutating func advance(dt: Double, chord: Chord) -> (events: [Event], chordChange: Bool) {
-        accumulator += min(max(dt, 0), 0.5)
-        var events: [Event] = []
-        var change = false
-        while accumulator >= secondsPerStep {
-            accumulator -= secondsPerStep
-            step += 1
-            if step % 16 == 0 { change = true }
-            events += Self.pattern(step: step % 8, chord: chord)
-        }
-        return (events, change)
-    }
-
-    /// Travis-style picking over the chord's sounding strings: bass, top, middle, top...
-    public static func pattern(step: Int, chord: Chord) -> [Event] {
-        let sounding = chord.notes.indices.filter { chord.notes[$0] != nil }
-        guard sounding.count >= 3 else { return [] }
-        let bass = sounding[0]
-        let bass2 = sounding.count > 3 ? sounding[1] : sounding[0]
-        let mid = sounding[sounding.count - 3]
-        let high2 = sounding[sounding.count - 2]
-        let top = sounding[sounding.count - 1]
-        switch step {
-        case 0: return [Event(string: bass, accent: true)]
-        case 1: return [Event(string: high2, accent: false)]
-        case 2: return [Event(string: mid, accent: false)]
-        case 3: return [Event(string: top, accent: false)]
-        case 4: return [Event(string: bass2, accent: true)]
-        case 5: return [Event(string: high2, accent: false)]
-        case 6: return [Event(string: mid, accent: false)]
-        default: return [Event(string: top, accent: false)]
-        }
-    }
-}

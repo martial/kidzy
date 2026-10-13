@@ -1,9 +1,10 @@
 import SwiftUI
 
-/// « Guitare »: a fingerpicking accompaniment never stops and follows a
-/// Beatles-flavoured song; a finger across the strings strums the chord; the
-/// neck is a melody pad in the song's key; chord stickers hold a chord.
-/// Tap the sound hole or bump the table: next song.
+/// « Guitare »: a finger across the strings strums the chord, and real strums
+/// walk through a Beatles-flavoured song; eight chord stickers hold a chord;
+/// the neck is a melody pad in the song's key; the sky and a glow behind the
+/// guitar take the chord's mood colour. Tap the sound hole or bump the table:
+/// next song.
 struct GuitarSketchView: View {
     @Environment(\.scenePhase) private var phase
     @State private var box = GuitarBox()
@@ -67,7 +68,6 @@ final class GuitarBox {
 final class GuitarState {
     let size: CGSize
     var model = GuitarModel()
-    var sequencer = Sequencer()
     var wobble = [Double](repeating: 0, count: GuitarModel.strings)
     var wobblePhase = [Double](repeating: 0, count: GuitarModel.strings)
     var lastDate: Date?
@@ -76,7 +76,7 @@ final class GuitarState {
     var lastTime = 0.0
     var chordFlash = 0.0
     var holeFlash = 0.0
-    var beatPulse = 0.0
+    var mood: (r: Double, g: Double, b: Double) = (1, 0.82, 0.25)   // follows the chord colour
     var melodyGlow: (y: Double, until: Double, note: Int)?
     var lastMelodyNote = -1
     var touchMode: TouchMode = .none
@@ -85,9 +85,17 @@ final class GuitarState {
         case none, strum, melody
     }
 
-    static let colors: [Color] = [Theme.coral, Theme.lemon, Theme.ocean, Theme.grass]
+    init(size: CGSize) {
+        self.size = size
+        #if DEBUG
+        if let name = ProcessInfo.processInfo.environment["KIDZY_CHORD"], let c = Chord.palette.first(where: { $0.name == name }) {
+            model.choose(chord: c, at: 0)
+            mood = Self.rgb(c.colorHex)
+        }
+        #endif
+    }
 
-    init(size: CGSize) { self.size = size }
+    var moodColor: Color { Color(.sRGB, red: mood.r, green: mood.g, blue: mood.b, opacity: 1) }
 
     // layout, portrait
     var headBottom: Double { size.height * 0.10 }
@@ -97,18 +105,18 @@ final class GuitarState {
     var bridgeY: Double { size.height * 0.745 }
     var holeCenter: CGPoint { CGPoint(x: size.width / 2, y: size.height * 0.575) }
     var holeRadius: Double { size.width * 0.15 }
-    var stickerY: Double { size.height * 0.90 }
-    var stickerRadius: Double { min(32, size.width / 12.5) }
+    var stickerRadius: Double { min(27, size.width / 14.5) }
+
+    func stickerCenter(_ i: Int) -> CGPoint {
+        let row = i / 4, col = i % 4
+        let span = size.width * 0.64
+        return CGPoint(x: size.width * 0.18 + span * Double(col) / 3, y: size.height * (row == 0 ? 0.845 : 0.93))
+    }
 
     /// String x at a given y: narrow at the nut, wide at the bridge.
     func stringX(_ i: Int, atY y: Double) -> Double {
         let spread = min(1, max(0, (y - nutY) / (bridgeY - nutY)))
         return GuitarModel.stringX(i, width: size.width, spread: spread)
-    }
-
-    func stickerX(_ i: Int, of n: Int) -> Double {
-        let span = size.width * 0.66
-        return n > 1 ? size.width * 0.17 + span * Double(i) / Double(n - 1) : size.width / 2
     }
 
     func advance(to date: Date, synth: GuitarSynth) {
@@ -121,19 +129,16 @@ final class GuitarState {
         }
         chordFlash = max(0, chordFlash - dt)
         holeFlash = max(0, holeFlash - dt)
-        beatPulse = max(0, beatPulse - dt * 3)
-        let r = sequencer.advance(dt: dt, chord: model.chord)
-        for e in r.events {
-            if let midi = model.chord.notes[e.string] {
-                synth.pluck(string: e.string, frequency: Chord.frequency(midi: midi), velocity: e.accent ? 0.42 : 0.3)
-                wobble[e.string] = max(wobble[e.string], e.accent ? 5 : 3.5)
-            }
-            if e.accent { beatPulse = 1 }
-        }
-        if r.chordChange {
-            model.advanceChord(at: time)
-            chordFlash = 0.35
-        }
+        model.tick(at: time)
+        let target = Self.rgb(model.chord.colorHex)
+        let k = min(1, dt * 4)
+        mood = (mood.r + (target.r - mood.r) * k, mood.g + (target.g - mood.g) * k, mood.b + (target.b - mood.b) * k)
+    }
+
+    static func rgb(_ hex: String) -> (r: Double, g: Double, b: Double) {
+        var v: UInt64 = 0
+        Scanner(string: hex).scanHexInt64(&v)
+        return (Double((v >> 16) & 0xFF) / 255, Double((v >> 8) & 0xFF) / 255, Double(v & 0xFF) / 255)
     }
 
     func dragChanged(location p: CGPoint, start: CGPoint, synth: GuitarSynth) {
@@ -174,16 +179,18 @@ final class GuitarState {
             lastX = nil
             lastMelodyNote = -1
             touchMode = .none
-            model.gestureEnded(at: time)
+            if model.gestureEnded(at: time) { chordFlash = 0.35 }
         }
         let moved = hypot(p.x - start.x, p.y - start.y)
         guard moved < 12 else { return }
-        let palette = model.song.palette
-        for (i, chord) in palette.enumerated() where hypot(p.x - stickerX(i, of: palette.count), p.y - stickerY) < stickerRadius + 14 {
-            model.choose(chord: chord, at: time)
-            chordFlash = 0.4
-            strum(synth: synth, velocity: 0.7)
-            return
+        for (i, chord) in Chord.palette.enumerated() {
+            let c = stickerCenter(i)
+            if hypot(p.x - c.x, p.y - c.y) < stickerRadius + 12 {
+                model.choose(chord: chord, at: time)
+                chordFlash = 0.4
+                strum(synth: synth, velocity: 0.7)
+                return
+            }
         }
         if hypot(p.x - holeCenter.x, p.y - holeCenter.y) < holeRadius {
             nextSong()
@@ -222,7 +229,6 @@ final class GuitarState {
 
     func nextSong() {
         model.nextSong()
-        sequencer = Sequencer()
         holeFlash = 0.5
         chordFlash = 0.5
     }
@@ -237,7 +243,12 @@ enum GuitarPainter {
     @MainActor
     static func draw(_ s: GuitarState, in gc: inout GraphicsContext, size: CGSize) {
         let w = size.width, h = size.height
-        gc.fill(Path(CGRect(origin: .zero, size: size)), with: .linearGradient(Gradient(colors: [Theme.sky, .white]), startPoint: .zero, endPoint: CGPoint(x: 0, y: h)))
+        // the sky takes the chord's mood: a light tint of its colour down to white
+        let mood = s.moodColor
+        let tint = SeaArt.mix(.white, mood, 0.45)
+        gc.fill(Path(CGRect(origin: .zero, size: size)), with: .linearGradient(Gradient(colors: [tint, .white]), startPoint: .zero, endPoint: CGPoint(x: 0, y: h)))
+        let glowR = w * 0.62
+        gc.fill(Path(ellipseIn: CGRect(x: w / 2 - glowR, y: s.holeCenter.y - glowR * 0.95, width: 2 * glowR, height: 2 * glowR)), with: .radialGradient(Gradient(colors: [mood.opacity(0.55), mood.opacity(0)]), center: CGPoint(x: w / 2, y: s.holeCenter.y), startRadius: 0, endRadius: glowR))
 
         // body: an acoustic silhouette, hard shadow, wood gradient, binding
         let body = GuitarArt.bodyPath(in: CGRect(x: w * 0.04, y: s.bodyTop, width: w * 0.92, height: h * 0.44))
@@ -259,8 +270,8 @@ enum GuitarPainter {
         guard_.closeSubpath()
         gc.fill(guard_, with: .color(Theme.ink.opacity(0.18)))
 
-        // rosette and sound hole, pulsing on the beat
-        let hr = s.holeRadius * (1 + 0.1 * s.holeFlash + 0.025 * s.beatPulse)
+        // rosette and sound hole
+        let hr = s.holeRadius * (1 + 0.1 * s.holeFlash)
         for (ring, color) in [(hr + 22, Theme.ink), (hr + 17, Theme.lemon), (hr + 12, Theme.coral), (hr + 7, Theme.ink)] {
             gc.stroke(Path(ellipseIn: CGRect(x: s.holeCenter.x - ring, y: s.holeCenter.y - ring, width: 2 * ring, height: 2 * ring)), with: .color(color), lineWidth: 4)
         }
@@ -324,33 +335,45 @@ enum GuitarPainter {
             gc.stroke(path, with: .color(muted ? Color(hex: "C9CFDA") : Color(hex: "F4F7FB")), lineWidth: width)
         }
 
-        // chord stickers
-        let palette = s.model.song.palette
-        for (i, chord) in palette.enumerated() {
-            let c = CGPoint(x: s.stickerX(i, of: palette.count), y: s.stickerY)
+        // chord stickers, two rows, each in its chord's colour; the current one is bigger
+        for (i, chord) in Chord.palette.enumerated() {
+            let c = s.stickerCenter(i)
             let current = chord == s.model.chord
-            let r = s.stickerRadius * (current ? 1.25 + 0.15 * s.chordFlash : 1)
-            gc.fill(Path(ellipseIn: CGRect(x: c.x - r + 5, y: c.y - r + 5, width: 2 * r, height: 2 * r)), with: .color(Theme.ink))
-            gc.fill(Path(ellipseIn: CGRect(x: c.x - r, y: c.y - r, width: 2 * r, height: 2 * r)), with: .color(GuitarState.colors[i % GuitarState.colors.count]))
-            gc.stroke(Path(ellipseIn: CGRect(x: c.x - r, y: c.y - r, width: 2 * r, height: 2 * r)), with: .color(Theme.ink), lineWidth: current ? 6 : 4)
+            let r = s.stickerRadius * (current ? 1.28 + 0.15 * s.chordFlash : 1)
+            let color = Color(hex: chord.colorHex)
+            gc.fill(Path(ellipseIn: CGRect(x: c.x - r + 4, y: c.y - r + 4, width: 2 * r, height: 2 * r)), with: .color(Theme.ink))
+            gc.fill(Path(ellipseIn: CGRect(x: c.x - r, y: c.y - r, width: 2 * r, height: 2 * r)), with: .color(color))
+            gc.stroke(Path(ellipseIn: CGRect(x: c.x - r, y: c.y - r, width: 2 * r, height: 2 * r)), with: .color(Theme.ink), lineWidth: current ? 5 : 3.5)
+            // a mark per chord: majors get open shapes, minors a little moon
             var mark = Path()
-            switch i % 4 {
-            case 0: mark.addEllipse(in: CGRect(x: c.x - r * 0.3, y: c.y - r * 0.3, width: r * 0.6, height: r * 0.6))
-            case 1: mark.addRect(CGRect(x: c.x - r * 0.3, y: c.y - r * 0.3, width: r * 0.6, height: r * 0.6))
-            case 2:
-                mark.move(to: CGPoint(x: c.x, y: c.y - r * 0.36))
-                mark.addLine(to: CGPoint(x: c.x + r * 0.36, y: c.y + r * 0.3))
-                mark.addLine(to: CGPoint(x: c.x - r * 0.36, y: c.y + r * 0.3))
+            let minor = chord.name.hasSuffix("m")
+            if minor {
+                mark.addArc(center: CGPoint(x: c.x + r * 0.08, y: c.y), radius: r * 0.36, startAngle: .degrees(50), endAngle: .degrees(310), clockwise: false)
+                mark.addArc(center: CGPoint(x: c.x + r * 0.3, y: c.y), radius: r * 0.36, startAngle: .degrees(240), endAngle: .degrees(120), clockwise: true)
                 mark.closeSubpath()
-            default:
-                mark.move(to: CGPoint(x: c.x, y: c.y - r * 0.38))
-                mark.addLine(to: CGPoint(x: c.x + r * 0.38, y: c.y))
-                mark.addLine(to: CGPoint(x: c.x, y: c.y + r * 0.38))
-                mark.addLine(to: CGPoint(x: c.x - r * 0.38, y: c.y))
-                mark.closeSubpath()
+            } else {
+                switch i % 4 {
+                case 0: mark.addEllipse(in: CGRect(x: c.x - r * 0.3, y: c.y - r * 0.3, width: r * 0.6, height: r * 0.6))
+                case 1: mark.addRect(CGRect(x: c.x - r * 0.3, y: c.y - r * 0.3, width: r * 0.6, height: r * 0.6))
+                case 2:
+                    mark.move(to: CGPoint(x: c.x, y: c.y - r * 0.36))
+                    mark.addLine(to: CGPoint(x: c.x + r * 0.36, y: c.y + r * 0.3))
+                    mark.addLine(to: CGPoint(x: c.x - r * 0.36, y: c.y + r * 0.3))
+                    mark.closeSubpath()
+                default:
+                    for k in 0..<5 {
+                        let a = Double(k) / 5 * 2 * .pi - .pi / 2
+                        let b = a + .pi / 5
+                        let outer = CGPoint(x: c.x + r * 0.4 * cos(a), y: c.y + r * 0.4 * sin(a))
+                        let innerP = CGPoint(x: c.x + r * 0.17 * cos(b), y: c.y + r * 0.17 * sin(b))
+                        if k == 0 { mark.move(to: outer) } else { mark.addLine(to: outer) }
+                        mark.addLine(to: innerP)
+                    }
+                    mark.closeSubpath()
+                }
             }
             gc.fill(mark, with: .color(.white))
-            gc.stroke(mark, with: .color(Theme.ink), lineWidth: 3)
+            gc.stroke(mark, with: .color(Theme.ink), style: StrokeStyle(lineWidth: 2.5, lineJoin: .round))
         }
     }
 }
