@@ -5,6 +5,10 @@ set -eu
 cd "$(dirname "$0")/.."
 DEVICE="${KIDZY_DEVICE:-2E8FC42D-20FF-5F98-9EB0-B518E89EAA61}"
 DD="$PWD/build/dd"
+if ! xcrun devicectl list devices 2>/dev/null | grep -q "$DEVICE.*connected"; then
+  echo "iPhone not reachable (devicectl does not report it connected): plug it in with USB, unlock it, then retry." >&2
+  exit 2
+fi
 xcodebuild -project Kidzy/Kidzy.xcodeproj -scheme Kidzy -configuration Debug \
   -destination "platform=iOS,id=$DEVICE" -derivedDataPath "$DD" \
   -allowProvisioningUpdates -allowProvisioningDeviceRegistration \

@@ -7,28 +7,101 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		5BD4048C144E863E19EC6D10 /* KidzyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DE112FF59ED4B620AF66D42 /* KidzyApp.swift */; };
+		143F28582EC427FF8F83C7A0 /* PlayerScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C40730CBF9D8B126D05ADB /* PlayerScreen.swift */; };
+		1DFC81263C3BA7F1A7C5DBFD /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43AE27D54B177F77731121D9 /* Theme.swift */; };
+		284EC61C9F5D0A66A3A55D3D /* RemoteImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 936281E75DBF6F2603C5898D /* RemoteImage.swift */; };
+		2C0CE5375F5885BB8483827B /* ServerBrowser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A124B32590A410A93D5A243 /* ServerBrowser.swift */; };
+		2DA439C557FCF9955FDB50C1 /* AutoplayQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAEB9E89C8C931C8CD91BFED /* AutoplayQueue.swift */; };
+		351ED624B8D37316BAC563A9 /* Keychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB64FEF32F7B058AA67F0CE9 /* Keychain.swift */; };
+		4C4820D3619FD2F18F9A42DD /* PlayerLayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABAE7E4920DFF7E6AD93C6D1 /* PlayerLayerView.swift */; };
+		56CC21C85BCAAE2C96D22E15 /* CornerTapLock.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFC6A12FBFC28EC6EA418084 /* CornerTapLock.swift */; };
+		57B58C79BA866FF31D65D225 /* LibraryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B93AB1D9FFDA3E6D0D0253C1 /* LibraryView.swift */; };
+		57C9B65F389355B69CB25900 /* TimeLimitRules.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72DE41B1BB919859F656F785 /* TimeLimitRules.swift */; };
+		6D2FACD049FCEBF9BB02CE6C /* BlockedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3711D388ECEE5A49ACF38B5F /* BlockedView.swift */; };
+		6DE2D8D3CC12B466E6DA2CDF /* PinEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93428ED4F170B70CB47D4252 /* PinEntry.swift */; };
+		7707E0E3CE1D5081D02D688A /* ParentAreaView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83CF5BE5F2E5CB90757DD9D7 /* ParentAreaView.swift */; };
+		7E1704F0392CDDEF3CEE200F /* PairingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F25229236338E3145C8940CC /* PairingView.swift */; };
+		83760FC22C15A2BA822D97C4 /* TimelineReporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 343C066AEE9AF918FFCD8434 /* TimelineReporter.swift */; };
+		8A33A252103880284C60B747 /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2044C18AF59D762E0ACFA3B6 /* AppModel.swift */; };
 		94A7EB0A391814EFA949985B /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6078E8289DE998A2FBA4A75 /* Models.swift */; };
+		9CA243C19F1FA375BC436841 /* ServerEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E658EAB2246C4B5526E606F /* ServerEndpoint.swift */; };
+		BFCCCC8F74E39690B31C72EE /* CollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F90DA23659D702FB6E0F460A /* CollectionView.swift */; };
+		C560E0BC0663F0ED9A2CB59E /* Stickers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54A371CE75B7A09EE278F39D /* Stickers.swift */; };
+		CD6918C4A4A3ACBF9FBB5EFB /* ParentGateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9192C14F6E26A5C06D8C5405 /* ParentGateView.swift */; };
+		E1E972EF2E061630543AD058 /* KidzyClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409AE5296B6605D1CC8987E2 /* KidzyClient.swift */; };
 		ECF9BCFB58634EF85668A8ED /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DC6280F367CD28F6E2161F36 /* Assets.xcassets */; };
 		F01052243C3119DBEEA25DA8 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 078AB587C150B1AF1F5CD8D4 /* PrivacyInfo.xcprivacy */; };
+		FBBF8AC22826BA21AA5912A5 /* KidzyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E038BF08F6BD24648940289F /* KidzyApp.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		078AB587C150B1AF1F5CD8D4 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
-		5DE112FF59ED4B620AF66D42 /* KidzyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KidzyApp.swift; sourceTree = "<group>"; };
+		0E658EAB2246C4B5526E606F /* ServerEndpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerEndpoint.swift; sourceTree = "<group>"; };
+		1A124B32590A410A93D5A243 /* ServerBrowser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerBrowser.swift; sourceTree = "<group>"; };
+		2044C18AF59D762E0ACFA3B6 /* AppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModel.swift; sourceTree = "<group>"; };
+		343C066AEE9AF918FFCD8434 /* TimelineReporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimelineReporter.swift; sourceTree = "<group>"; };
+		3711D388ECEE5A49ACF38B5F /* BlockedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockedView.swift; sourceTree = "<group>"; };
+		409AE5296B6605D1CC8987E2 /* KidzyClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KidzyClient.swift; sourceTree = "<group>"; };
+		43AE27D54B177F77731121D9 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
+		54A371CE75B7A09EE278F39D /* Stickers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Stickers.swift; sourceTree = "<group>"; };
+		72DE41B1BB919859F656F785 /* TimeLimitRules.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeLimitRules.swift; sourceTree = "<group>"; };
 		819AC9210F43BD3C9A2B3870 /* Kidzy.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Kidzy.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		83CF5BE5F2E5CB90757DD9D7 /* ParentAreaView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParentAreaView.swift; sourceTree = "<group>"; };
+		84C40730CBF9D8B126D05ADB /* PlayerScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerScreen.swift; sourceTree = "<group>"; };
+		9192C14F6E26A5C06D8C5405 /* ParentGateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParentGateView.swift; sourceTree = "<group>"; };
+		93428ED4F170B70CB47D4252 /* PinEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinEntry.swift; sourceTree = "<group>"; };
+		936281E75DBF6F2603C5898D /* RemoteImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteImage.swift; sourceTree = "<group>"; };
 		A6078E8289DE998A2FBA4A75 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
+		AAEB9E89C8C931C8CD91BFED /* AutoplayQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoplayQueue.swift; sourceTree = "<group>"; };
+		ABAE7E4920DFF7E6AD93C6D1 /* PlayerLayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerLayerView.swift; sourceTree = "<group>"; };
+		B93AB1D9FFDA3E6D0D0253C1 /* LibraryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryView.swift; sourceTree = "<group>"; };
 		DC6280F367CD28F6E2161F36 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		DFC6A12FBFC28EC6EA418084 /* CornerTapLock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CornerTapLock.swift; sourceTree = "<group>"; };
+		E038BF08F6BD24648940289F /* KidzyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KidzyApp.swift; sourceTree = "<group>"; };
+		EB64FEF32F7B058AA67F0CE9 /* Keychain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keychain.swift; sourceTree = "<group>"; };
+		F25229236338E3145C8940CC /* PairingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PairingView.swift; sourceTree = "<group>"; };
 		F87CE6675349112ECA47CE32 /* App.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = App.xcconfig; sourceTree = "<group>"; };
+		F90DA23659D702FB6E0F460A /* CollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
 		1151200F8318004509A980BC /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				AAEB9E89C8C931C8CD91BFED /* AutoplayQueue.swift */,
+				DFC6A12FBFC28EC6EA418084 /* CornerTapLock.swift */,
+				409AE5296B6605D1CC8987E2 /* KidzyClient.swift */,
 				A6078E8289DE998A2FBA4A75 /* Models.swift */,
+				93428ED4F170B70CB47D4252 /* PinEntry.swift */,
+				0E658EAB2246C4B5526E606F /* ServerEndpoint.swift */,
+				72DE41B1BB919859F656F785 /* TimeLimitRules.swift */,
+				343C066AEE9AF918FFCD8434 /* TimelineReporter.swift */,
 			);
 			path = Shared;
+			sourceTree = "<group>";
+		};
+		16BA2D142789A7266F195B7B /* Discovery */ = {
+			isa = PBXGroup;
+			children = (
+				1A124B32590A410A93D5A243 /* ServerBrowser.swift */,
+			);
+			path = Discovery;
+			sourceTree = "<group>";
+		};
+		1AEBC688B305D882524EC670 /* Gate */ = {
+			isa = PBXGroup;
+			children = (
+				9192C14F6E26A5C06D8C5405 /* ParentGateView.swift */,
+			);
+			path = Gate;
+			sourceTree = "<group>";
+		};
+		1DB3C652B499C0E6456C4A6B /* Parent */ = {
+			isa = PBXGroup;
+			children = (
+				83CF5BE5F2E5CB90757DD9D7 /* ParentAreaView.swift */,
+			);
+			path = Parent;
 			sourceTree = "<group>";
 		};
 		4ADFFC0E9DA3C41C6C848043 /* Products */ = {
@@ -37,6 +110,31 @@
 				819AC9210F43BD3C9A2B3870 /* Kidzy.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		531037B8325E6589EC91FD2B /* Blocked */ = {
+			isa = PBXGroup;
+			children = (
+				3711D388ECEE5A49ACF38B5F /* BlockedView.swift */,
+			);
+			path = Blocked;
+			sourceTree = "<group>";
+		};
+		5EC0BD5286C46E85A7E1120B /* Images */ = {
+			isa = PBXGroup;
+			children = (
+				936281E75DBF6F2603C5898D /* RemoteImage.swift */,
+			);
+			path = Images;
+			sourceTree = "<group>";
+		};
+		5F40AB2FF8D31424ED71100B /* Player */ = {
+			isa = PBXGroup;
+			children = (
+				ABAE7E4920DFF7E6AD93C6D1 /* PlayerLayerView.swift */,
+				84C40730CBF9D8B126D05ADB /* PlayerScreen.swift */,
+			);
+			path = Player;
 			sourceTree = "<group>";
 		};
 		94BC9BD2A12C5014C7EC30C2 = {
@@ -59,12 +157,57 @@
 			path = Config;
 			sourceTree = "<group>";
 		};
+		B2FB51F86080AC951E85DB36 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				2044C18AF59D762E0ACFA3B6 /* AppModel.swift */,
+				EB64FEF32F7B058AA67F0CE9 /* Keychain.swift */,
+				E038BF08F6BD24648940289F /* KidzyApp.swift */,
+				43AE27D54B177F77731121D9 /* Theme.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		C445F00765FF3D78F3A81FBC /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				54A371CE75B7A09EE278F39D /* Stickers.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
 		E5DBE813221A5C13E2BC0DEF /* Sources */ = {
 			isa = PBXGroup;
 			children = (
-				5DE112FF59ED4B620AF66D42 /* KidzyApp.swift */,
+				B2FB51F86080AC951E85DB36 /* App */,
+				531037B8325E6589EC91FD2B /* Blocked */,
+				C445F00765FF3D78F3A81FBC /* Components */,
+				16BA2D142789A7266F195B7B /* Discovery */,
+				1AEBC688B305D882524EC670 /* Gate */,
+				5EC0BD5286C46E85A7E1120B /* Images */,
+				FE8C953E29ABC2FF2802F6E8 /* Library */,
+				EA27F3FE08F3FC3C3299D9F7 /* Pairing */,
+				1DB3C652B499C0E6456C4A6B /* Parent */,
+				5F40AB2FF8D31424ED71100B /* Player */,
 			);
 			path = Sources;
+			sourceTree = "<group>";
+		};
+		EA27F3FE08F3FC3C3299D9F7 /* Pairing */ = {
+			isa = PBXGroup;
+			children = (
+				F25229236338E3145C8940CC /* PairingView.swift */,
+			);
+			path = Pairing;
+			sourceTree = "<group>";
+		};
+		FE8C953E29ABC2FF2802F6E8 /* Library */ = {
+			isa = PBXGroup;
+			children = (
+				F90DA23659D702FB6E0F460A /* CollectionView.swift */,
+				B93AB1D9FFDA3E6D0D0253C1 /* LibraryView.swift */,
+			);
+			path = Library;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -138,8 +281,29 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BD4048C144E863E19EC6D10 /* KidzyApp.swift in Sources */,
+				8A33A252103880284C60B747 /* AppModel.swift in Sources */,
+				2DA439C557FCF9955FDB50C1 /* AutoplayQueue.swift in Sources */,
+				6D2FACD049FCEBF9BB02CE6C /* BlockedView.swift in Sources */,
+				BFCCCC8F74E39690B31C72EE /* CollectionView.swift in Sources */,
+				56CC21C85BCAAE2C96D22E15 /* CornerTapLock.swift in Sources */,
+				351ED624B8D37316BAC563A9 /* Keychain.swift in Sources */,
+				FBBF8AC22826BA21AA5912A5 /* KidzyApp.swift in Sources */,
+				E1E972EF2E061630543AD058 /* KidzyClient.swift in Sources */,
+				57B58C79BA866FF31D65D225 /* LibraryView.swift in Sources */,
 				94A7EB0A391814EFA949985B /* Models.swift in Sources */,
+				7E1704F0392CDDEF3CEE200F /* PairingView.swift in Sources */,
+				7707E0E3CE1D5081D02D688A /* ParentAreaView.swift in Sources */,
+				CD6918C4A4A3ACBF9FBB5EFB /* ParentGateView.swift in Sources */,
+				6DE2D8D3CC12B466E6DA2CDF /* PinEntry.swift in Sources */,
+				4C4820D3619FD2F18F9A42DD /* PlayerLayerView.swift in Sources */,
+				143F28582EC427FF8F83C7A0 /* PlayerScreen.swift in Sources */,
+				284EC61C9F5D0A66A3A55D3D /* RemoteImage.swift in Sources */,
+				2C0CE5375F5885BB8483827B /* ServerBrowser.swift in Sources */,
+				9CA243C19F1FA375BC436841 /* ServerEndpoint.swift in Sources */,
+				C560E0BC0663F0ED9A2CB59E /* Stickers.swift in Sources */,
+				1DFC81263C3BA7F1A7C5DBFD /* Theme.swift in Sources */,
+				57C9B65F389355B69CB25900 /* TimeLimitRules.swift in Sources */,
+				83760FC22C15A2BA822D97C4 /* TimelineReporter.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
