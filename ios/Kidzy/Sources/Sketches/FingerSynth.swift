@@ -7,10 +7,19 @@ private let maxVoices = 8
 /// The main actor sets targets; the audio thread smooths and renders them.
 @MainActor
 final class FingerSynth {
+    enum Style {
+        case playful   // quick notes, a boing on touch
+        case dreamy    // slow attack and release, detuned pair, octave shimmer, stereo echo
+    }
+
     private let engine = AVAudioEngine()
     private let bank = VoiceBank()
     private var source: AVAudioSourceNode?
     private var running = false
+
+    var style: Style = .playful {
+        didSet { bank.dreamy = style == .dreamy }
+    }
 
     func start() {
         guard !running else { return }
@@ -51,9 +60,9 @@ final class FingerSynth {
         bank.reset()
     }
 
-    /// A finger (or the boat) starts: a short "boing" slides down to the voice's pitch.
+    /// A finger (or the boat) starts: in the playful style a short "boing" slides down to the pitch.
     func began(id: Int, voice: FingerVoice) {
-        bank.set(id: id, voice: voice, boing: true)
+        bank.set(id: id, voice: voice, boing: style == .playful)
     }
 
     func update(id: Int, voice: FingerVoice) {
@@ -80,13 +89,22 @@ final class VoiceBank: @unchecked Sendable {
         var amp: Float = 0
         var pan: Float = 0
         var phase: Float = 0
+        var phase2: Float = 0
         var vibPhase: Float = 0
         var boing: Float = 0  // seconds left of the pitch drop
     }
 
     private let lock = NSLock()
     private var voices = [Voice](repeating: Voice(), count: maxVoices)
-    var sampleRate: Float = 48000
+    var sampleRate: Float = 48000 {
+        didSet { delayLength = max(1, Int(sampleRate * 0.34)) }
+    }
+    /// Dreamy style: slower envelopes, a detuned twin, an octave shimmer, a stereo echo.
+    var dreamy = false
+    private var delayL = [Float](repeating: 0, count: 48000)
+    private var delayR = [Float](repeating: 0, count: 48000)
+    private var delayLength = 16320
+    private var delayIndex = 0
 
     func set(id: Int, voice: FingerVoice, boing: Bool) {
         lock.lock()
@@ -136,7 +154,8 @@ final class VoiceBank: @unchecked Sendable {
         }
         lock.lock()
         let dt = 1 / sampleRate
-        let ampSmooth: Float = 0.0025, freqSmooth: Float = 0.004, panSmooth: Float = 0.002
+        let dreamy = self.dreamy
+        let ampSmooth: Float = dreamy ? 0.0007 : 0.0025, freqSmooth: Float = dreamy ? 0.0025 : 0.004, panSmooth: Float = 0.002
         for v in voices.indices where voices[v].amp > 0.0005 || voices[v].targetAmp > 0 {
             var voice = voices[v]
             for i in 0..<frameCount {
@@ -148,17 +167,37 @@ final class VoiceBank: @unchecked Sendable {
                     f *= 1 + 1.5 * (voice.boing / 0.14)
                     voice.boing -= dt
                 }
-                voice.vibPhase += 2 * .pi * 6 * dt
-                f *= 1 + voice.vibrato * sin(voice.vibPhase)
+                voice.vibPhase += 2 * .pi * (dreamy ? 4.5 : 6) * dt
+                f *= 1 + (dreamy ? 0.003 + voice.vibrato * 0.5 : voice.vibrato) * sin(voice.vibPhase)
                 voice.phase += 2 * .pi * f * dt
                 if voice.phase > 2 * .pi { voice.phase -= 2 * .pi }
-                let s = sin(voice.phase) + voice.brightness * 0.45 * sin(2 * voice.phase) + voice.brightness * 0.18 * sin(3 * voice.phase) + 0.08 * sin(0.5 * voice.phase)
-                let sample = s * voice.amp * 0.35
+                let s: Float
+                if dreamy {
+                    voice.phase2 += 2 * .pi * f * 1.004 * dt
+                    if voice.phase2 > 2 * .pi { voice.phase2 -= 2 * .pi }
+                    s = 0.6 * sin(voice.phase) + 0.5 * sin(voice.phase2) + voice.brightness * 0.22 * sin(2 * voice.phase) + 0.12 * sin(4 * voice.phase2) + 0.1 * sin(0.5 * voice.phase)
+                } else {
+                    s = sin(voice.phase) + voice.brightness * 0.45 * sin(2 * voice.phase) + voice.brightness * 0.18 * sin(3 * voice.phase) + 0.08 * sin(0.5 * voice.phase)
+                }
+                let sample = s * voice.amp * (dreamy ? 0.3 : 0.35)
                 let angle = (voice.pan + 1) * 0.25 * .pi
                 left[i] += sample * cos(angle)
                 right?[i] += sample * sin(angle)
             }
             voices[v] = voice
+        }
+        if dreamy, let right {
+            // ping-pong echo: each side feeds the other
+            for i in 0..<frameCount {
+                let dl = delayL[delayIndex], dr = delayR[delayIndex]
+                let dryL = left[i], dryR = right[i]
+                delayL[delayIndex] = dryL * 0.5 + dr * 0.48
+                delayR[delayIndex] = dryR * 0.5 + dl * 0.48
+                left[i] = dryL + dl * 0.6
+                right[i] = dryR + dr * 0.6
+                delayIndex += 1
+                if delayIndex >= delayLength { delayIndex = 0 }
+            }
         }
         lock.unlock()
         if right == nil {

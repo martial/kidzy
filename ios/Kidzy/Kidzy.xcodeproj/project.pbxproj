@@ -10,6 +10,7 @@
 		05A9A03BC89C90D2A63A5A59 /* animal-canard.wav in Resources */ = {isa = PBXBuildFile; fileRef = F84712C823CBD4E53CBBCF19 /* animal-canard.wav */; };
 		07369355376A20D921574482 /* name-vache.wav in Resources */ = {isa = PBXBuildFile; fileRef = 4A0631334812EE714A032EC7 /* name-vache.wav */; };
 		0C2D29E7E818A47DFD62DE98 /* coq.png in Resources */ = {isa = PBXBuildFile; fileRef = 9E5CA08AEF4995C291B693E3 /* coq.png */; };
+		0C3C3A9A4654AD0683429D09 /* GuitarSynth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43F6643EC97C6678B2BA0658 /* GuitarSynth.swift */; };
 		10EFC6C30E8E7BA11604CD97 /* animal-chat.wav in Resources */ = {isa = PBXBuildFile; fileRef = 11B25A535EDABFE69098D236 /* animal-chat.wav */; };
 		12CFE05C31D5AD7F2CABC577 /* chime.wav in Resources */ = {isa = PBXBuildFile; fileRef = 45215ED7D7D437750A574294 /* chime.wav */; };
 		143F28582EC427FF8F83C7A0 /* PlayerScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C40730CBF9D8B126D05ADB /* PlayerScreen.swift */; };
@@ -45,6 +46,7 @@
 		731EB878CA490AA1A24BB843 /* SeaSimulation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A3EACF700EC5D4C19DC6AF8 /* SeaSimulation.swift */; };
 		7707E0E3CE1D5081D02D688A /* ParentAreaView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83CF5BE5F2E5CB90757DD9D7 /* ParentAreaView.swift */; };
 		7834FEFF9DAE6281B5669C31 /* name-lion.wav in Resources */ = {isa = PBXBuildFile; fileRef = A7B42D834ADCA9C969BC71D4 /* name-lion.wav */; };
+		7B0DDFC0E0954A090761640A /* GuitarSketchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 274715DED693EB812A0FB110 /* GuitarSketchView.swift */; };
 		7E1704F0392CDDEF3CEE200F /* PairingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F25229236338E3145C8940CC /* PairingView.swift */; };
 		8059AE2205B2AE0572080D14 /* FingerSynth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62443C705E6AAE55F6F345B0 /* FingerSynth.swift */; };
 		80EC58FFB36237FCEB82C843 /* name-ane.wav in Resources */ = {isa = PBXBuildFile; fileRef = C0A18FEC2C2659288416583B /* name-ane.wav */; };
@@ -59,6 +61,7 @@
 		9F835D27BD968204C8FBDEC8 /* splash.wav in Resources */ = {isa = PBXBuildFile; fileRef = 554B7DE512176C1EA085394A /* splash.wav */; };
 		A04CEB5111DE886FB11193A6 /* giggle.wav in Resources */ = {isa = PBXBuildFile; fileRef = C4B64EF88C3F31496B258E5B /* giggle.wav */; };
 		A6ECB04F0F0EE822343A7BB0 /* animal-ane.wav in Resources */ = {isa = PBXBuildFile; fileRef = 0AFEC1E7C5E8380388B7B25B /* animal-ane.wav */; };
+		AE8607C036391BB40C8AB8EF /* Guitar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FCCEFC316703C54BFAF9A02 /* Guitar.swift */; };
 		B55D3BE257C65A96E2745909 /* TilesSketchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2EA61BA832DB24F7B1E4FF0 /* TilesSketchView.swift */; };
 		B70C459A7259031705A09E00 /* chien.png in Resources */ = {isa = PBXBuildFile; fileRef = 431F2D77B81D812D3523109C /* chien.png */; };
 		BBD53A826FAFFE9B7114E035 /* name-grenouille.wav in Resources */ = {isa = PBXBuildFile; fileRef = 7A12A56E28970403A1A5F6B4 /* name-grenouille.wav */; };
@@ -99,6 +102,7 @@
 		1E776E01FC5B79E5EE26AE3B /* Sketch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sketch.swift; sourceTree = "<group>"; };
 		2044C18AF59D762E0ACFA3B6 /* AppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModel.swift; sourceTree = "<group>"; };
 		2374B82562AC9B343A63DC9C /* SeaSketchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeaSketchView.swift; sourceTree = "<group>"; };
+		274715DED693EB812A0FB110 /* GuitarSketchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuitarSketchView.swift; sourceTree = "<group>"; };
 		276162BEFE354C3F71B11AAF /* AnimalsSketchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimalsSketchView.swift; sourceTree = "<group>"; };
 		31C7A121B812422D074C0710 /* name-coq.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "name-coq.wav"; sourceTree = "<group>"; };
 		343C066AEE9AF918FFCD8434 /* TimelineReporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimelineReporter.swift; sourceTree = "<group>"; };
@@ -111,6 +115,7 @@
 		41A6EDB722404CF5816AAF23 /* animal-vache.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "animal-vache.wav"; sourceTree = "<group>"; };
 		431F2D77B81D812D3523109C /* chien.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = chien.png; sourceTree = "<group>"; };
 		43AE27D54B177F77731121D9 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
+		43F6643EC97C6678B2BA0658 /* GuitarSynth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuitarSynth.swift; sourceTree = "<group>"; };
 		45215ED7D7D437750A574294 /* chime.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = chime.wav; sourceTree = "<group>"; };
 		4A0631334812EE714A032EC7 /* name-vache.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "name-vache.wav"; sourceTree = "<group>"; };
 		4E681C1D584CD697224B929B /* SoundBank.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundBank.swift; sourceTree = "<group>"; };
@@ -122,6 +127,7 @@
 		6416C973CDC906F79E7A85D0 /* ane.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ane.png; sourceTree = "<group>"; };
 		661092EBD7C32515FFF6DD5D /* TiltSensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TiltSensor.swift; sourceTree = "<group>"; };
 		6BF2ECC95CA60E03613CDB9F /* animal-chien.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "animal-chien.wav"; sourceTree = "<group>"; };
+		6FCCEFC316703C54BFAF9A02 /* Guitar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guitar.swift; sourceTree = "<group>"; };
 		70A449FAABC8DC145C255021 /* Boat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Boat.swift; sourceTree = "<group>"; };
 		72DE41B1BB919859F656F785 /* TimeLimitRules.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeLimitRules.swift; sourceTree = "<group>"; };
 		77F003C2DFC456B11A1D25BF /* name-chat.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "name-chat.wav"; sourceTree = "<group>"; };
@@ -203,6 +209,7 @@
 				70A449FAABC8DC145C255021 /* Boat.swift */,
 				DFC6A12FBFC28EC6EA418084 /* CornerTapLock.swift */,
 				98EDC8490E4ECF31B3677087 /* FingerMusic.swift */,
+				6FCCEFC316703C54BFAF9A02 /* Guitar.swift */,
 				409AE5296B6605D1CC8987E2 /* KidzyClient.swift */,
 				A6078E8289DE998A2FBA4A75 /* Models.swift */,
 				93428ED4F170B70CB47D4252 /* PinEntry.swift */,
@@ -302,6 +309,15 @@
 			path = Sea;
 			sourceTree = "<group>";
 		};
+		7F95E17992799BF3F96C19D0 /* Guitar */ = {
+			isa = PBXGroup;
+			children = (
+				274715DED693EB812A0FB110 /* GuitarSketchView.swift */,
+				43F6643EC97C6678B2BA0658 /* GuitarSynth.swift */,
+			);
+			path = Guitar;
+			sourceTree = "<group>";
+		};
 		8A4D7DFE697B933718024D10 /* Animals */ = {
 			isa = PBXGroup;
 			children = (
@@ -399,6 +415,7 @@
 				1E776E01FC5B79E5EE26AE3B /* Sketch.swift */,
 				ECCDBBE818B2775C2E55D86B /* SketchHost.swift */,
 				8A4D7DFE697B933718024D10 /* Animals */,
+				7F95E17992799BF3F96C19D0 /* Guitar */,
 				8C2C896C1DD388925BF6F7AE /* Paint */,
 				7BA8DF735D8794D56032AAF1 /* Sea */,
 				090FB0E52A69C9D1CB7A6455 /* Tiles */,
@@ -559,6 +576,9 @@
 				8059AE2205B2AE0572080D14 /* FingerSynth.swift in Sources */,
 				541ACE05A9384D56BFD5123B /* FluidSimulator.swift in Sources */,
 				5A0DDCD1138422E17A13BC8D /* FluidView.swift in Sources */,
+				AE8607C036391BB40C8AB8EF /* Guitar.swift in Sources */,
+				7B0DDFC0E0954A090761640A /* GuitarSketchView.swift in Sources */,
+				0C3C3A9A4654AD0683429D09 /* GuitarSynth.swift in Sources */,
 				351ED624B8D37316BAC563A9 /* Keychain.swift in Sources */,
 				FBBF8AC22826BA21AA5912A5 /* KidzyApp.swift in Sources */,
 				E1E972EF2E061630543AD058 /* KidzyClient.swift in Sources */,

@@ -25,6 +25,7 @@ struct PaintSketchView: View {
             .ignoresSafeArea()
             .onAppear {
                 sounds.load()
+                synth.style = .dreamy
                 synth.start()
                 shake.onShake = {
                     bursts += 1
