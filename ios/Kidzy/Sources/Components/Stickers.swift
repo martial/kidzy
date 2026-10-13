@@ -1,5 +1,12 @@
 import SwiftUI
 
+/// Tile sizes from the screen width: two columns, 24 pt margins, 20 pt gap.
+enum TileMetrics {
+    static func tileWidth(for screenWidth: CGFloat) -> CGFloat { max(120, (screenWidth - 48 - 20) / 2) }
+    /// Inner image width: the tile minus the 6 pt border and the 8 pt padding on each side.
+    static func innerWidth(for screenWidth: CGFloat) -> CGFloat { tileWidth(for: screenWidth) - 28 }
+}
+
 /// A sticker: white frame, ink border, hard offset shadow, a colour dot, a slight tilt.
 struct StickerTile<Content: View>: View {
     var color: Color

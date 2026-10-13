@@ -73,6 +73,17 @@ final class AppModel {
             if token == nil, route == .connecting { route = .pairing }
         }
         browser.start()
+        #if DEBUG
+        // Simulator checks: KIDZY_SERVER=host:port KIDZY_PIN=1234 [KIDZY_SHOW=collection|player|gate|blocked|parent]
+        if let s = ProcessInfo.processInfo.environment["KIDZY_SERVER"], let ep = ServerEndpoint.parse(s) {
+            endpoint = ep
+            Task {
+                if token == nil, let pin = ProcessInfo.processInfo.environment["KIDZY_PIN"] { _ = await pair(pin: pin) } else { await connect() }
+                await debugShow()
+            }
+            return
+        }
+        #endif
         if endpoint != nil, token != nil {
             Task { await connect() }
         } else {
@@ -270,6 +281,24 @@ final class AppModel {
         Task { await refresh() }
         route = isBlocked ? .blocked : .library
     }
+
+    #if DEBUG
+    private func debugShow() async {
+        let env = ProcessInfo.processInfo.environment
+        guard let show = env["KIDZY_SHOW"] else { return }
+        switch show {
+        case "collection", "player":
+            guard let c = collections.first else { return }
+            await open(c)
+            if show == "player", let item = currentItems.first { play(item) }
+        case "gate": openGate(from: .library)
+        case "blocked": route = .blocked
+        case "parent":
+            if let pin = env["KIDZY_PIN"] { _ = await unlock(pin: pin) }
+        default: break
+        }
+    }
+    #endif
 
     func describe(_ error: Error) -> String {
         if let f = error as? KidzyClient.Failure {

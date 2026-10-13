@@ -9,6 +9,8 @@ struct LibraryView: View {
             Theme.sky.ignoresSafeArea()
             Cloud().offset(x: -24, y: 60)
             Cloud().scaleEffect(0.75).offset(x: 300, y: 700)
+            GeometryReader { geo in
+            let inner = TileMetrics.innerWidth(for: geo.size.width)
             ScrollView {
                 VStack(spacing: 0) {
                     HStack {
@@ -34,7 +36,7 @@ struct LibraryView: View {
                                 } label: {
                                     StickerTile(color: Color(hex: c.color), tilt: index % 2 == 0 ? -2 : 2) {
                                         RemoteImage(url: model.mediaURL(c.posterUrl))
-                                            .aspectRatio(1, contentMode: .fill)
+                                            .frame(width: inner, height: inner)
                                     }
                                 }
                                 .buttonStyle(PressStyle())
@@ -48,6 +50,7 @@ struct LibraryView: View {
                 }
             }
             .scrollIndicators(.hidden)
+            }
             VStack {
                 Spacer()
                 HStack {

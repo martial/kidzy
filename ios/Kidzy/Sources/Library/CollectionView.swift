@@ -9,6 +9,8 @@ struct CollectionView: View {
         ZStack(alignment: .topLeading) {
             Theme.sky.ignoresSafeArea()
             Cloud().offset(x: -40, y: 170)
+            GeometryReader { geo in
+            let inner = TileMetrics.innerWidth(for: geo.size.width)
             ScrollView {
                 VStack(spacing: 0) {
                     ZStack(alignment: .topTrailing) {
@@ -40,7 +42,7 @@ struct CollectionView: View {
                             } label: {
                                 StickerTile(color: Color(hex: collection.color), tilt: index % 2 == 0 ? -2 : 2, radius: 24, innerRadius: 14) {
                                     RemoteImage(url: model.mediaURL(item.thumbUrl))
-                                        .aspectRatio(16 / 9, contentMode: .fill)
+                                        .frame(width: inner, height: inner * 9 / 16)
                                 }
                             }
                             .buttonStyle(PressStyle())
@@ -53,6 +55,7 @@ struct CollectionView: View {
                 }
             }
             .scrollIndicators(.hidden)
+            }
             VStack {
                 Spacer()
                 StickerButton(systemImage: "house.fill", label: "Retour à la bibliothèque") { model.backToLibrary() }

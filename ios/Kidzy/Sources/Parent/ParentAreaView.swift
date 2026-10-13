@@ -16,6 +16,9 @@ struct ParentAreaView: View {
     @State private var currentPin = ""
     @State private var pinNotice = ""
     @State private var serverText = ""
+    @State private var online: Bool?
+
+    private var address: String { "\(model.endpoint?.host ?? "?"):\(String(model.endpoint?.port ?? 8800))" }
 
     var body: some View {
         ZStack(alignment: .top) {
@@ -32,10 +35,10 @@ struct ParentAreaView: View {
 
                     card("Serveur") {
                         HStack(spacing: 10) {
-                            Circle().fill(model.lastError.isEmpty ? Theme.grass : Theme.coral).overlay(Circle().stroke(Theme.ink, lineWidth: 2)).frame(width: 12, height: 12)
-                            Text("\(model.endpoint?.name ?? "Kidzy"), \(model.lastError.isEmpty ? "en ligne" : "injoignable")").font(Theme.rounded(16, weight: .medium))
+                            Circle().fill(online == true ? Theme.grass : online == false ? Theme.coral : Theme.starOff).overlay(Circle().stroke(Theme.ink, lineWidth: 2)).frame(width: 12, height: 12)
+                            Text(verbatim: "\(model.endpoint?.name ?? "Kidzy"), \(online == true ? "en ligne" : online == false ? "injoignable" : "…")").font(Theme.rounded(16, weight: .medium))
                         }
-                        Text("\(model.endpoint?.host ?? "?"):\(model.endpoint?.port ?? 8800) · \(settings?.collections.reduce(0) { $0 + $1.itemCount } ?? 0) vidéos")
+                        Text(verbatim: "\(address) · \(settings?.collections.reduce(0) { $0 + $1.itemCount } ?? 0) vidéos")
                             .font(Theme.rounded(14, weight: .medium)).foregroundStyle(Theme.muted)
                         HStack {
                             TextField("Autre adresse (hôte:port)", text: $serverText)
@@ -50,7 +53,7 @@ struct ParentAreaView: View {
                     }
 
                     card("Temps d'écran") {
-                        Text("Aujourd'hui : \(minutesText(settings?.watchedToday ?? model.watchedToday))\(daily ? " sur \(minutes) min" : "")").font(Theme.rounded(16, weight: .medium))
+                        Text(verbatim: "Aujourd'hui : \(minutesText(settings?.watchedToday ?? model.watchedToday))\(daily ? " sur \(minutes) min" : "")").font(Theme.rounded(16, weight: .medium))
                         if daily {
                             GeometryReader { geo in
                                 ZStack(alignment: .leading) {
@@ -64,7 +67,7 @@ struct ParentAreaView: View {
                         }
                         Toggle(isOn: $daily) { Text("Limite par jour").font(Theme.rounded(16, weight: .medium)) }.tint(Theme.grass)
                         if daily {
-                            Stepper(value: $minutes, in: 5...600, step: 5) { Text("\(minutes) min par jour").font(Theme.rounded(16, weight: .medium)) }
+                            Stepper(value: $minutes, in: 5...600, step: 5) { Text(verbatim: "\(minutes) min par jour").font(Theme.rounded(16, weight: .medium)) }
                         }
                         Toggle(isOn: $bedtime) { Text("Coucher").font(Theme.rounded(16, weight: .medium)) }.tint(Theme.grass)
                         if bedtime {
@@ -80,7 +83,7 @@ struct ParentAreaView: View {
                             Toggle(isOn: Binding(get: { visible[c.id] ?? c.visible }, set: { visible[c.id] = $0 })) {
                                 HStack(spacing: 10) {
                                     Circle().fill(Color(hex: c.color)).overlay(Circle().stroke(Theme.ink, lineWidth: 2)).frame(width: 14, height: 14)
-                                    Text("\(c.title) · \(c.itemCount) vidéo\(c.itemCount > 1 ? "s" : "")").font(Theme.rounded(16, weight: .medium))
+                                    Text(verbatim: "\(c.title) · \(c.itemCount) vidéo\(c.itemCount > 1 ? "s" : "")").font(Theme.rounded(16, weight: .medium))
                                 }
                             }
                             .tint(Theme.grass)
@@ -97,7 +100,7 @@ struct ParentAreaView: View {
                         if !pinNotice.isEmpty { Text(pinNotice).font(Theme.rounded(14, weight: .medium)).foregroundStyle(Theme.muted) }
                     }
 
-                    Text("Tout le reste (vidéos, collections, image de fin) se règle sur le Mac : http://\(model.endpoint?.host ?? "localhost"):\(model.endpoint?.port ?? 8800)/admin/")
+                    Text(verbatim: "Tout le reste (vidéos, collections, image de fin) se règle sur le Mac : http://\(address)/admin/")
                         .font(Theme.rounded(14, weight: .medium)).foregroundStyle(Theme.muted)
                         .padding(.bottom, 40)
                 }
@@ -116,9 +119,9 @@ struct ParentAreaView: View {
         }
         .padding(16)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(RoundedRectangle(cornerRadius: 22, style: .continuous).fill(Theme.ink).offset(x: 5, y: 5))
         .background(RoundedRectangle(cornerRadius: 22, style: .continuous).fill(Theme.paper))
         .overlay(RoundedRectangle(cornerRadius: 22, style: .continuous).stroke(Theme.ink, lineWidth: 4))
+        .background(RoundedRectangle(cornerRadius: 22, style: .continuous).fill(Theme.ink).offset(x: 5, y: 5))
     }
 
     private func smallButton(_ title: String, action: @escaping () -> Void) -> some View {
@@ -134,6 +137,7 @@ struct ParentAreaView: View {
 
     private func load() async {
         guard let client = model.client, let token = model.parentToken else { return }
+        online = (try? await client.identity()) != nil
         do {
             let s = try await client.settings(parentToken: token)
             settings = s
