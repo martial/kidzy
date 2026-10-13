@@ -60,13 +60,14 @@ struct LibraryView: View {
                                     Button {
                                         model.openSketch(entry.id)
                                     } label: {
-                                        StickerTile(color: entry.id == "paint" ? Theme.coral : entry.id == "tiles" ? Theme.lemon : entry.id == "animals" ? Theme.grass : entry.id == "guitar" ? Color(hex: "FFA62B") : Theme.ocean, tilt: index % 2 == 0 ? -2 : 2) {
+                                        StickerTile(color: entry.id == "paint" ? Theme.coral : entry.id == "tiles" ? Theme.lemon : entry.id == "animals" ? Theme.grass : entry.id == "guitar" ? Color(hex: "FFA62B") : entry.id == "parrot" ? Color(hex: "9B5DE5") : Theme.ocean, tilt: index % 2 == 0 ? -2 : 2) {
                                             Group {
                                                 switch entry.id {
                                                 case "paint": PaintSticker()
                                                 case "tiles": TilesSticker()
                                                 case "animals": AnimalsSticker()
                                                 case "guitar": GuitarSticker()
+                                                case "parrot": ParrotSticker()
                                                 default: SeaSticker()
                                                 }
                                             }

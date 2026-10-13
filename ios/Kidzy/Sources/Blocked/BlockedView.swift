@@ -19,12 +19,13 @@ struct BlockedView: View {
                     Spacer()
                     HStack {
                         Spacer()
-                        HStack(spacing: 10) {
-                            StickerButton(size: 52, systemImage: "guitars.fill", label: "La guitare") { model.openSketch("guitar") }
-                            StickerButton(size: 52, systemImage: "pawprint.fill", label: "Les animaux") { model.openSketch("animals") }
-                            StickerButton(size: 52, systemImage: "square.grid.3x3.fill", label: "Les formes") { model.openSketch("tiles") }
-                            StickerButton(size: 52, systemImage: "paintbrush.pointed.fill", label: "Peindre") { model.openSketch("paint") }
-                            StickerButton(size: 52, systemImage: "sailboat.fill", label: "Jouer avec la mer") { model.openSketch("sea") }
+                        HStack(spacing: 8) {
+                            StickerButton(size: 48, systemImage: "bird.fill", label: "Le perroquet") { model.openSketch("parrot") }
+                            StickerButton(size: 48, systemImage: "guitars.fill", label: "La guitare") { model.openSketch("guitar") }
+                            StickerButton(size: 48, systemImage: "pawprint.fill", label: "Les animaux") { model.openSketch("animals") }
+                            StickerButton(size: 48, systemImage: "square.grid.3x3.fill", label: "Les formes") { model.openSketch("tiles") }
+                            StickerButton(size: 48, systemImage: "paintbrush.pointed.fill", label: "Peindre") { model.openSketch("paint") }
+                            StickerButton(size: 48, systemImage: "sailboat.fill", label: "Jouer avec la mer") { model.openSketch("sea") }
                         }
                         .padding(24)
                     }

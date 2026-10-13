@@ -15,6 +15,7 @@ enum Sketches {
         SketchEntry(id: "tiles", title: "Formes") { AnyView(TilesSketchView()) },
         SketchEntry(id: "animals", title: "Animaux") { AnyView(AnimalsSketchView()) },
         SketchEntry(id: "guitar", title: "Guitare") { AnyView(GuitarSketchView()) },
+        SketchEntry(id: "parrot", title: "Perroquet") { AnyView(ParrotSketchView()) },
     ]
 
     static func entry(_ id: String) -> SketchEntry? { all.first { $0.id == id } }

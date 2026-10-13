@@ -35,6 +35,8 @@
 	</array>
 	<key>NSLocalNetworkUsageDescription</key>
 	<string>Kidzy cherche le serveur vidéo de la maison sur le réseau local.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Le perroquet écoute ta voix pour la répéter. Rien n'est enregistré ni envoyé.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
