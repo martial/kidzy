@@ -93,7 +93,7 @@ struct AnimalsSketchView: View {
         Task {
             try? await Task.sleep(for: .milliseconds(250))
             bounce = false
-            await sounds.say(animal.name)
+            await sounds.say(animal.id, fallback: animal.name)
             sounds.cry(animal.id)
             try? await Task.sleep(for: .milliseconds(400))
             busy = false
@@ -130,11 +130,13 @@ struct AnimalImage: View {
     }
 }
 
-/// Speech for the name (French voice), the synthesized cry, and a plop.
+/// The name (name-<id>.wav, a Gemini TTS voice) then the cry (animal-<id>.wav,
+/// Gemini TTS performing the onomatopoeia); the system voice only as fallback.
 @MainActor
 final class AnimalSounds {
     private let synthesizer = AVSpeechSynthesizer()
-    private var players: [String: AVAudioPlayer] = [:]
+    private var cries: [String: AVAudioPlayer] = [:]
+    private var names: [String: AVAudioPlayer] = [:]
     private let bank = SoundBank()
 
     func prepare() {
@@ -144,30 +146,38 @@ final class AnimalSounds {
         for a in AnimalsSketchView.animals {
             if let url = Bundle.main.url(forResource: "animal-" + a.id, withExtension: "wav"), let p = try? AVAudioPlayer(contentsOf: url) {
                 p.prepareToPlay()
-                players[a.id] = p
+                cries[a.id] = p
+            }
+            if let url = Bundle.main.url(forResource: "name-" + a.id, withExtension: "wav"), let p = try? AVAudioPlayer(contentsOf: url) {
+                p.prepareToPlay()
+                names[a.id] = p
             }
         }
     }
 
     func stop() {
         synthesizer.stopSpeaking(at: .immediate)
-        for p in players.values { p.stop() }
+        for p in cries.values { p.stop() }
+        for p in names.values { p.stop() }
     }
 
-    /// Speaks the name and waits roughly for the end of the utterance.
-    func say(_ text: String) async {
+    /// Plays the recorded name and waits for it; falls back to the system voice.
+    func say(_ id: String, fallback text: String) async {
+        if let p = names[id] {
+            p.currentTime = 0
+            p.play()
+            try? await Task.sleep(for: .seconds(max(0.3, p.duration + 0.15)))
+            return
+        }
         let u = AVSpeechUtterance(string: text)
         u.voice = AVSpeechSynthesisVoice(language: "fr-FR")
         u.rate = AVSpeechUtteranceDefaultSpeechRate * 0.85
-        u.pitchMultiplier = 1.15
-        u.volume = 1
         synthesizer.speak(u)
-        let seconds = 0.35 + Double(text.count) * 0.07
-        try? await Task.sleep(for: .seconds(seconds))
+        try? await Task.sleep(for: .seconds(0.35 + Double(text.count) * 0.07))
     }
 
     func cry(_ id: String) {
-        guard let p = players[id] else { return }
+        guard let p = cries[id] else { return }
         p.currentTime = 0
         p.play()
     }
