@@ -1,12 +1,12 @@
 #!/bin/sh
-# Build a Debug Kidzy and install + launch it on Martial's iPhone over USB.
-# The phone must be unlocked, paired, with Developer Mode on.
+# Build a Debug Kidzy and install + launch it on Martial's iPhone (USB or Wi-Fi).
+# The phone must be unlocked, paired, with Developer Mode on. KIDZY_DEVICE is the UDID.
 set -eu
 cd "$(dirname "$0")/.."
-DEVICE="${KIDZY_DEVICE:-2E8FC42D-20FF-5F98-9EB0-B518E89EAA61}"
+DEVICE="${KIDZY_DEVICE:-00008120-0002499C3492201E}"
 DD="$PWD/build/dd"
-if ! xcrun devicectl list devices 2>/dev/null | grep -q "$DEVICE.*connected"; then
-  echo "iPhone not reachable (devicectl does not report it connected): plug it in with USB, unlock it, then retry." >&2
+if ! xcrun devicectl list devices 2>/dev/null | grep -q "available"; then
+  echo "iPhone not reachable: plug it in or put it on the same Wi-Fi, unlock it, then retry." >&2
   exit 2
 fi
 xcodebuild -project Kidzy/Kidzy.xcodeproj -scheme Kidzy -configuration Debug \
