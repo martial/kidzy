@@ -25,7 +25,8 @@ final class SeaToy {
     var sea: SeaSimulation
     var boat: Boat
     var droplets: [Droplet] = []
-    var size: CGSize
+    var size: CGSize              // the scene (a square larger than the screen in toy mode)
+    var screen: CGSize = .zero    // the view
     var restFraction: Double
     var lastDate: Date?
     var touch: Touch = .none
@@ -43,19 +44,42 @@ final class SeaToy {
     // The sun: draggable across the sky; low sun = sunset, below the sea = night.
     var sun: CGPoint
     static let sunRadius = 38.0
+
+    // Orientation: the scene turns in quarter turns to keep the sea sensible
+    // whichever edge of the phone is down; the rest of the tilt sloshes the water.
+    var orientation = 0.0        // target, a multiple of π/2
+    var sceneAngle = 0.0         // current, eased
+    var gravityStrength = 0.0
     var giggleStart = -10.0
     var wasNight = false
 
-    init(size: CGSize, columns: Int, restFraction: Double) {
+    /// The part of the scene on screen, in scene coordinates: the screen's
+    /// rectangle for the current orientation, centred on the scene. The sun,
+    /// the clouds, the water level and the boat's lane all live in it.
+    var view: CGRect
+
+    init(size: CGSize, screen: CGSize, columns: Int, restFraction: Double) {
         self.size = size
+        self.screen = screen
         self.restFraction = restFraction
         sea = SeaSimulation(columns: columns, width: size.width)
-        boat = Boat(x: size.width * 0.4)
-        sun = CGPoint(x: size.width - 76, y: 118)
+        let view = Self.viewRect(for: 0, size: size, screen: screen)
+        self.view = view
+        boat = Boat(x: view.minX + view.width * 0.4)
+        boat.lane = view.minX...view.maxX
+        sun = CGPoint(x: view.maxX - 76, y: view.minY + min(118, view.height * restFraction * 0.35))
     }
 
-    /// 1 = full day, 0 = the sun touches the horizon.
-    var daylight: Double { min(1, max(0, (restY - sun.y) / (restY * 0.55))) }
+    static func viewRect(for orientation: Double, size: CGSize, screen: CGSize) -> CGRect {
+        let quarter = Int((orientation / (.pi / 2)).rounded())
+        let swapped = quarter % 2 != 0
+        let w = swapped ? screen.height : screen.width
+        let h = swapped ? screen.width : screen.height
+        return CGRect(x: size.width / 2 - w / 2, y: size.height / 2 - h / 2, width: w, height: h)
+    }
+
+    /// 1 = full day, 0 = the sun touches the horizon; measured against the sky on screen.
+    var daylight: Double { min(1, max(0, (restY - sun.y) / ((restY - view.minY) * 0.65))) }
     /// 0 above the horizon, 1 when the sun is well below it.
     var night: Double { min(1, max(0, (sun.y - restY + 10) / 140)) }
     /// 0...1 while the sun giggles (0.6 s).
@@ -66,7 +90,7 @@ final class SeaToy {
 
     var isNearSun: (CGPoint) -> Bool { { p in hypot(p.x - self.sun.x, p.y - self.sun.y) < Self.sunRadius + 24 } }
 
-    var restY: Double { size.height * restFraction }
+    var restY: Double { view.minY + view.height * restFraction }
 
     func surfaceY(at x: Double) -> Double { restY - sea.height(at: x) }
 
@@ -80,9 +104,60 @@ final class SeaToy {
         sea.tiltTarget = t
     }
 
+    /// Gravity in the screen plane: which edge is down picks the orientation,
+    /// the remainder (within ±45°) is the slosh.
+    func setGravity(gx: Double, gy: Double) {
+        let strength = min(1, hypot(gx, gy) / 0.35)
+        gravityStrength = strength
+        guard strength > 0.35 else {
+            setTilt(0)
+            return
+        }
+        let angle = atan2(gx, -gy)                       // 0 upright, +π/2 right edge down, ±π upside down
+        let snapped = (angle / (.pi / 2)).rounded() * (.pi / 2)
+        var residual = angle - snapped
+        if residual > .pi { residual -= 2 * .pi }
+        if residual < -.pi { residual += 2 * .pi }
+        orientation = snapped
+        let next = Self.viewRect(for: snapped, size: size, screen: screen)
+        if next != view { reframe(to: next) }
+        setTilt(min(1, max(-1, residual / (.pi / 4))) * strength)
+    }
+
+    /// The screen turned a quarter: keep the sun, the boat and the water level
+    /// where they were relative to the screen.
+    private func reframe(to next: CGRect) {
+        let old = view, oldRest = restY
+        let sunX = (sun.x - old.minX) / old.width
+        let boatX = (boat.x - old.minX) / old.width
+        let skyFraction = (oldRest - sun.y) / (oldRest - old.minY)
+        let depth = sun.y - oldRest
+        view = next
+        sun.x = next.minX + sunX * next.width
+        sun.y = skyFraction > 0 ? max(next.minY + 70, restY - skyFraction * (restY - next.minY)) : restY + depth
+        boat.x = next.minX + boatX * next.width
+        boat.lane = next.minX...next.maxX
+    }
+
+    /// The scene's rotation on screen. SwiftUI turns clockwise for a positive
+    /// angle while the gravity angle grows counter-clockwise, hence the sign.
+    var drawAngle: Double { -sceneAngle }
+
+    /// Screen point → scene point, undoing the scene rotation about the screen centre.
+    func scenePoint(_ p: CGPoint, screen: CGSize) -> CGPoint {
+        let cx = screen.width / 2, cy = screen.height / 2
+        let dx = p.x - cx, dy = p.y - cy
+        let c = cos(sceneAngle), s = sin(sceneAngle)
+        return CGPoint(x: dx * c - dy * s + size.width / 2, y: dx * s + dy * c + size.height / 2)
+    }
+
     func advance(to date: Date) {
         let dt = lastDate.map { date.timeIntervalSince($0) } ?? 0
         lastDate = date
+        var delta = orientation - sceneAngle
+        while delta > .pi { delta -= 2 * .pi }
+        while delta < -.pi { delta += 2 * .pi }
+        sceneAngle += delta * min(1, dt * 5)
         sea.step(dt: dt)
         boat.step(dt: dt, in: &sea)
         if boat.bumped { onSound?("bump") }
@@ -131,10 +206,10 @@ final class SeaToy {
             lastDragX = p.x
             lastDragTime = now
             boat.drag(toX: p.x, width: size.width)
-            onBoatDrag?(boat.x / size.width, speed)
+            onBoatDrag?((boat.x - view.minX) / view.width, speed)
         case .sun(let start, _):
             if hypot(p.x - start.x, p.y - start.y) > 12 {
-                sun = CGPoint(x: min(size.width - 40, max(40, p.x)), y: min(restY + 150, max(70, p.y)))
+                sun = CGPoint(x: min(view.maxX - 40, max(view.minX + 40, p.x)), y: min(min(restY + 150, view.maxY - 40), max(view.minY + 70, p.y)))
             }
         case .sky(let startX):
             sea.tiltTarget = min(1, max(-1, (p.x - startX) / 120))

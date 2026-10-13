@@ -21,7 +21,14 @@ struct SeaSketchView: View {
             Canvas(rendersAsynchronously: false) { gc, size in
                 let toy = box.toy(for: size, mode: mode, sensorAvailable: sensor.isAvailable, sounds: mode == .toy ? sounds : nil, synth: mode == .toy ? synth : nil)
                 toy.advance(to: ctx.date)
-                SeaPainter.draw(toy: toy, in: &gc, size: size, mode: mode)
+                if mode == .toy {
+                    // the scene is a square larger than the screen, rotated to follow the phone
+                    gc.fill(Path(CGRect(origin: .zero, size: size)), with: .color(Theme.sky))
+                    gc.translateBy(x: size.width / 2, y: size.height / 2)
+                    gc.rotate(by: .radians(toy.drawAngle))
+                    gc.translateBy(x: -toy.size.width / 2, y: -toy.size.height / 2)
+                }
+                SeaPainter.draw(toy: toy, in: &gc, size: toy.size, mode: mode)
             }
         }
         .ignoresSafeArea()
@@ -52,12 +59,23 @@ struct SeaSketchView: View {
 
     private var drag: some Gesture {
         DragGesture(minimumDistance: 0, coordinateSpace: .local)
-            .onChanged { v in box.current?.dragChanged(location: v.location, start: v.startLocation) }
-            .onEnded { v in box.current?.dragEnded(location: v.location, velocity: v.velocity.width) }
+            .onChanged { v in
+                guard let toy = box.current else { return }
+                toy.dragChanged(location: toy.scenePoint(v.location, screen: toy.screen), start: toy.scenePoint(v.startLocation, screen: toy.screen))
+            }
+            .onEnded { v in
+                guard let toy = box.current else { return }
+                let along = Double(v.velocity.width) * cos(toy.drawAngle) + Double(v.velocity.height) * sin(toy.drawAngle)
+                toy.dragEnded(location: toy.scenePoint(v.location, screen: toy.screen), velocity: along)
+            }
     }
 
     private func startSensor() {
-        sensor.onTilt = { [box] in box.current?.setTilt($0) }
+        if mode == .toy {
+            sensor.onGravity = { [box] gx, gy in box.current?.setGravity(gx: gx, gy: gy) }
+        } else {
+            sensor.onTilt = { [box] in box.current?.setTilt($0) }
+        }
         sensor.start()
     }
 }
@@ -69,10 +87,14 @@ final class SeaToyBox {
     private(set) var current: SeaToy?
 
     func toy(for size: CGSize, mode: SeaSketchView.Mode, sensorAvailable: Bool, sounds: SoundBank?, synth: FingerSynth?) -> SeaToy {
-        if let current, abs(current.size.width - size.width) < 1, abs(current.size.height - size.height) < 1 {
+        if let current, abs(current.screen.width - size.width) < 1, abs(current.screen.height - size.height) < 1 {
             return current
         }
-        let t = SeaToy(size: CGSize(width: max(1, size.width), height: max(1, size.height)), columns: mode == .toy ? 80 : 40, restFraction: mode == .toy ? 0.58 : 0.7)
+        // the toy's scene is a square of the screen's diagonal, so it can turn without gaps
+        let diagonal = hypot(max(1, size.width), max(1, size.height))
+        let sceneSize = mode == .toy ? CGSize(width: diagonal, height: diagonal) : CGSize(width: max(1, size.width), height: max(1, size.height))
+        let screen = CGSize(width: max(1, size.width), height: max(1, size.height))
+        let t = SeaToy(size: sceneSize, screen: screen, columns: mode == .toy ? 96 : 40, restFraction: mode == .toy ? 0.57 : 0.7)
         t.sensorAvailable = sensorAvailable
         if mode == .toy {
             t.onSplash = { UIImpactFeedbackGenerator(style: .light).impactOccurred() }
@@ -82,6 +104,10 @@ final class SeaToyBox {
         }
         #if DEBUG
         if let sunY = ProcessInfo.processInfo.environment["KIDZY_SUN_Y"].flatMap(Double.init) { t.sun.y = sunY }
+        if let g = ProcessInfo.processInfo.environment["KIDZY_GRAVITY"]?.split(separator: ",").compactMap({ Double($0) }), g.count == 2 {
+            t.setGravity(gx: g[0], gy: g[1])
+            t.sceneAngle = t.orientation
+        }
         #endif
         current = t
         return t
@@ -102,16 +128,20 @@ enum SeaPainter {
         if mode == .toy {
             let top = SeaArt.mix(SeaArt.mix(Theme.sky, Theme.sunsetTop, sunset), Theme.nightTop, night)
             let bottom = SeaArt.mix(SeaArt.mix(.white, Theme.sunsetBottom, sunset), Theme.nightBottom, night)
-            gc.fill(Path(CGRect(origin: .zero, size: size)), with: .linearGradient(Gradient(colors: [top, bottom]), startPoint: .zero, endPoint: CGPoint(x: 0, y: restY)))
+            let view = toy.view
+            gc.fill(Path(CGRect(origin: .zero, size: size)), with: .linearGradient(Gradient(colors: [top, bottom]), startPoint: CGPoint(x: 0, y: view.minY), endPoint: CGPoint(x: 0, y: restY)))
             SeaArt.drawStars(in: &gc, size: size, below: restY, alpha: night)
             SeaArt.drawSun(in: &gc, center: toy.sun, radius: SeaToy.sunRadius, giggle: toy.giggle, warmth: sunset)
+            // the clouds cross the part of the sky that is on screen; the sky is shorter sideways
             let t = sea.time
-            let c1 = (t * 10 + 60).truncatingRemainder(dividingBy: w + 200) - 100
-            let c2 = (t * 16 + 300).truncatingRemainder(dividingBy: w + 200) - 100
+            let span = view.width + 200
+            let c1 = view.minX - 100 + (t * 10 + 60).truncatingRemainder(dividingBy: span)
+            let c2 = view.minX - 100 + (t * 16 + 300).truncatingRemainder(dividingBy: span)
+            let k = min(1, (restY - view.minY) / 480)
             var clouds = gc
             clouds.opacity = 1 - 0.6 * night
-            SeaArt.drawCloud(in: &clouds, at: CGPoint(x: c1, y: 150))
-            SeaArt.drawCloud(in: &clouds, at: CGPoint(x: c2, y: 230), scale: 0.7)
+            SeaArt.drawCloud(in: &clouds, at: CGPoint(x: c1, y: view.minY + 150 * k))
+            SeaArt.drawCloud(in: &clouds, at: CGPoint(x: c2, y: view.minY + 230 * k), scale: 0.7)
             deepColor = SeaArt.mix(SeaArt.mix(Theme.oceanDeep, Theme.oceanSunset, sunset), Theme.oceanNight, night)
             lightColor = SeaArt.mix(Theme.oceanLight, Theme.oceanNightLight, night)
         }

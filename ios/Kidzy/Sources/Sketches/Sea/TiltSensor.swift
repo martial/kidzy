@@ -8,6 +8,8 @@ import Foundation
 final class TiltSensor {
     private let manager = CMMotionManager()
     var onTilt: ((Double) -> Void)?
+    /// The raw gravity vector in the screen plane (x right, y down the screen is -y).
+    var onGravity: ((Double, Double) -> Void)?
 
     var isAvailable: Bool { manager.isDeviceMotionAvailable }
     var isActive: Bool { manager.isDeviceMotionActive }
@@ -29,6 +31,7 @@ final class TiltSensor {
 
     private func apply(gx: Double, gy: Double) {
         onTilt?(Self.tilt(gx: gx, gy: gy))
+        onGravity?(gx, gy)
     }
 
     /// Upright or upside down: the right edge down at 45° → +1, left → -1; flat on a table → fades to 0.

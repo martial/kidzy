@@ -84,6 +84,20 @@ final class SeaTests: XCTestCase {
         XCTAssertGreaterThan(boat.x, Boat.hullWidth / 2 + Boat.margin)
     }
 
+    func testBoatStaysInItsLane() {
+        var sea = calmSea()
+        sea.tiltTarget = 1
+        run(&sea, steps: 300)
+        var boat = Boat(x: 200)
+        boat.lane = 100...300
+        for _ in 0..<900 { boat.step(dt: 1.0 / 60, in: &sea) }
+        XCTAssertLessThanOrEqual(boat.x, 300 - Boat.hullWidth / 2 - Boat.margin, "the lane, not the sea, bounds the drift")
+        XCTAssertGreaterThanOrEqual(boat.x, 100 + Boat.hullWidth / 2 + Boat.margin)
+        boat.grab()
+        boat.drag(toX: 0, width: 400)
+        XCTAssertEqual(boat.x, 100 + Boat.hullWidth / 2 + Boat.margin, accuracy: 1e-9, "dragging stops at the lane")
+    }
+
     func testSplashNextToTheBoatPushesItAway() {
         var sea = calmSea()
         var boat = Boat(x: 200)

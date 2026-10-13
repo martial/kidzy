@@ -15,6 +15,8 @@ public struct Boat: Sendable {
 
     public var x: Double
     public var vx = 0.0
+    /// Where the hull's centre may go; nil = the whole sea.
+    public var lane: ClosedRange<Double>?
     /// Elevation of the waterline under the hull (+ up).
     public private(set) var y = 0.0
     /// Heel from the surface slope, radians, positive when the right side is higher.
@@ -35,7 +37,7 @@ public struct Boat: Sendable {
     }
 
     public mutating func drag(toX x: Double, width: Double) {
-        self.x = Self.clamp(x, width: width)
+        self.x = Self.clamp(x, in: lane ?? 0...width)
     }
 
     public mutating func release(velocity: Double) {
@@ -50,9 +52,11 @@ public struct Boat: Sendable {
         vx += (d >= 0 ? 1 : -1) * strength * falloff
     }
 
-    public static func clamp(_ x: Double, width: Double) -> Double {
-        let lo = hullWidth / 2 + margin
-        let hi = width - hullWidth / 2 - margin
+    public static func clamp(_ x: Double, width: Double) -> Double { clamp(x, in: 0...width) }
+
+    public static func clamp(_ x: Double, in lane: ClosedRange<Double>) -> Double {
+        let lo = lane.lowerBound + hullWidth / 2 + margin
+        let hi = lane.upperBound - hullWidth / 2 - margin
         return min(hi, max(lo, x))
     }
 
@@ -69,7 +73,7 @@ public struct Boat: Sendable {
             vx += ax * dt
             vx *= max(0, 1 - Self.dragCoefficient * dt)
             x += vx * dt
-            let clamped = Self.clamp(x, width: sea.width)
+            let clamped = Self.clamp(x, in: lane ?? 0...sea.width)
             bumped = false
             if clamped != x {
                 x = clamped
