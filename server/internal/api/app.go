@@ -42,6 +42,14 @@ func toItemJSON(it store.Item, color string) itemJSON {
 
 func playable(it store.Item) bool { return it.Status == "ready" && it.Visible }
 
+// orphanCollection gathers the playable videos that have no collection, so
+// nothing the parent adds is ever invisible to the kid.
+const orphanCollectionID = "_"
+
+func orphanCollection() store.Collection {
+	return store.Collection{ID: orphanCollectionID, Title: "Vidéos", Kind: "films", Color: "#FFD23F", Visible: true}
+}
+
 func (s *Server) identity(w http.ResponseWriter, r *http.Request) {
 	id, _ := s.Store.Setting("server_id")
 	_, pinSet := s.pinHash()
@@ -107,6 +115,11 @@ func (s *Server) visibleCollections() ([]store.Collection, map[string][]store.It
 			out = append(out, c)
 		}
 	}
+	if len(byCol[""]) > 0 {
+		orphans := orphanCollection()
+		byCol[orphans.ID] = byCol[""]
+		out = append(out, orphans)
+	}
 	return out, byCol, nil
 }
 
@@ -134,12 +147,18 @@ func (s *Server) collections(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) collection(w http.ResponseWriter, r *http.Request) {
-	c, err := s.Store.Collection(r.PathValue("id"))
-	if err != nil || !c.Visible {
-		fail(w, 404, "collection introuvable")
-		return
+	var c store.Collection
+	if r.PathValue("id") == orphanCollectionID {
+		c = orphanCollection()
+	} else {
+		var err error
+		c, err = s.Store.Collection(r.PathValue("id"))
+		if err != nil || !c.Visible {
+			fail(w, 404, "collection introuvable")
+			return
+		}
 	}
-	all, _ := s.Store.ItemsOf(c.ID)
+	all, _ := s.Store.ItemsOf(strings.TrimPrefix(c.ID, orphanCollectionID))
 	items := []itemJSON{}
 	var raw []store.Item
 	for _, it := range all {
@@ -157,7 +176,7 @@ func (s *Server) item(w http.ResponseWriter, r *http.Request) {
 		fail(w, 404, "vidéo introuvable")
 		return
 	}
-	color := ""
+	color := orphanCollection().Color
 	if c, err := s.Store.Collection(it.CollectionID); err == nil {
 		color = c.Color
 	}
@@ -226,6 +245,17 @@ func (s *Server) thumb(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) poster(w http.ResponseWriter, r *http.Request) {
+	if r.PathValue("id") == orphanCollectionID {
+		items, _ := s.Store.ItemsOf("")
+		for _, it := range items {
+			if playable(it) && it.ThumbPath != "" {
+				serveFile(w, r, it.ThumbPath, "image/jpeg")
+				return
+			}
+		}
+		fail(w, 404, "pas d'affiche")
+		return
+	}
 	c, err := s.Store.Collection(r.PathValue("id"))
 	if err != nil {
 		fail(w, 404, "collection introuvable")

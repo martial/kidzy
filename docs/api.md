@@ -20,7 +20,7 @@ Timestamps are Unix milliseconds. Durations are seconds.
 
 ## Device (the kid app)
 
-- `GET /api/collections` → `{collections: [{id, title, kind, color, itemCount, posterUrl}], libraryVersion}`; only visible collections with at least one playable item.
+- `GET /api/collections` → `{collections: [{id, title, kind, color, itemCount, posterUrl}], libraryVersion}`; only visible collections with at least one playable item, plus a virtual collection `_` titled « Vidéos » when playable items have no collection.
 - `GET /api/collections/{id}` → `{collection, items: [{id, collectionId, title, duration, color, thumbUrl, videoUrl}]}` in play order.
 - `GET /api/items/{id}` → one item.
 - `GET /api/items/{id}/video` → MP4 with HTTP Range (206), `Cache-Control: private`.

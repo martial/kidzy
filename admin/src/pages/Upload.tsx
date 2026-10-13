@@ -69,7 +69,7 @@ export function Upload({ navigate }: { navigate: (p: string) => void }) {
   const options = [
     ...collections.map((c) => ({ key: c.id, value: c.id, text: c.title })),
     { key: NEW, value: NEW, text: 'Nouvelle collection…' },
-    { key: '', value: '', text: 'Sans collection' },
+    { key: '', value: '', text: 'Sans collection (« Vidéos » sur l\u2019iPhone)' },
   ]
 
   return (

@@ -214,7 +214,7 @@ export function Library({ navigate }: { navigate: (p: string) => void }) {
               <Header as="h3" style={{ margin: 0 }}>
                 Sans collection
               </Header>
-              <span style={{ color: 'rgba(0,0,0,.6)' }}>invisibles pour les enfants tant qu'elles n'ont pas de collection</span>
+              <span style={{ color: 'rgba(0,0,0,.6)' }}>sur l'iPhone, elles apparaissent ensemble dans une collection « Vidéos »</span>
             </>,
             lib.orphans,
           )
