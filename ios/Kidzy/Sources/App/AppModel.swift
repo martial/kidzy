@@ -14,6 +14,7 @@ final class AppModel {
         case blocked
         case gate(GateOrigin)
         case parent
+        case sketch(String)
     }
 
     enum GateOrigin: Equatable {
@@ -35,6 +36,15 @@ final class AppModel {
     var status = ""
     var lastError = ""
     var libraryVersion = -1
+    /// The toys' tile in the library and the sticker on the moon screen.
+    var sketchesVisible = UserDefaults.standard.object(forKey: "kidzy.sketches-visible") as? Bool ?? true {
+        didSet { UserDefaults.standard.set(sketchesVisible, forKey: "kidzy.sketches-visible") }
+    }
+    /// Experiment 2: the sea behind the library tiles.
+    var seaBackground = UserDefaults.standard.bool(forKey: "kidzy.sea-background") {
+        didSet { UserDefaults.standard.set(seaBackground, forKey: "kidzy.sea-background") }
+    }
+    private var routeBeforeSketch: Route?
 
     private let browser = ServerBrowser()
     private var refreshTask: Task<Void, Never>?
@@ -53,6 +63,12 @@ final class AppModel {
     // MARK: - lifecycle
 
     func start() {
+        #if DEBUG
+        if let s = ProcessInfo.processInfo.environment["KIDZY_SHOW"], s.hasPrefix("sketch:") {
+            route = .sketch(String(s.dropFirst("sketch:".count)))
+            return
+        }
+        #endif
         if let data = UserDefaults.standard.data(forKey: Self.endpointKey), let ep = try? JSONDecoder().decode(ServerEndpoint.self, from: data), ep.isUsable {
             endpoint = ep
         } else {
@@ -70,9 +86,8 @@ final class AppModel {
             }
             if token == nil, route == .connecting { route = .pairing }
         }
-        browser.start()
         #if DEBUG
-        // Simulator checks: KIDZY_SERVER=host:port KIDZY_PIN=1234 [KIDZY_SHOW=collection|player|gate|blocked|parent]
+        // Simulator checks, no Bonjour: KIDZY_SERVER=host:port KIDZY_PIN=1234 [KIDZY_SHOW=collection|player|gate|blocked|parent]
         if let s = ProcessInfo.processInfo.environment["KIDZY_SERVER"], let ep = ServerEndpoint.parse(s) {
             endpoint = ep
             Task {
@@ -82,6 +97,7 @@ final class AppModel {
             return
         }
         #endif
+        browser.start()
         if endpoint != nil, token != nil {
             Task { await connect() }
         } else {
@@ -261,6 +277,26 @@ final class AppModel {
     }
 
     func mediaURL(_ path: String) -> URL? { client?.mediaURL(path) }
+
+    // MARK: - sketches (toys)
+
+    /// Toys are never blocked by the time limits: they are not video.
+    func openSketch(_ id: String) {
+        guard Sketches.entry(id) != nil else { return }
+        routeBeforeSketch = route
+        route = .sketch(id)
+    }
+
+    func exitSketch() {
+        let back = routeBeforeSketch
+        routeBeforeSketch = nil
+        if isBlocked { route = .blocked; return }
+        switch back {
+        case .collection(let c)?: route = .collection(c)
+        case .library?, .blocked?: route = .library
+        default: route = token == nil ? .pairing : .library
+        }
+    }
 
     // MARK: - parent
 

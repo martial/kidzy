@@ -59,6 +59,8 @@ struct RootView: View {
                 ParentGateView(origin: origin)
             case .parent:
                 ParentAreaView()
+            case .sketch(let id):
+                SketchHost(id: id).id(id)
             }
         }
         .statusBarHidden(true)

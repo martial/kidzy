@@ -90,6 +90,18 @@ struct ParentAreaView: View {
                         }
                     }
 
+                    card("Jouets") {
+                        Toggle(isOn: Binding(get: { model.sketchesVisible }, set: { model.sketchesVisible = $0 })) {
+                            Text("La mer (jeu d'inclinaison)").font(Theme.rounded(16, weight: .medium))
+                        }
+                        .tint(Theme.grass)
+                        Toggle(isOn: Binding(get: { model.seaBackground }, set: { model.seaBackground = $0 })) {
+                            Text("La mer derrière les tuiles (essai)").font(Theme.rounded(16, weight: .medium))
+                        }
+                        .tint(Theme.grass)
+                        Text("Les jouets ne comptent pas dans le temps d'écran et restent ouverts après la limite.").font(Theme.rounded(14, weight: .medium)).foregroundStyle(Theme.muted)
+                    }
+
                     card("Code parent") {
                         HStack {
                             SecureField("Code actuel", text: $currentPin).keyboardType(.numberPad)

@@ -14,6 +14,9 @@ enum Theme {
     static let starOffStroke = Color(hex: "9FB0C8")
     static let night = Color(hex: "232B4E")
     static let muted = Color(hex: "4A5878")
+    static let ocean = Color(hex: "4D96FF")
+    static let oceanDeep = Color(hex: "3570D8")
+    static let oceanLight = Color(hex: "8ED0FF")
 
     static func rounded(_ size: CGFloat, weight: Font.Weight = .semibold) -> Font {
         .system(size: size, weight: weight, design: .rounded)

@@ -8,6 +8,10 @@ enum Keychain {
     }
 
     static func get(_ key: String) -> String? {
+        #if targetEnvironment(simulator)
+        // Unsigned simulator builds have no Keychain access; fall back to defaults.
+        if let v = UserDefaults.standard.string(forKey: "sim-keychain." + key) { return v }
+        #endif
         var q = query(key)
         q[kSecReturnData as String] = true
         q[kSecMatchLimit as String] = kSecMatchLimitOne
@@ -21,10 +25,18 @@ enum Keychain {
         var q = query(key)
         q[kSecValueData as String] = Data(value.utf8)
         q[kSecAttrAccessible as String] = kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly
-        SecItemAdd(q as CFDictionary, nil)
+        let status = SecItemAdd(q as CFDictionary, nil)
+        #if targetEnvironment(simulator)
+        if status != errSecSuccess { UserDefaults.standard.set(value, forKey: "sim-keychain." + key) }
+        #else
+        _ = status
+        #endif
     }
 
     static func delete(_ key: String) {
         SecItemDelete(query(key) as CFDictionary)
+        #if targetEnvironment(simulator)
+        UserDefaults.standard.removeObject(forKey: "sim-keychain." + key)
+        #endif
     }
 }

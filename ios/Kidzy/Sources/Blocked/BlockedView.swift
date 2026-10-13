@@ -14,6 +14,16 @@ struct BlockedView: View {
                 MoonScene()
             }
             SecretCorner { model.openGate(from: .blocked) }
+            if model.sketchesVisible {
+                VStack {
+                    Spacer()
+                    HStack {
+                        Spacer()
+                        StickerButton(size: 64, systemImage: "sailboat.fill", label: "Jouer avec la mer") { model.openSketch("sea") }
+                            .padding(24)
+                    }
+                }
+            }
         }
         .onAppear { Orientation.set(.portrait) }
         .task {

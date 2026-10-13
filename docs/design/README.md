@@ -18,6 +18,7 @@ layout). They are static markup; the canvas renders them.
 | `CodeParent.dc.html` | Code parent | keypad after 4 taps top-left on the library |
 | `Termine.dc.html` | Terminé pour aujourd'hui | the parent's picture (default: sleeping moon), nothing else |
 | `EspaceParent.dc.html` | Espace parent | server, time left, limits, visible collections, PIN |
+| `Mer.dc.html` | La mer (jouet, croquis 1) | water, sun, clouds, boat; in the app the water sloshes with the tilt, the boat slides and can be dragged, a tap splashes |
 | `AdminBibliotheque.dc.html` | Admin · Bibliothèque | Semantic UI, French |
 | `AdminEnvoyer.dc.html` | Admin · Envoyer | dropzone, per-file progress |
 | `AdminReglages.dc.html` | Admin · Réglages | limits, end-of-day picture, PIN, devices |
