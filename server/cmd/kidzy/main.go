@@ -76,12 +76,14 @@ func run() error {
 	}
 	worker := &jobs.Worker{Store: st, Runners: runners, Log: log, Timeout: 6 * time.Hour}
 	srv := &api.Server{Cfg: cfg, Store: st, Worker: worker, Ingest: pipe, Log: log, Sources: enabled, Deps: deps, Started: time.Now()}
+	name := srv.Name()
 	watcher := &watch.Watcher{Dir: cfg.InboxDir(), Log: log, OnFile: srv.ImportInbox}
 	txt := map[string]string{"id": serverID, "path": "/api", "v": version, "port": cfg.Port()}
 	if h := bonjour.LocalHostname(); h != "" {
 		txt["host"] = h // the phone builds its URLs from this, no address resolution needed
 	}
-	adv := bonjour.New(cfg.Name, cfg.Port(), txt, log)
+	adv := bonjour.New(name, cfg.Port(), txt, log)
+	srv.NameChanged = adv.SetName
 
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
@@ -101,7 +103,7 @@ func run() error {
 		defer cancel()
 		_ = httpSrv.Shutdown(shutdownCtx)
 	}()
-	log.Info("kidzy listening", "version", version, "addr", cfg.Addr, "media", cfg.MediaDir, "data", cfg.DataDir, "ffmpeg", cfg.FFmpeg, "name", cfg.Name)
+	log.Info("kidzy listening", "version", version, "addr", cfg.Addr, "media", cfg.MediaDir, "data", cfg.DataDir, "ffmpeg", cfg.FFmpeg, "name", name)
 	if err := httpSrv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
 		return err
 	}

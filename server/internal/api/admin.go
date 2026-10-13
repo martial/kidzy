@@ -73,7 +73,7 @@ func (s *Server) startAdminSession(w http.ResponseWriter) {
 func (s *Server) adminSession(w http.ResponseWriter, r *http.Request) {
 	_, pinSet := s.pinHash()
 	sess, ok := s.adminSessionFrom(r)
-	out := map[string]any{"ok": ok, "pinSet": pinSet, "name": s.Cfg.Name, "version": s.Cfg.Version}
+	out := map[string]any{"ok": ok, "pinSet": pinSet, "name": s.Name(), "version": s.Cfg.Version}
 	if ok {
 		out["csrf"] = sess.CSRF
 	}
@@ -106,7 +106,7 @@ func (s *Server) adminStatus(w http.ResponseWriter, r *http.Request) {
 	}
 	devices, _ := s.Store.Devices()
 	writeJSON(w, 200, map[string]any{
-		"version": s.Cfg.Version, "name": s.Cfg.Name, "addr": s.Cfg.Addr, "started": s.Started.Format(time.RFC3339),
+		"version": s.Cfg.Version, "name": s.Name(), "addr": s.Cfg.Addr, "started": s.Started.Format(time.RFC3339),
 		"uptimeSeconds": int(time.Since(s.Started).Seconds()),
 		"mediaDir":      s.Cfg.MediaDir, "inboxDir": s.Cfg.InboxDir(), "dataDir": s.Cfg.DataDir,
 		"ffmpeg": media.Version(ctx, s.Cfg.FFmpeg), "ffprobe": media.Version(ctx, s.Cfg.FFprobe),

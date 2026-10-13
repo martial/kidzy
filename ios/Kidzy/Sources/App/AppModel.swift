@@ -113,7 +113,11 @@ final class AppModel {
         guard let client else { return }
         status = "Connexion à \(endpoint?.name ?? "Kidzy")…"
         do {
-            _ = try await client.identity()
+            let identity = try await client.identity()
+            if let ep = endpoint, ep.name != identity.name {
+                endpoint = ServerEndpoint(host: ep.host, port: ep.port, name: identity.name)
+                saveEndpoint()
+            }
             await refresh()
             route = isBlocked ? .blocked : .library
             lastError = ""

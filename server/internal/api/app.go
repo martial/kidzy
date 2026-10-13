@@ -54,7 +54,7 @@ func (s *Server) identity(w http.ResponseWriter, r *http.Request) {
 	id, _ := s.Store.Setting("server_id")
 	_, pinSet := s.pinHash()
 	writeJSON(w, 200, map[string]any{
-		"name": s.Cfg.Name, "id": id, "version": s.Cfg.Version, "libraryVersion": s.Store.LibraryVersion(),
+		"name": s.Name(), "id": id, "version": s.Cfg.Version, "libraryVersion": s.Store.LibraryVersion(),
 		"serverTime": time.Now().Format(time.RFC3339), "pinSet": pinSet,
 	})
 }
@@ -90,7 +90,7 @@ func (s *Server) pair(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	s.Log.Info("device paired", "name", name, "id", d.ID)
-	writeJSON(w, 200, map[string]any{"deviceId": d.ID, "token": token, "name": s.Cfg.Name})
+	writeJSON(w, 200, map[string]any{"deviceId": d.ID, "token": token, "name": s.Name()})
 }
 
 // visibleCollections lists collections the kid sees, each with its playable items.
@@ -364,7 +364,7 @@ type settingsJSON struct {
 }
 
 func (s *Server) settingsGet(w http.ResponseWriter, r *http.Request) {
-	out := settingsJSON{Limits: s.rules(), ServerName: s.Cfg.Name}
+	out := settingsJSON{Limits: s.rules(), ServerName: s.Name()}
 	_, out.PinSet = s.pinHash()
 	_, err := os.Stat(s.Cfg.FinishedImage())
 	out.FinishedImageSet = err == nil
@@ -399,6 +399,7 @@ func (s *Server) settingsGet(w http.ResponseWriter, r *http.Request) {
 func (s *Server) settingsPut(w http.ResponseWriter, r *http.Request) {
 	var in struct {
 		Limits      *limits.Rules `json:"limits"`
+		ServerName  *string       `json:"serverName"`
 		Collections []struct {
 			ID      string `json:"id"`
 			Visible bool   `json:"visible"`
@@ -407,6 +408,21 @@ func (s *Server) settingsPut(w http.ResponseWriter, r *http.Request) {
 	if err := decode(r, &in); err != nil {
 		fail(w, 400, "requête invalide")
 		return
+	}
+	if in.ServerName != nil {
+		name := strings.TrimSpace(*in.ServerName)
+		if name == "" || len([]rune(name)) > 40 {
+			fail(w, 400, "le nom fait 1 à 40 caractères")
+			return
+		}
+		if err := s.Store.SetSetting("server_name", name); err != nil {
+			fail(w, 500, err.Error())
+			return
+		}
+		if s.NameChanged != nil {
+			s.NameChanged(name)
+		}
+		s.Log.Info("server renamed", "name", name)
 	}
 	if in.Limits != nil {
 		if in.Limits.DailySeconds < 0 || in.Limits.DailySeconds > 24*3600 {

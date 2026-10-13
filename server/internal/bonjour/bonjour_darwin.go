@@ -6,6 +6,7 @@ import (
 	"context"
 	"log/slog"
 	"os/exec"
+	"sync"
 	"time"
 
 	"kidzy/server/internal/media"
@@ -22,19 +23,42 @@ type dnssd struct {
 	name, port string
 	txt        map[string]string
 	log        *slog.Logger
+
+	mu     sync.Mutex
+	cancel context.CancelFunc
+}
+
+// SetName restarts dns-sd under the new name.
+func (d *dnssd) SetName(name string) {
+	d.mu.Lock()
+	d.name = name
+	cancel := d.cancel
+	d.mu.Unlock()
+	if cancel != nil {
+		cancel()
+	}
 }
 
 func (d *dnssd) Run(ctx context.Context) {
-	args := []string{"-R", d.name, "_kidzy._tcp", "local", d.port}
-	for k, v := range d.txt {
-		args = append(args, k+"="+v)
-	}
 	for ctx.Err() == nil {
-		cmd := media.Command(ctx, "/usr/bin/dns-sd", args...)
+		d.mu.Lock()
+		args := []string{"-R", d.name, "_kidzy._tcp", "local", d.port}
+		for k, v := range d.txt {
+			args = append(args, k+"="+v)
+		}
+		runCtx, cancel := context.WithCancel(ctx)
+		d.cancel = cancel
+		d.mu.Unlock()
+		cmd := media.Command(runCtx, "/usr/bin/dns-sd", args...)
 		started := time.Now()
 		err := cmd.Run()
+		cancel()
 		if ctx.Err() != nil {
 			return
+		}
+		if runCtx.Err() != nil {
+			d.log.Info("bonjour name changed, republishing")
+			continue
 		}
 		var ee *exec.ExitError
 		if err != nil && !(errorsAs(err, &ee)) {

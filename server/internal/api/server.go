@@ -34,8 +34,18 @@ type Server struct {
 	Sources []sources.Source
 	Deps    sources.Deps
 	Started time.Time
+	// NameChanged is called with the new name when the parent renames the server.
+	NameChanged func(string)
 
 	limiter *auth.Limiter
+}
+
+// Name is the name shown everywhere: the parent's setting, else the config.
+func (s *Server) Name() string {
+	if v, ok := s.Store.Setting("server_name"); ok && strings.TrimSpace(v) != "" {
+		return v
+	}
+	return s.Cfg.Name
 }
 
 type ctxKey int

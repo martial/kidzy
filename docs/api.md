@@ -34,7 +34,7 @@ Timestamps are Unix milliseconds. Durations are seconds.
 ## Parent (app's parent area) and admin
 
 - `GET /api/settings` → `{limits: {dailySeconds, bedtime?: {start, end}}, serverName, finishedImageSet, pinSet, watchedToday, collections: [{id, title, color, visible, itemCount}]}`
-- `PUT /api/settings` `{limits?, collections?: [{id, visible}]}` → same shape.
+- `PUT /api/settings` `{limits?, serverName?, collections?: [{id, visible}]}` → same shape. `serverName` (1–40 characters) is the name shown on the phone and published on Bonjour; `KIDZY_NAME` is only the default.
 - `POST /api/settings/pin` `{pin, current}`.
 The admin reaches the same three at `/api/admin/settings` and `/api/admin/settings/pin`.
 

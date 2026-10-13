@@ -15,6 +15,7 @@ export function Settings() {
   const [start, setStart] = useState('19:30')
   const [end, setEnd] = useState('07:00')
   const [imageVersion, setImageVersion] = useState(0)
+  const [name, setName] = useState('')
   const [current, setCurrent] = useState('')
   const [pin, setPin] = useState('')
   const [again, setAgain] = useState('')
@@ -23,6 +24,7 @@ export function Settings() {
     try {
       const s = await get<SettingsData>('/api/admin/settings')
       setData(s)
+      setName(s.serverName)
       setDaily(s.limits.dailySeconds > 0)
       if (s.limits.dailySeconds > 0) setMinutes(Math.round(s.limits.dailySeconds / 60))
       setBed(!!s.limits.bedtime)
@@ -38,6 +40,19 @@ export function Settings() {
   useEffect(() => {
     void load()
   }, [load])
+
+  async function saveName(e: FormEvent) {
+    e.preventDefault()
+    setError('')
+    try {
+      const s = await put<SettingsData>('/api/admin/settings', { serverName: name.trim() })
+      setNotice(`Le serveur s'appelle maintenant « ${s.serverName} » : c'est le nom que l'iPhone affiche.`)
+      window.dispatchEvent(new CustomEvent('kidzy:name', { detail: s.serverName }))
+      await load()
+    } catch (err) {
+      setError((err as Error).message)
+    }
+  }
 
   async function saveLimits(e: FormEvent) {
     e.preventDefault()
@@ -108,6 +123,21 @@ export function Settings() {
       <Header as="h1">Réglages</Header>
       {error ? <Message error content={error} onDismiss={() => setError('')} /> : null}
       {notice ? <Message success content={notice} onDismiss={() => setNotice('')} /> : null}
+
+      <Segment>
+        <Header as="h3">Nom</Header>
+        <Form onSubmit={saveName}>
+          <Form.Group inline>
+            <Form.Field>
+              <Input value={name} onChange={(_e, { value }) => setName(value)} maxLength={40} style={{ minWidth: 260 }} />
+            </Form.Field>
+            <Button primary disabled={!name.trim() || name.trim() === data.serverName}>
+              Renommer
+            </Button>
+          </Form.Group>
+        </Form>
+        <p style={{ color: 'rgba(0,0,0,.6)' }}>Le nom que l'iPhone voit sur le réseau et dans l'espace parent. L'app sur l'iPhone, elle, s'appelle « Leontine Tube ».</p>
+      </Segment>
 
       <Segment>
         <Header as="h3">Temps d'écran</Header>
@@ -205,7 +235,7 @@ export function Settings() {
           </Table>
         )}
         <p style={{ color: 'rgba(0,0,0,.6)' }}>
-          Nom du serveur sur le réseau : <strong>{data.serverName}</strong>
+          Nom sur le réseau : <strong>{data.serverName}</strong> (onglet « Nom » ci-dessus pour le changer)
         </p>
       </Segment>
     </>

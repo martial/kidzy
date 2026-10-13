@@ -20,7 +20,7 @@ struct PairingView: View {
             } else {
                 VStack(spacing: 20) {
                     SunMascot()
-                    Text(model.endpoint == nil ? "Je cherche le serveur Kidzy sur le réseau de la maison…" : "Adresse du serveur")
+                    Text(model.endpoint == nil ? "Je cherche le serveur vidéo sur le réseau de la maison…" : "Adresse du serveur")
                         .font(Theme.rounded(20))
                         .foregroundStyle(Theme.ink)
                         .multilineTextAlignment(.center)

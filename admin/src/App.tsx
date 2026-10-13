@@ -51,8 +51,13 @@ export function App() {
       stopLive()
       setSession((s) => (s ? { ...s, ok: false, csrf: undefined } : s))
     }
+    const onName = (e: Event) => setSession((s) => (s ? { ...s, name: String((e as CustomEvent).detail) } : s))
     window.addEventListener(UNAUTHORIZED_EVENT, onUnauthorized)
-    return () => window.removeEventListener(UNAUTHORIZED_EVENT, onUnauthorized)
+    window.addEventListener('kidzy:name', onName)
+    return () => {
+      window.removeEventListener(UNAUTHORIZED_EVENT, onUnauthorized)
+      window.removeEventListener('kidzy:name', onName)
+    }
   }, [refresh])
 
   async function logout() {

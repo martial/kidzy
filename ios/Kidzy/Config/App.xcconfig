@@ -1,5 +1,7 @@
 PRODUCT_BUNDLE_IDENTIFIER = com.screenclub.kidzy
 PRODUCT_NAME = Kidzy
+// The name under the icon on the phone. Change it here; the server's own name is an admin setting.
+KIDZY_DISPLAY_NAME = Leontine Tube
 MARKETING_VERSION = 0.1.0
 CURRENT_PROJECT_VERSION = 1
 IPHONEOS_DEPLOYMENT_TARGET = 17.0

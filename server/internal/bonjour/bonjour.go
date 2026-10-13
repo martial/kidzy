@@ -13,6 +13,8 @@ import (
 // Advertiser publishes the service while Run's context lives.
 type Advertiser interface {
 	Run(ctx context.Context)
+	// SetName republishes under a new name (the parent renamed the server).
+	SetName(name string)
 }
 
 type noop struct{ log *slog.Logger }
@@ -21,6 +23,8 @@ func (n noop) Run(ctx context.Context) {
 	n.log.Warn("no Bonjour advertiser on this platform; the phone needs the address typed in")
 	<-ctx.Done()
 }
+
+func (n noop) SetName(string) {}
 
 // LocalHostname is the name the LAN resolves with mDNS, e.g. "MacBook-Pro.local".
 func LocalHostname() string {
