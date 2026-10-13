@@ -115,6 +115,40 @@ struct SunMascot: View {
     }
 }
 
+/// The player's loader: the sun with its rays turning while the video buffers.
+struct LoadingSun: View {
+    @State private var turning = false
+
+    var body: some View {
+        ZStack {
+            ForEach(0..<8, id: \.self) { i in
+                Capsule()
+                    .fill(Theme.lemon)
+                    .frame(width: 8, height: 22)
+                    .offset(y: -66)
+                    .rotationEffect(.degrees(Double(i) * 45))
+            }
+            .rotationEffect(.degrees(turning ? 360 : 0))
+            .animation(.linear(duration: 4).repeatForever(autoreverses: false), value: turning)
+            Circle().fill(Theme.lemon).overlay(Circle().stroke(Theme.ink, lineWidth: 6)).frame(width: 84, height: 84)
+            HStack(spacing: 20) {
+                Circle().fill(Theme.ink).frame(width: 10, height: 10)
+                Circle().fill(Theme.ink).frame(width: 10, height: 10)
+            }
+            .offset(y: -8)
+            Path { p in
+                p.move(to: CGPoint(x: -17, y: 10))
+                p.addQuadCurve(to: CGPoint(x: 17, y: 10), control: CGPoint(x: 0, y: 28))
+            }
+            .stroke(Theme.ink, style: StrokeStyle(lineWidth: 5, lineCap: .round))
+            .frame(width: 1, height: 1)
+        }
+        .frame(width: 170, height: 170)
+        .onAppear { turning = true }
+        .accessibilityLabel("Chargement de la vidéo")
+    }
+}
+
 /// The default end-of-day picture: a sleeping moon over hills.
 struct MoonScene: View {
     var body: some View {

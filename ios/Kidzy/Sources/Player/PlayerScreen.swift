@@ -12,6 +12,7 @@ struct PlayerScreen: View {
     @State private var reporter = TimelineReporter()
     @State private var observers: [Any] = []
     @State private var failed = false
+    @State private var buffering = true
 
     private var next: Item? { model.next(after: item) }
 
@@ -21,6 +22,10 @@ struct PlayerScreen: View {
             PlayerLayerView(player: player).ignoresSafeArea()
             if ended, let next {
                 NextOverlay(next: next, start: countdownStart ?? Date(), duration: AutoplayQueue(items: []).countdown, playNow: { model.play(next) }, imageURL: model.mediaURL(next.thumbUrl))
+            }
+            if buffering && !ended && !failed {
+                LoadingSun()
+                    .transition(.opacity)
             }
             if failed {
                 VStack(spacing: 12) {
@@ -73,6 +78,12 @@ struct PlayerScreen: View {
         observers.append(playerItem.observe(\.status, options: [.new]) { pi, _ in
             if pi.status == .failed {
                 Task { @MainActor in fail() }
+            }
+        })
+        observers.append(player.observe(\.timeControlStatus, options: [.new]) { p, _ in
+            let waiting = p.timeControlStatus != .playing
+            Task { @MainActor in
+                withAnimation(.easeInOut(duration: 0.25)) { buffering = waiting }
             }
         })
         if let e = reporter.event(itemId: item.id, state: .playing, position: 0) {
