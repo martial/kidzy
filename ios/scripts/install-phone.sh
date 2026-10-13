@@ -5,8 +5,9 @@ set -eu
 cd "$(dirname "$0")/.."
 DEVICE="${KIDZY_DEVICE:-00008120-0002499C3492201E}"
 DD="$PWD/build/dd"
-if ! xcrun devicectl list devices 2>/dev/null | grep -q "available"; then
-  echo "iPhone not reachable: plug it in or put it on the same Wi-Fi, unlock it, then retry." >&2
+STATE=$(xcrun devicectl list devices 2>/dev/null | grep "$DEVICE" | grep -oE 'unavailable|available|connected' | head -1)
+if [ -z "$STATE" ] || [ "$STATE" = "unavailable" ]; then
+  echo "iPhone not reachable (state: ${STATE:-not listed}): plug it in with USB or wake it on the same Wi-Fi, unlock it, then retry." >&2
   exit 2
 fi
 xcodebuild -project Kidzy/Kidzy.xcodeproj -scheme Kidzy -configuration Debug \
