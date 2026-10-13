@@ -15,7 +15,7 @@ of a video is 4 taps in the top-left corner; the parent area and the admin need 
 | HTTP API | `server/internal/api`, `docs/api.md` | device token for the app, PIN for parent/admin |
 | Time limits | `server/internal/limits` | server-authoritative daily seconds + bedtime |
 | Bonjour | `server/internal/bonjour` | spawns `/usr/bin/dns-sd -R` on macOS |
-| Source plugins | `server/internal/sources` | seam for the private YouTube branch |
+| Source plugins | `server/internal/sources`, `docs/sources.md` | seam; the plugins themselves are linked in from private repos |
 | Admin UI | `admin/` (Vite + React + TS, Semantic UI) | built into `server/internal/web/dist`, served at `/admin/` |
 | iPhone app | `ios/Kidzy/` (`project.yml` → XcodeGen) | `Shared/` = `KidzyCore` package tested with `swift test` |
 | Designs | `docs/design/` | approved mock-ups: change them before changing the app's look |
@@ -37,8 +37,10 @@ of a video is 4 taps in the top-left corner; the parent area and the admin need 
 | `design-review` | show mock-ups on the phone and record approval |
 
 ## Rules that hold everywhere
-- The YouTube downloader exists only on branch `youtube`, pushed to remote `private`
-  (`martial/kidzy-private`). Never push `youtube` to `origin`: `ops/git-hooks/pre-push` refuses.
+- Downloaders and other extra sources are **not in this repo**: they live in private repos
+  (`martial/kidzy-private`, checkout `~/Documents/dev/kidzy-private`) linked into gitignored paths
+  and switched on by `KIDZY_SOURCES` in `~/.config/kidzy/kidzy.env`. See `docs/sources.md`.
+  Never copy their code into tracked files.
 - Secrets live in `~/.config/kidzy/` (`asc.env`, `AuthKey_*.p8`, `cookies.txt`): never in the
   repo, never printed.
 - UI text in French; code, comments and docs in English.

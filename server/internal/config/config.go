@@ -13,14 +13,16 @@ import (
 
 // Config is everything the server needs to know at startup.
 type Config struct {
-	Addr     string // listen address, e.g. 0.0.0.0:8800
-	DataDir  string // state: database, staging, finished image
-	MediaDir string // inbox/ and library/
-	FFmpeg   string
-	FFprobe  string
-	Name     string // Bonjour name shown on the phone
-	Sources  string // comma-separated source plugin ids to enable ("" = all registered)
-	Version  string
+	Addr      string // listen address, e.g. 0.0.0.0:8800
+	DataDir   string // state: database, staging, finished image
+	MediaDir  string // inbox/ and library/
+	FFmpeg    string
+	FFprobe   string
+	YTDLP     string // for source plugins that download; resolved like ffmpeg
+	JSRuntime string // yt-dlp --js-runtimes value, e.g. deno:/opt/homebrew/bin/deno
+	Name      string // Bonjour name shown on the phone
+	Sources   string // comma-separated source plugin ids to enable (none by default)
+	Version   string
 }
 
 // Load reads ~/.config/kidzy/kidzy.env (without overriding the process
@@ -29,14 +31,16 @@ func Load(version string) Config {
 	home, _ := os.UserHomeDir()
 	_ = godotenv.Load(filepath.Join(home, ".config", "kidzy", "kidzy.env"))
 	return Config{
-		Addr:     env("KIDZY_ADDR", "0.0.0.0:8800"),
-		DataDir:  expand(env("KIDZY_DATA", "~/Library/Application Support/Kidzy")),
-		MediaDir: expand(env("KIDZY_MEDIA", "~/Kidzy")),
-		FFmpeg:   tool(env("KIDZY_FFMPEG", "ffmpeg")),
-		FFprobe:  tool(env("KIDZY_FFPROBE", "ffprobe")),
-		Name:     env("KIDZY_NAME", "Kidzy"),
-		Sources:  os.Getenv("KIDZY_SOURCES"),
-		Version:  version,
+		Addr:      env("KIDZY_ADDR", "0.0.0.0:8800"),
+		DataDir:   expand(env("KIDZY_DATA", "~/Library/Application Support/Kidzy")),
+		MediaDir:  expand(env("KIDZY_MEDIA", "~/Kidzy")),
+		FFmpeg:    tool(env("KIDZY_FFMPEG", "ffmpeg")),
+		FFprobe:   tool(env("KIDZY_FFPROBE", "ffprobe")),
+		YTDLP:     tool(env("KIDZY_YTDLP", "yt-dlp")),
+		JSRuntime: env("KIDZY_JS_RUNTIME", defaultJSRuntime()),
+		Name:      env("KIDZY_NAME", "Kidzy"),
+		Sources:   os.Getenv("KIDZY_SOURCES"),
+		Version:   version,
 	}
 }
 
@@ -61,17 +65,25 @@ func (c Config) Port() string {
 	return "8800"
 }
 
-// SourceEnabled says whether a source plugin id is enabled by KIDZY_SOURCES.
+// SourceEnabled says whether a source plugin id is listed in KIDZY_SOURCES.
+// Nothing is enabled by default: the setting lives in ~/.config/kidzy/kidzy.env.
 func (c Config) SourceEnabled(id string) bool {
-	if strings.TrimSpace(c.Sources) == "" {
-		return true
-	}
 	for _, s := range strings.Split(c.Sources, ",") {
 		if strings.TrimSpace(s) == id {
 			return true
 		}
 	}
 	return false
+}
+
+// defaultJSRuntime points yt-dlp at deno or node when one is installed.
+func defaultJSRuntime() string {
+	for _, c := range []struct{ name, prefix string }{{"deno", "deno:"}, {"node", "node:"}} {
+		if p := tool(c.name); filepath.IsAbs(p) {
+			return c.prefix + p
+		}
+	}
+	return ""
 }
 
 func env(key, def string) string {

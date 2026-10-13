@@ -170,6 +170,12 @@ func (p *Pipeline) Run(ctx context.Context, job store.Job, rep *jobs.Reporter) e
 	if err := json.Unmarshal(job.Params, &pr); err != nil {
 		return err
 	}
+	return p.Process(ctx, pr, rep)
+}
+
+// Process ingests a staged file for an item, marking the item failed on error.
+// A source plugin calls it from its own job once its download is done.
+func (p *Pipeline) Process(ctx context.Context, pr Params, rep *jobs.Reporter) error {
 	it, err := p.Store.Item(pr.ItemID)
 	if err != nil {
 		return fmt.Errorf("item %s: %w", pr.ItemID, err)
@@ -184,6 +190,15 @@ func (p *Pipeline) Run(ctx context.Context, job store.Job, rep *jobs.Reporter) e
 		return err
 	}
 	return nil
+}
+
+// Fail marks an item failed with a message (for a source whose download failed).
+func (p *Pipeline) Fail(itemID, msg string) {
+	if it, err := p.Store.Item(itemID); err == nil {
+		it.Status, it.Error = "failed", msg
+		_ = p.Store.UpdateItem(it)
+		p.Store.BumpLibrary()
+	}
 }
 
 func (p *Pipeline) process(ctx context.Context, it store.Item, pr Params, rep *jobs.Reporter) error {

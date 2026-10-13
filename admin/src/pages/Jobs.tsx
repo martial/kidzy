@@ -8,6 +8,10 @@ import { JobProgress, jobColor, jobLabel } from '../components/JobProgress'
 
 const kindLabel: Record<string, string> = { ingest: 'Conversion' }
 
+function labelOfKind(kind: string): string {
+  return kindLabel[kind] ?? kind.replace(/-/g, ' ')
+}
+
 export function Jobs() {
   const live = useLive()
   const [open, setOpen] = useState<Job | null>(null)
@@ -46,7 +50,7 @@ export function Jobs() {
                 <Table.Row key={j.id}>
                   <Table.Cell>
                     <a href="#log" onClick={(e) => { e.preventDefault(); setOpen(j) }}>
-                      {kindLabel[j.kind] ?? j.kind}
+                      {labelOfKind(j.kind)}
                     </a>
                     <br />
                     <small style={{ color: 'rgba(0,0,0,.6)' }}>{lastLine(j.log)}</small>

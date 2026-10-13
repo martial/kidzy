@@ -8,6 +8,7 @@ export default defineConfig({
   build: { outDir: '../server/internal/web/dist', emptyOutDir: false },
   // Semantic UI's CSS has one invalid selector; lightningcss must skip it instead of failing.
   css: { lightningcss: { errorRecovery: true } },
-  server: { proxy: { '/api': 'http://127.0.0.1:8800' } },
+  // fs.allow: a source plugin linked into src/sources/ lives outside admin/
+  server: { proxy: { '/api': 'http://127.0.0.1:8800' }, fs: { allow: ['..', '../../..'] } },
   test: { environment: 'node' },
 })

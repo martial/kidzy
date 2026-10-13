@@ -28,3 +28,12 @@ var/
 
 # macOS
 .DS_Store
+
+# local source plugins: private repos linked (symlinks) into these paths, see docs/sources.md
+server/internal/sources/*
+!server/internal/sources/sources.go
+server/cmd/kidzy/sources_local.go
+admin/src/sources/*
+!admin/src/sources/.gitkeep
+docs/sources-*.md
+.claude/skills/source-*

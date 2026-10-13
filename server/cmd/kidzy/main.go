@@ -71,6 +71,9 @@ func run() error {
 			log.Info("source enabled", "id", src.ID())
 		}
 	}
+	if len(sources.All()) > 0 && len(enabled) == 0 {
+		log.Info("sources present but none enabled: set KIDZY_SOURCES in ~/.config/kidzy/kidzy.env")
+	}
 	worker := &jobs.Worker{Store: st, Runners: runners, Log: log, Timeout: 6 * time.Hour}
 	srv := &api.Server{Cfg: cfg, Store: st, Worker: worker, Ingest: pipe, Log: log, Sources: enabled, Deps: deps, Started: time.Now()}
 	watcher := &watch.Watcher{Dir: cfg.InboxDir(), Log: log, OnFile: srv.ImportInbox}
