@@ -28,6 +28,22 @@ layout). They are static markup; the canvas renders them.
 | `AdminEnvoyer.dc.html` | Admin · Envoyer | dropzone, per-file progress |
 | `AdminReglages.dc.html` | Admin · Réglages | limits, end-of-day picture, PIN, devices |
 
+## « Sketches for kids! » (second app, the toys alone)
+
+Same canvas, row at the bottom. Free app: La mer and Animaux offered, the other four behind one
+purchase; parental gate = a sum; a home sticker top-left of every toy (no secret corner); no text
+on kid screens, parent text in French and English.
+
+| File | Screen | Notes |
+|---|---|---|
+| `SketchesPicker.dc.html` | Choix des jouets (kid) | six toy stickers in the library grid, clouds, the sun mascot; a small parent sticker top-right opens the gate |
+| `SketchesPickerLocked.dc.html` | Choix, jouets verrouillés | lemon lock stickers on Peinture, Formes, Guitare, Perroquet; a locked tile leads to the gate, never to a price |
+| `SketchesGate.dc.html` | Barrière parent | « Pour les parents », a sum of two digits on the sticker keypad, new sum on a wrong answer; before the purchase and the parent page |
+| `SketchesUnlock.dc.html` | Débloquer | the chosen toy's sticker, « Tous les jouets », the four names, the App Store price, « Débloquer », « Restaurer un achat », « Confidentialité » |
+| `SketchesParent.dc.html` | Pour les parents | visible-toy switches, purchase state + restore, privacy, e-mail help, version, the microphone line |
+| `SketchesToy.dc.html` | Un jouet | the sea with the 52 px home sticker top-left (16 px margins); the same sticker on every toy |
+| `SketchesIcon.dc.html` | Icône | A = a tilted sticker tile with a paint swirl, B = the parrot; both on sky blue |
+
 Tokens: ground sky `#BFE3FF`, ink `#1F2A44`, stickers coral `#FF6B6B`, tangerine `#FFA62B`,
 lemon `#FFD23F`, grass `#5FD068`, ocean `#4D96FF`, berry `#9B5DE5`, bubblegum `#FF8FAB`.
 Type: Fredoka in the mock-ups, SF Rounded in the app. Tiles: 6 px ink border, 8 px hard offset

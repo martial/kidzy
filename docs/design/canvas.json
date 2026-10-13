@@ -16,7 +16,14 @@
     "LecteurCoins.dc.html": { "x": 1848, "y": 1204, "w": 844, "h": 390, "title": "Lecteur : zones, pour le parent" },
     "AdminBibliotheque.dc.html": { "x": 0, "y": 1954, "w": 1280, "h": 800, "title": "Admin : Bibliothèque", "expand": "fill" },
     "AdminEnvoyer.dc.html": { "x": 1360, "y": 1954, "w": 1280, "h": 800, "title": "Admin : Envoyer", "expand": "fill" },
-    "AdminReglages.dc.html": { "x": 2720, "y": 1954, "w": 1280, "h": 800, "title": "Admin : Réglages", "expand": "fill" }
+    "AdminReglages.dc.html": { "x": 2720, "y": 1954, "w": 1280, "h": 800, "title": "Admin : Réglages", "expand": "fill" },
+    "SketchesPicker.dc.html": { "x": 0, "y": 3120, "w": 390, "h": 844, "title": "Sketches : choix des jouets", "is_interactive": true },
+    "SketchesPickerLocked.dc.html": { "x": 470, "y": 3120, "w": 390, "h": 844, "title": "Sketches : quatre jouets verrouillés", "is_interactive": true },
+    "SketchesGate.dc.html": { "x": 940, "y": 3120, "w": 390, "h": 844, "title": "Sketches : barrière parent (une addition)", "is_interactive": true },
+    "SketchesUnlock.dc.html": { "x": 1410, "y": 3120, "w": 390, "h": 844, "title": "Sketches : débloquer tous les jouets", "is_interactive": true },
+    "SketchesParent.dc.html": { "x": 1880, "y": 3120, "w": 390, "h": 844, "title": "Sketches : pour les parents", "is_interactive": true },
+    "SketchesToy.dc.html": { "x": 2350, "y": 3120, "w": 390, "h": 844, "title": "Sketches : un jouet, autocollant maison", "is_interactive": true },
+    "SketchesIcon.dc.html": { "x": 2820, "y": 3120, "w": 390, "h": 390, "title": "Sketches : icône, A ou B" }
   },
   "order": [
     "Main.dc.html",
@@ -30,15 +37,24 @@
     "LecteurCoins.dc.html",
     "AdminBibliotheque.dc.html",
     "AdminEnvoyer.dc.html",
-    "AdminReglages.dc.html"
+    "AdminReglages.dc.html",
+    "SketchesPicker.dc.html",
+    "SketchesPickerLocked.dc.html",
+    "SketchesGate.dc.html",
+    "SketchesUnlock.dc.html",
+    "SketchesParent.dc.html",
+    "SketchesToy.dc.html",
+    "SketchesIcon.dc.html"
   ],
   "notes": {
     "t-enfant": { "x": 0, "y": -240, "text": "Écrans enfant (iPhone, portrait)", "kind": "title1", "maxW": 2270 },
     "t-lecteur": { "x": 0, "y": 964, "text": "Lecteur (paysage)", "kind": "title1", "maxW": 2692 },
     "t-admin": { "x": 0, "y": 1714, "text": "Admin sur le Mac (navigateur)", "kind": "title1", "maxW": 4000 },
+    "t-sketches": { "x": 0, "y": 2880, "text": "« Sketches for kids! » : les jouets seuls, deuxième app pour l'App Store", "kind": "title1", "maxW": 3210 },
     "n-biblio": { "x": 2370, "y": 0, "w": 300, "text": "Rien à lire, rien d'autre que les tuiles : chaque tuile est la vignette de la collection ou de la vidéo. Le temps restant ne se voit que dans l'espace parent (Martial, 13/10). Les tuiles sont des autocollants : contour marine, ombre franche, légère inclinaison.", "fill": "blue" },
     "n-coin": { "x": 2792, "y": 1204, "w": 300, "text": "Coin secret : 4 touches en haut à gauche en moins de 2,5 secondes. Depuis le lecteur : retour à la bibliothèque. Depuis la bibliothèque : le code parent. Aucun retour visuel avant la 4e touche ; une touche ailleurs remet le compte à zéro.", "fill": "orange" },
-    "n-admin": { "x": 4100, "y": 1954, "w": 300, "text": "Semantic UI, en français. On dépose les vidéos, le serveur les convertit en MP4 pour l'iPhone, tout se met à jour en direct. Les vignettes sont des exemples dessinés : dans l'app ce sont les vraies images des vidéos.", "fill": "green" }
+    "n-admin": { "x": 4100, "y": 1954, "w": 300, "text": "Semantic UI, en français. On dépose les vidéos, le serveur les convertit en MP4 pour l'iPhone, tout se met à jour en direct. Les vignettes sont des exemples dessinés : dans l'app ce sont les vraies images des vidéos.", "fill": "green" },
+    "n-sketches": { "x": 3300, "y": 3120, "w": 300, "text": "App gratuite : la mer et les animaux offerts, les quatre autres jouets s'ouvrent avec un seul achat (2,99 €, suggestion). Les mêmes jouets que dans Kidzy, même code. Barrière parent = une addition, avant l'achat et avant la page des parents. Un autocollant maison en haut à gauche de chaque jouet ramène au choix (pas de coin secret ici). Aucun texte sur les écrans enfant ; les textes parent existent en français et en anglais. Cadenas citron sur les tuiles verrouillées : un enfant qui touche une tuile verrouillée tombe sur la barrière.", "fill": "blue" }
   },
   "designSystems": []
 }

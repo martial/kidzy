@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Sketches : un jouet, avec l'autocollant maison</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+a{color:#1F2A44}a:hover{color:#1F2A44}
+@keyframes mer-wave { from { transform: translateX(0); } to { transform: translateX(-180px); } }
+@keyframes mer-rock { 0%, 100% { transform: translate(150px, 486px) rotate(-6deg); } 50% { transform: translate(150px, 494px) rotate(6deg); } }
+@keyframes mer-cloud { from { transform: translateX(-160px); } to { transform: translateX(420px); } }
+@media (prefers-reduced-motion: reduce) { .mer-anim { animation: none !important; } }
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; position: relative; overflow: hidden; background: linear-gradient(#BFE3FF, #FFFFFF 58%)">
+  <svg aria-hidden="true" width="390" height="844" viewBox="0 0 390 844" style="position: absolute; left: 0; top: 0; display: block">
+    <g style="transform-origin: 0 0;" class="mer-anim">
+      <g style="animation: mer-cloud 40s linear infinite;" class="mer-anim"><ellipse cx="40" cy="160" rx="56" ry="22" fill="#FFFFFF"/><ellipse cx="80" cy="148" rx="40" ry="26" fill="#FFFFFF"/><ellipse cx="120" cy="162" rx="44" ry="20" fill="#FFFFFF"/></g>
+    </g>
+    <g class="mer-anim" style="animation: mer-cloud 60s linear infinite; animation-delay: -30s;"><ellipse cx="30" cy="250" rx="40" ry="15" fill="#FFFFFF"/><ellipse cx="58" cy="242" rx="28" ry="18" fill="#FFFFFF"/><ellipse cx="86" cy="252" rx="30" ry="14" fill="#FFFFFF"/></g>
+    <g stroke="#1F2A44" stroke-width="5" stroke-linecap="round"><line x1="314" y1="52" x2="314" y2="66"/><line x1="269" y1="70" x2="279" y2="80"/><line x1="359" y1="70" x2="349" y2="80"/><line x1="251" y1="118" x2="265" y2="118"/><line x1="377" y1="118" x2="363" y2="118"/><line x1="269" y1="166" x2="279" y2="156"/><line x1="359" y1="166" x2="349" y2="156"/><line x1="314" y1="184" x2="314" y2="170"/></g>
+    <circle cx="314" cy="118" r="38" fill="#FFD23F" stroke="#1F2A44" stroke-width="5"/>
+    <circle cx="302" cy="111" r="4.5" fill="#1F2A44"/><circle cx="326" cy="111" r="4.5" fill="#1F2A44"/>
+    <path d="M299 128 Q314 142 329 128" fill="none" stroke="#1F2A44" stroke-width="4.5" stroke-linecap="round"/>
+    <g style="animation: mer-wave 2.4s linear infinite;" class="mer-anim">
+      <path d="M0 490 Q45 470 90 490 T180 490 T270 490 T360 490 T450 490 T540 490 T630 490 V844 H0 Z" fill="#3570D8"/>
+      <path d="M0 490 Q45 470 90 490 T180 490 T270 490 T360 490 T450 490 T540 490 T630 490 V516 Q585 536 540 516 T450 516 T360 516 T270 516 T180 516 T90 516 T0 516 Z" fill="#8ED0FF" opacity="0.7"/>
+      <path d="M0 490 Q45 470 90 490 T180 490 T270 490 T360 490 T450 490 T540 490 T630 490" fill="none" stroke="#1F2A44" stroke-width="4" stroke-linejoin="round"/>
+      <g fill="#FFFFFF" stroke="#1F2A44" stroke-width="1.5"><circle cx="45" cy="478" r="3.5"/><circle cx="135" cy="478" r="3.5"/><circle cx="225" cy="478" r="3.5"/><circle cx="315" cy="478" r="3.5"/><circle cx="405" cy="478" r="3.5"/><circle cx="495" cy="478" r="3.5"/><circle cx="585" cy="478" r="3.5"/></g>
+    </g>
+    <g style="animation: mer-rock 2.4s ease-in-out infinite; transform-origin: 0 0;" class="mer-anim">
+      <rect x="2" y="-60" width="4" height="52" fill="#1F2A44"/>
+      <path d="M4 -56 L36 -12 L4 -12 Z" fill="#FFFFFF" stroke="#1F2A44" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M4 -60 L18 -55 L4 -50 Z" fill="#FFD23F" stroke="#1F2A44" stroke-width="2" stroke-linejoin="round"/>
+      <path d="M-45 -8 H45 Q44 8 30 10 H-30 Q-44 8 -45 -8 Z" fill="#FF6B6B" stroke="#1F2A44" stroke-width="4" stroke-linejoin="round"/>
+      <circle cx="-12" cy="0" r="5" fill="#FFD23F" stroke="#1F2A44" stroke-width="2"/>
+    </g>
+  </svg>
+
+  <a href="SketchesPicker.dc.html" aria-label="Retour au choix des jouets" style="position: absolute; left: 16px; top: 16px; width: 52px; height: 52px; box-sizing: border-box; border-radius: 50%; background: #FFFFFF; border: 5px solid #1F2A44; box-shadow: 4px 4px 0 #1F2A44; display: flex; align-items: center; justify-content: center; text-decoration: none">
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1F2A44" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10.5V20h13v-9.5"/><path d="M10 20v-6h4v6"/></svg>
+  </a>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>
