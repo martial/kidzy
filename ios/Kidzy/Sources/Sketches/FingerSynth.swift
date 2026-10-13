@@ -19,12 +19,9 @@ final class FingerSynth {
         let output = engine.outputNode.outputFormat(forBus: 0)
         let sampleRate = output.sampleRate > 0 ? output.sampleRate : 48000
         guard let format = AVAudioFormat(standardFormatWithSampleRate: sampleRate, channels: 2) else { return }
-        let bank = self.bank
         bank.sampleRate = Float(sampleRate)
-        let node = AVAudioSourceNode(format: format) { _, _, frameCount, audioBufferList -> OSStatus in
-            bank.render(frameCount: Int(frameCount), buffers: UnsafeMutableAudioBufferListPointer(audioBufferList))
-            return noErr
-        }
+        // The render block runs on the audio thread: it must not carry main-actor isolation.
+        let node = AVAudioSourceNode(format: format, renderBlock: Self.renderBlock(for: bank))
         engine.attach(node)
         engine.connect(node, to: engine.mainMixerNode, format: format)
         engine.mainMixerNode.outputVolume = 0.6
@@ -35,6 +32,13 @@ final class FingerSynth {
         } catch {
             engine.detach(node)
             source = nil
+        }
+    }
+
+    nonisolated static func renderBlock(for bank: VoiceBank) -> AVAudioSourceNodeRenderBlock {
+        { _, _, frameCount, audioBufferList -> OSStatus in
+            bank.render(frameCount: Int(frameCount), buffers: UnsafeMutableAudioBufferListPointer(audioBufferList))
+            return noErr
         }
     }
 
