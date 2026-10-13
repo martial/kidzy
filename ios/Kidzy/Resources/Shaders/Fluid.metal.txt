@@ -155,10 +155,17 @@ vertex PaintVertex paintVertex(uint vid [[vertex_id]]) {
     return out;
 }
 
+// The dye holds colour weighted by amount (rgb = sum of colour * weight, a = sum of
+// weights): mixes average the colours instead of darkening, and a saturation
+// boost keeps blends vivid on the paper.
 fragment float4 paintFragment(PaintVertex in [[stage_in]],
                               texture2d<float, access::sample> dye [[texture(0)]]) {
-    float3 pigment = dye.sample(linearSampler, in.uv).rgb;
+    float4 d = dye.sample(linearSampler, in.uv);
     float3 paper = float3(1.0, 0.99, 0.96);
-    float3 color = clamp(paper - pigment, 0.0, 1.0);
-    return float4(color, 1.0);
+    float weight = max(d.a, 1e-4);
+    float3 color = clamp(d.rgb / weight, 0.0, 1.0);
+    float gray = dot(color, float3(0.299, 0.587, 0.114));
+    color = clamp(gray + (color - gray) * 1.45, 0.0, 1.0);
+    float coverage = 1.0 - exp(-d.a * 2.2);
+    return float4(mix(paper, color, coverage), 1.0);
 }

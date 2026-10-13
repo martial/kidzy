@@ -92,7 +92,7 @@ struct ParentAreaView: View {
 
                     card("Jouets") {
                         Toggle(isOn: Binding(get: { model.sketchesVisible }, set: { model.sketchesVisible = $0 })) {
-                            Text("Les jouets : la mer, la peinture, les formes").font(Theme.rounded(16, weight: .medium))
+                            Text("Les jouets : la mer, la peinture, les formes, les animaux").font(Theme.rounded(16, weight: .medium))
                         }
                         .tint(Theme.grass)
                         Toggle(isOn: Binding(get: { model.seaBackground }, set: { model.seaBackground = $0 })) {

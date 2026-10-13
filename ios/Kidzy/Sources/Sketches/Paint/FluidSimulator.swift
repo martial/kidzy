@@ -84,8 +84,8 @@ final class FluidSimulator {
     /// A finger: `point` and `delta` in uv (0...1, origin top-left), `color` the paint colour.
     func touch(at point: SIMD2<Float>, delta: SIMD2<Float>, color: SIMD3<Float>, radius: Float = FluidSimulator.splatRadius, strength: Float = 1.2) {
         pending.append(Splat(point: point, value: SIMD4(delta.x * Self.splatForce, delta.y * Self.splatForce, 0, 0), radius: radius, isVelocity: true))
-        let pigment = (SIMD3<Float>(repeating: 1) - color) * strength
-        pending.append(Splat(point: point, value: SIMD4(pigment.x, pigment.y, pigment.z, 0), radius: radius, isVelocity: false))
+        // colour weighted by amount: rgb premultiplied by the weight in alpha
+        pending.append(Splat(point: point, value: SIMD4(color.x * strength, color.y * strength, color.z * strength, strength), radius: radius, isVelocity: false))
     }
 
     /// A handful of drops thrown at random (opening, a bump on the table).
