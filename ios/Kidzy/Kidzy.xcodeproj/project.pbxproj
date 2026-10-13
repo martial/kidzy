@@ -29,6 +29,7 @@
 		731EB878CA490AA1A24BB843 /* SeaSimulation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A3EACF700EC5D4C19DC6AF8 /* SeaSimulation.swift */; };
 		7707E0E3CE1D5081D02D688A /* ParentAreaView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83CF5BE5F2E5CB90757DD9D7 /* ParentAreaView.swift */; };
 		7E1704F0392CDDEF3CEE200F /* PairingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F25229236338E3145C8940CC /* PairingView.swift */; };
+		8059AE2205B2AE0572080D14 /* FingerSynth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62443C705E6AAE55F6F345B0 /* FingerSynth.swift */; };
 		83760FC22C15A2BA822D97C4 /* TimelineReporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 343C066AEE9AF918FFCD8434 /* TimelineReporter.swift */; };
 		8515A0721FA02A5960414F69 /* bump.wav in Resources */ = {isa = PBXBuildFile; fileRef = 3BF451FC393A7B9E801870B7 /* bump.wav */; };
 		8A33A252103880284C60B747 /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2044C18AF59D762E0ACFA3B6 /* AppModel.swift */; };
@@ -42,6 +43,7 @@
 		BFCCCC8F74E39690B31C72EE /* CollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F90DA23659D702FB6E0F460A /* CollectionView.swift */; };
 		C560E0BC0663F0ED9A2CB59E /* Stickers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54A371CE75B7A09EE278F39D /* Stickers.swift */; };
 		CD6918C4A4A3ACBF9FBB5EFB /* ParentGateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9192C14F6E26A5C06D8C5405 /* ParentGateView.swift */; };
+		D3F00FC236CCAE5320D0CB9C /* FingerMusic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98EDC8490E4ECF31B3677087 /* FingerMusic.swift */; };
 		D5FDDAC86A0997C420FA4E84 /* PaintSketchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 848E584CC6834AB0F9106BB9 /* PaintSketchView.swift */; };
 		E172C28E3E68C79F1EA7298F /* Sketch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E776E01FC5B79E5EE26AE3B /* Sketch.swift */; };
 		E1E972EF2E061630543AD058 /* KidzyClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409AE5296B6605D1CC8987E2 /* KidzyClient.swift */; };
@@ -70,6 +72,7 @@
 		4E681C1D584CD697224B929B /* SoundBank.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundBank.swift; sourceTree = "<group>"; };
 		54A371CE75B7A09EE278F39D /* Stickers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Stickers.swift; sourceTree = "<group>"; };
 		554B7DE512176C1EA085394A /* splash.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = splash.wav; sourceTree = "<group>"; };
+		62443C705E6AAE55F6F345B0 /* FingerSynth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FingerSynth.swift; sourceTree = "<group>"; };
 		661092EBD7C32515FFF6DD5D /* TiltSensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TiltSensor.swift; sourceTree = "<group>"; };
 		70A449FAABC8DC145C255021 /* Boat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Boat.swift; sourceTree = "<group>"; };
 		72DE41B1BB919859F656F785 /* TimeLimitRules.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeLimitRules.swift; sourceTree = "<group>"; };
@@ -81,6 +84,7 @@
 		9192C14F6E26A5C06D8C5405 /* ParentGateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParentGateView.swift; sourceTree = "<group>"; };
 		93428ED4F170B70CB47D4252 /* PinEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinEntry.swift; sourceTree = "<group>"; };
 		936281E75DBF6F2603C5898D /* RemoteImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteImage.swift; sourceTree = "<group>"; };
+		98EDC8490E4ECF31B3677087 /* FingerMusic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FingerMusic.swift; sourceTree = "<group>"; };
 		A6078E8289DE998A2FBA4A75 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
 		AAEB9E89C8C931C8CD91BFED /* AutoplayQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoplayQueue.swift; sourceTree = "<group>"; };
 		ABAE7E4920DFF7E6AD93C6D1 /* PlayerLayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerLayerView.swift; sourceTree = "<group>"; };
@@ -107,6 +111,7 @@
 				AAEB9E89C8C931C8CD91BFED /* AutoplayQueue.swift */,
 				70A449FAABC8DC145C255021 /* Boat.swift */,
 				DFC6A12FBFC28EC6EA418084 /* CornerTapLock.swift */,
+				98EDC8490E4ECF31B3677087 /* FingerMusic.swift */,
 				409AE5296B6605D1CC8987E2 /* KidzyClient.swift */,
 				A6078E8289DE998A2FBA4A75 /* Models.swift */,
 				93428ED4F170B70CB47D4252 /* PinEntry.swift */,
@@ -269,6 +274,7 @@
 		DD7D3A65745BC102025CBDC5 /* Sketches */ = {
 			isa = PBXGroup;
 			children = (
+				62443C705E6AAE55F6F345B0 /* FingerSynth.swift */,
 				1E776E01FC5B79E5EE26AE3B /* Sketch.swift */,
 				ECCDBBE818B2775C2E55D86B /* SketchHost.swift */,
 				8C2C896C1DD388925BF6F7AE /* Paint */,
@@ -395,6 +401,8 @@
 				921EAF914BD62365AE60BCE8 /* Boat.swift in Sources */,
 				BFCCCC8F74E39690B31C72EE /* CollectionView.swift in Sources */,
 				56CC21C85BCAAE2C96D22E15 /* CornerTapLock.swift in Sources */,
+				D3F00FC236CCAE5320D0CB9C /* FingerMusic.swift in Sources */,
+				8059AE2205B2AE0572080D14 /* FingerSynth.swift in Sources */,
 				541ACE05A9384D56BFD5123B /* FluidSimulator.swift in Sources */,
 				5A0DDCD1138422E17A13BC8D /* FluidView.swift in Sources */,
 				351ED624B8D37316BAC563A9 /* Keychain.swift in Sources */,

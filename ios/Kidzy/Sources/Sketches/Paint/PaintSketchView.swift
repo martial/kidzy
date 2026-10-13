@@ -8,6 +8,7 @@ struct PaintSketchView: View {
     @State private var bursts = 0
     @State private var shake = ShakeSensor()
     @State private var sounds = SoundBank()
+    @State private var synth = FingerSynth()
 
     static let palette: [SIMD3<Float>] = [
         SIMD3(1.0, 0.42, 0.42),   // coral
@@ -20,10 +21,11 @@ struct PaintSketchView: View {
     ]
 
     var body: some View {
-        FluidView(palette: Self.palette, onTouchDown: { sounds.play("plop", volume: 0.25, rate: Double.random(in: 0.8...1.3)) }, burstRequests: $bursts)
+        FluidView(palette: Self.palette, onTouchDown: {}, synth: synth, burstRequests: $bursts)
             .ignoresSafeArea()
             .onAppear {
                 sounds.load()
+                synth.start()
                 shake.onShake = {
                     bursts += 1
                     sounds.play("splash", volume: 0.5, rate: Double.random(in: 0.9...1.1))
@@ -36,10 +38,17 @@ struct PaintSketchView: View {
             }
             .onDisappear {
                 shake.stop()
+                synth.stop()
                 sounds.unload()
             }
             .onChange(of: phase) { _, p in
-                if p == .active { shake.start() } else { shake.stop() }
+                if p == .active {
+                    shake.start()
+                    synth.start()
+                } else {
+                    shake.stop()
+                    synth.stop()
+                }
             }
     }
 }

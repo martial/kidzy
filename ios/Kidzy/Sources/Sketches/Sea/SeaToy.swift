@@ -34,6 +34,11 @@ final class SeaToy {
     var lastTilt = 0.0
     var onSplash: (() -> Void)?
     var onSound: ((String) -> Void)?
+    /// The boat's hum while dragged: x in 0...1 and speed in pt/s; nil ends it.
+    var onBoatDrag: ((Double, Double) -> Void)?
+    var onBoatRelease: (() -> Void)?
+    private var lastDragX = 0.0
+    private var lastDragTime = Date()
 
     // The sun: draggable across the sky; low sun = sunset, below the sea = night.
     var sun: CGPoint
@@ -109,6 +114,8 @@ final class SeaToy {
             if hypot(p.x - c.x, p.y - c.y) < Boat.grabRadius {
                 boat.grab()
                 onSound?("plop")
+                lastDragX = p.x
+                lastDragTime = Date()
                 touch = .boat
             } else if isNearSun(p) {
                 touch = .sun(start: start, date: Date())
@@ -118,7 +125,13 @@ final class SeaToy {
                 touch = .water(start: start, date: Date())
             }
         case .boat:
+            let now = Date()
+            let dt = max(1.0 / 120, now.timeIntervalSince(lastDragTime))
+            let speed = abs(p.x - lastDragX) / dt
+            lastDragX = p.x
+            lastDragTime = now
             boat.drag(toX: p.x, width: size.width)
+            onBoatDrag?(boat.x / size.width, speed)
         case .sun(let start, _):
             if hypot(p.x - start.x, p.y - start.y) > 12 {
                 sun = CGPoint(x: min(size.width - 40, max(40, p.x)), y: min(restY + 150, max(70, p.y)))
@@ -134,6 +147,7 @@ final class SeaToy {
         switch touch {
         case .boat:
             boat.release(velocity: velocity)
+            onBoatRelease?()
         case .sun(let start, let date):
             if hypot(p.x - start.x, p.y - start.y) < 12, Date().timeIntervalSince(date) < 0.4 {
                 giggleStart = sea.time

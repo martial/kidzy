@@ -19,7 +19,7 @@ layout). They are static markup; the canvas renders them.
 | `Termine.dc.html` | Terminé pour aujourd'hui | the parent's picture (default: sleeping moon), nothing else |
 | `EspaceParent.dc.html` | Espace parent | server, time left, limits, visible collections, PIN |
 | `Mer.dc.html` | La mer (jouet, croquis 1) | water, sun, clouds, boat; in the app the water sloshes with the tilt, the boat slides and can be dragged, a tap splashes; the sun giggles when tapped and can be dragged: low = sunset colours, below the sea = night with stars; sounds (splash, plop, bump, giggle, chime) respect the silent switch |
-| _(no artboard)_ | Peinture (jouet, croquis 2) | phone flat on the table: fingers paint fluid colour that swirls and mixes like wet paint (GPU fluid simulation, multi-touch, one palette colour per finger), drops thrown when the toy opens or the table is bumped, paint fades over a minute; the look is the simulation itself, see simulator screenshots |
+| _(no artboard)_ | Peinture (jouet, croquis 2) | phone flat on the table: fingers paint fluid colour that swirls and mixes like wet paint (GPU fluid simulation, multi-touch, one palette colour per finger), drops thrown when the toy opens or the table is bumped, paint fades over a minute; generative sound: each finger is a synth voice, pentatonic pitch by height bent up by speed, pan and timbre by direction, vibrato and loudness by speed, a boing on touch; the boat in « La mer » hums by drag speed |
 | `AdminBibliotheque.dc.html` | Admin · Bibliothèque | Semantic UI, French |
 | `AdminEnvoyer.dc.html` | Admin · Envoyer | dropzone, per-file progress |
 | `AdminReglages.dc.html` | Admin · Réglages | limits, end-of-day picture, PIN, devices |

@@ -14,11 +14,12 @@ struct SeaSketchView: View {
     @State private var box = SeaToyBox()
     @State private var sensor = TiltSensor()
     @State private var sounds = SoundBank()
+    @State private var synth = FingerSynth()
 
     var body: some View {
         TimelineView(.animation(paused: phase != .active)) { ctx in
             Canvas(rendersAsynchronously: false) { gc, size in
-                let toy = box.toy(for: size, mode: mode, sensorAvailable: sensor.isAvailable, sounds: mode == .toy ? sounds : nil)
+                let toy = box.toy(for: size, mode: mode, sensorAvailable: sensor.isAvailable, sounds: mode == .toy ? sounds : nil, synth: mode == .toy ? synth : nil)
                 toy.advance(to: ctx.date)
                 SeaPainter.draw(toy: toy, in: &gc, size: size, mode: mode)
             }
@@ -27,10 +28,14 @@ struct SeaSketchView: View {
         .gesture(drag, including: mode == .toy ? .all : .none)
         .onAppear {
             startSensor()
-            if mode == .toy { sounds.load() }
+            if mode == .toy {
+                sounds.load()
+                synth.start()
+            }
         }
         .onDisappear {
             sensor.stop()
+            synth.stop()
             sounds.unload()
         }
         .onChange(of: phase) { _, p in
@@ -63,7 +68,7 @@ struct SeaSketchView: View {
 final class SeaToyBox {
     private(set) var current: SeaToy?
 
-    func toy(for size: CGSize, mode: SeaSketchView.Mode, sensorAvailable: Bool, sounds: SoundBank?) -> SeaToy {
+    func toy(for size: CGSize, mode: SeaSketchView.Mode, sensorAvailable: Bool, sounds: SoundBank?, synth: FingerSynth?) -> SeaToy {
         if let current, abs(current.size.width - size.width) < 1, abs(current.size.height - size.height) < 1 {
             return current
         }
@@ -72,6 +77,8 @@ final class SeaToyBox {
         if mode == .toy {
             t.onSplash = { UIImpactFeedbackGenerator(style: .light).impactOccurred() }
             t.onSound = { [weak sounds] name in sounds?.play(name, volume: name == "bump" ? 0.6 : 0.9, rate: Double.random(in: 0.92...1.08)) }
+            t.onBoatDrag = { [weak synth] x, speed in synth?.update(id: 100, voice: FingerMusic.boatVoice(x: x, speed: speed)) }
+            t.onBoatRelease = { [weak synth] in synth?.ended(id: 100) }
         }
         #if DEBUG
         if let sunY = ProcessInfo.processInfo.environment["KIDZY_SUN_Y"].flatMap(Double.init) { t.sun.y = sunY }

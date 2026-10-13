@@ -8,8 +8,13 @@ final class FluidMTKView: MTKView {
     var sim: FluidSimulator?
     var palette: [SIMD3<Float>] = []
     var onTouchDown: (() -> Void)?
-    private var fingers: [ObjectIdentifier: (previous: CGPoint, color: SIMD3<Float>)] = [:]
+    /// Music hooks: finger id, position (uv), speed (pt/s), direction (radians).
+    var onFingerBegan: ((Int, CGPoint) -> Void)?
+    var onFingerMoved: ((Int, CGPoint, Double, Double) -> Void)?
+    var onFingerEnded: ((Int) -> Void)?
+    private var fingers: [ObjectIdentifier: (previous: CGPoint, color: SIMD3<Float>, id: Int, time: TimeInterval)] = [:]
     private var colorIndex = 0
+    private var fingerIds = 0
     private var lastTime: CFTimeInterval = 0
 
     override init(frame: CGRect, device: MTLDevice?) {
@@ -51,8 +56,10 @@ final class FluidMTKView: MTKView {
             let color = palette[colorIndex % palette.count]
             colorIndex += 1
             let p = t.location(in: self)
-            fingers[ObjectIdentifier(t)] = (p, color)
+            fingerIds += 1
+            fingers[ObjectIdentifier(t)] = (p, color, fingerIds, t.timestamp)
             sim.touch(at: uv(p), delta: .zero, color: color, radius: FluidSimulator.splatRadius * 1.5, strength: 1.6)
+            onFingerBegan?(fingerIds, CGPoint(x: p.x / max(1, bounds.width), y: p.y / max(1, bounds.height)))
         }
         onTouchDown?()
     }
@@ -64,22 +71,33 @@ final class FluidMTKView: MTKView {
             let p = t.location(in: self)
             let d = uv(p) - uv(f.previous)
             sim.touch(at: uv(p), delta: d, color: f.color)
-            fingers[ObjectIdentifier(t)] = (p, f.color)
+            let dt = max(1.0 / 120, t.timestamp - f.time)
+            let dx = p.x - f.previous.x, dy = p.y - f.previous.y
+            let speed = hypot(dx, dy) / dt
+            onFingerMoved?(f.id, CGPoint(x: p.x / max(1, bounds.width), y: p.y / max(1, bounds.height)), speed, atan2(dy, dx))
+            fingers[ObjectIdentifier(t)] = (p, f.color, f.id, t.timestamp)
         }
     }
 
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        for t in touches { fingers[ObjectIdentifier(t)] = nil }
+        for t in touches {
+            if let f = fingers[ObjectIdentifier(t)] { onFingerEnded?(f.id) }
+            fingers[ObjectIdentifier(t)] = nil
+        }
     }
 
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
-        for t in touches { fingers[ObjectIdentifier(t)] = nil }
+        for t in touches {
+            if let f = fingers[ObjectIdentifier(t)] { onFingerEnded?(f.id) }
+            fingers[ObjectIdentifier(t)] = nil
+        }
     }
 }
 
 struct FluidView: UIViewRepresentable {
     let palette: [SIMD3<Float>]
     let onTouchDown: () -> Void
+    let synth: FingerSynth
     @Binding var burstRequests: Int
 
     func makeUIView(context: Context) -> FluidMTKView {
@@ -88,6 +106,10 @@ struct FluidView: UIViewRepresentable {
         view.sim = sim
         view.palette = palette
         view.onTouchDown = onTouchDown
+        let synth = self.synth
+        view.onFingerBegan = { id, p in synth.began(id: id, voice: FingerMusic.voice(x: p.x, y: p.y, speed: 120, angle: 0)) }
+        view.onFingerMoved = { id, p, speed, angle in synth.update(id: id, voice: FingerMusic.voice(x: p.x, y: p.y, speed: speed, angle: angle)) }
+        view.onFingerEnded = { id in synth.ended(id: id) }
         context.coordinator.view = view
         return view
     }
