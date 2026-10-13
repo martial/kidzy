@@ -330,6 +330,7 @@ final class AppModel {
             await open(c)
             if show == "player", let item = currentItems.first { play(item) }
         case "gate": openGate(from: .library)
+        case "opensketch": openSketch("sea") // the tile's path, unlike KIDZY_SHOW=sketch:sea
         case "blocked": route = .blocked
         case "parent":
             if let pin = env["KIDZY_PIN"] { _ = await unlock(pin: pin) }

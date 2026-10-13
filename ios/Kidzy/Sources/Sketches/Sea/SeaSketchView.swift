@@ -11,24 +11,19 @@ struct SeaSketchView: View {
     var mode: Mode = .toy
     @Environment(AppModel.self) private var model
     @Environment(\.scenePhase) private var phase
-    @State private var toy: SeaToy?
+    @State private var box = SeaToyBox()
     @State private var sensor = TiltSensor()
 
     var body: some View {
-        GeometryReader { geo in
-            let size = geo.size
-            TimelineView(.animation(paused: phase != .active)) { ctx in
-                Canvas(rendersAsynchronously: false) { gc, _ in
-                    guard let toy else { return }
-                    toy.advance(to: ctx.date)
-                    SeaPainter.draw(toy: toy, in: &gc, size: size, mode: mode)
-                }
+        TimelineView(.animation(paused: phase != .active)) { ctx in
+            Canvas(rendersAsynchronously: false) { gc, size in
+                let toy = box.toy(for: size, mode: mode, sensorAvailable: sensor.isAvailable)
+                toy.advance(to: ctx.date)
+                SeaPainter.draw(toy: toy, in: &gc, size: size, mode: mode)
             }
-            .gesture(drag, including: mode == .toy ? .all : .none)
-            .onAppear { setUp(size: size) }
-            .onChange(of: size) { _, new in setUp(size: new) }
         }
         .ignoresSafeArea()
+        .gesture(drag, including: mode == .toy ? .all : .none)
         .onAppear { startSensor() }
         .onDisappear { sensor.stop() }
         .onChange(of: phase) { _, p in
@@ -38,32 +33,40 @@ struct SeaSketchView: View {
             guard mode == .toy else { return }
             while !Task.isCancelled {
                 try? await Task.sleep(for: .seconds(10))
-                if let toy, Date().timeIntervalSince(toy.lastActivity) > 300 { model.exitSketch() }
+                if let toy = box.current, Date().timeIntervalSince(toy.lastActivity) > 300 { model.exitSketch() }
             }
         }
     }
 
     private var drag: some Gesture {
         DragGesture(minimumDistance: 0, coordinateSpace: .local)
-            .onChanged { v in toy?.dragChanged(location: v.location, start: v.startLocation) }
-            .onEnded { v in toy?.dragEnded(location: v.location, velocity: v.velocity.width) }
-    }
-
-    private func setUp(size: CGSize) {
-        guard size.width > 0, size.height > 0 else { return }
-        if let toy, abs(toy.size.width - size.width) < 1, abs(toy.size.height - size.height) < 1 { return }
-        let t = SeaToy(size: size, columns: mode == .toy ? 80 : 40, restFraction: mode == .toy ? 0.58 : 0.7)
-        t.sensorAvailable = sensor.isAvailable
-        if mode == .toy {
-            t.onSplash = { UIImpactFeedbackGenerator(style: .light).impactOccurred() }
-        }
-        toy = t
-        sensor.onTilt = { [weak t] in t?.setTilt($0) }
+            .onChanged { v in box.current?.dragChanged(location: v.location, start: v.startLocation) }
+            .onEnded { v in box.current?.dragEnded(location: v.location, velocity: v.velocity.width) }
     }
 
     private func startSensor() {
-        sensor.onTilt = { [weak toy] in toy?.setTilt($0) }
+        sensor.onTilt = { [box] in box.current?.setTilt($0) }
         sensor.start()
+    }
+}
+
+/// Holds the toy so the Canvas can create it on its first frame, whatever the
+/// order of appear callbacks; it is rebuilt only when the size changes.
+@MainActor
+final class SeaToyBox {
+    private(set) var current: SeaToy?
+
+    func toy(for size: CGSize, mode: SeaSketchView.Mode, sensorAvailable: Bool) -> SeaToy {
+        if let current, abs(current.size.width - size.width) < 1, abs(current.size.height - size.height) < 1 {
+            return current
+        }
+        let t = SeaToy(size: CGSize(width: max(1, size.width), height: max(1, size.height)), columns: mode == .toy ? 80 : 40, restFraction: mode == .toy ? 0.58 : 0.7)
+        t.sensorAvailable = sensorAvailable
+        if mode == .toy {
+            t.onSplash = { UIImpactFeedbackGenerator(style: .light).impactOccurred() }
+        }
+        current = t
+        return t
     }
 }
 
