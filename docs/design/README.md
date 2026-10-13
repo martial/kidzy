@@ -1,10 +1,30 @@
 # Designs
 
-Mock-ups of every screen, as self-contained HTML pages at iPhone size. They are the reference:
-change them before changing the app.
+The reference for every screen. Change them before changing the app.
 
-| Page | Screen | Status |
+Live canvas (open it on the phone, pinch to zoom, Play on a frame to tap through):
+https://claude.ai/artifact/GoP4FKyNQ9hWQqVZbCFYwm
+
+The `.dc.html` files here are the sources of that canvas (one per frame, `canvas.json` is the
+layout). They are static markup; the canvas renders them.
+
+| File | Screen | Notes |
 |---|---|---|
-| `index.html` | all screens on one page (what Martial reviews on his phone) | in progress |
+| `Main.dc.html` | Bibliothèque (kid) | sticker tiles, five stars = time left, sun mascot, no text |
+| `Collection.dc.html` | Collection (kid) | episode tiles 16:9, house button back to the library |
+| `Lecteur.dc.html` | Lecteur (landscape) | video only; a tap shows the pause button 2.5 s |
+| `LecteurCoins.dc.html` | Lecteur, zones | for the parent: the secret corner and the tap zones |
+| `Suivant.dc.html` | Suivant | end of a video: next tile with a 5 s ring, tap = play now |
+| `CodeParent.dc.html` | Code parent | keypad after 4 taps top-left on the library |
+| `Termine.dc.html` | Terminé pour aujourd'hui | the parent's picture (default: sleeping moon), nothing else |
+| `EspaceParent.dc.html` | Espace parent | server, time left, limits, visible collections, PIN |
+| `AdminBibliotheque.dc.html` | Admin · Bibliothèque | Semantic UI, French |
+| `AdminEnvoyer.dc.html` | Admin · Envoyer | dropzone, per-file progress |
+| `AdminReglages.dc.html` | Admin · Réglages | limits, end-of-day picture, PIN, devices |
 
-Approval: _pending_.
+Tokens: ground sky `#BFE3FF`, ink `#1F2A44`, stickers coral `#FF6B6B`, tangerine `#FFA62B`,
+lemon `#FFD23F`, grass `#5FD068`, ocean `#4D96FF`, berry `#9B5DE5`, bubblegum `#FF8FAB`.
+Type: Fredoka in the mock-ups, SF Rounded in the app. Tiles: 6 px ink border, 8 px hard offset
+shadow, radius 28 (collections) / 24 (episodes), tilt ±2°.
+
+Approval: _pending_ (Martial reviews on his phone; the date and remarks go here).

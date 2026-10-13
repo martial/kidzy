@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Lecteur : zones de touche</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#1F2A44}a:hover{color:#1F2A44}
+</style>
+</helmet>
+<div style="width: 844px; height: 390px; box-sizing: border-box; position: relative; overflow: hidden; background: #000000; font-family: Fredoka, sans-serif; color: #1F2A44">
+  <div aria-hidden="true" style="position: absolute; left: 75px; top: 0; width: 694px; height: 390px; overflow: hidden; opacity: 0.5">
+    <svg viewBox="0 0 160 90" width="694" height="390" preserveAspectRatio="none" aria-hidden="true" style="display: block"><rect width="160" height="90" fill="#A8E4FF"/><circle cx="130" cy="20" r="12" fill="#FFD23F"/><ellipse cx="70" cy="100" rx="120" ry="42" fill="#5FD068"/><path d="M98 18 L120 36 L98 54 L76 36z" fill="#FF6B6B"/></svg>
+  </div>
+
+  <div style="position: absolute; left: 0; top: 0; width: 96px; height: 96px; box-sizing: border-box; border: 4px dashed #FFA62B; background: rgba(255,166,43,0.28)"></div>
+  <div style="position: absolute; left: 112px; top: 18px; max-width: 250px; background: #FFFFFF; border: 4px solid #1F2A44; border-radius: 16px; box-shadow: 5px 5px 0 #1F2A44; padding: 10px 14px; font-size: 16px; font-weight: 500; line-height: 1.3">Coin secret, 96 × 96 points : 4 touches en moins de 2,5 s. Rien ne s'affiche avant la 4e.</div>
+
+  <div style="position: absolute; left: 374px; top: 147px; width: 96px; height: 96px; box-sizing: border-box; border-radius: 50%; border: 4px dashed #4D96FF; background: rgba(77,150,255,0.25)"></div>
+  <div style="position: absolute; left: 486px; top: 164px; max-width: 250px; background: #FFFFFF; border: 4px solid #1F2A44; border-radius: 16px; box-shadow: 5px 5px 0 #1F2A44; padding: 10px 14px; font-size: 16px; font-weight: 500; line-height: 1.3">Une touche n'importe où ailleurs : le bouton pause apparaît 2,5 s, puis se cache.</div>
+
+  <div style="position: absolute; left: 112px; top: 300px; max-width: 420px; background: #FFFFFF; border: 4px solid #1F2A44; border-radius: 16px; box-shadow: 5px 5px 0 #1F2A44; padding: 10px 14px; font-size: 16px; font-weight: 500; line-height: 1.3">Pas de barre de temps, pas de retour, pas de volume : la vidéo repart toujours du début.</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":844,"height":390}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

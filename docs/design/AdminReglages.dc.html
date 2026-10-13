@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Admin : Réglages</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#2185D0}a:hover{color:#1678C2}
+</style>
+</helmet>
+<div style="min-height: 800px; box-sizing: border-box; background: #F7F8FA; font-family: Lato, sans-serif; color: rgba(0,0,0,0.87); font-size: 14px">
+  <nav style="background: #FFFFFF; border-bottom: 1px solid rgba(34,36,38,0.15); display: flex; flex-wrap: wrap; align-items: center; gap: 4px; padding: 0 24px; min-height: 52px">
+    <a href="AdminBibliotheque.dc.html" style="display: flex; align-items: center; gap: 8px; padding: 0 14px 0 0; font-weight: 700; font-size: 18px; color: #1F2A44; text-decoration: none"><svg width="26" height="26" viewBox="0 0 150 120" aria-hidden="true"><circle cx="75" cy="70" r="42" fill="#FFD23F" stroke="#1F2A44" stroke-width="8"/><circle cx="61" cy="62" r="6" fill="#1F2A44"/><circle cx="89" cy="62" r="6" fill="#1F2A44"/><path d="M58 80 Q75 96 92 80" fill="none" stroke="#1F2A44" stroke-width="7" stroke-linecap="round"/></svg>Kidzy</a>
+    <a href="AdminBibliotheque.dc.html" style="padding: 16px 14px; color: rgba(0,0,0,0.6); text-decoration: none">Bibliothèque</a>
+    <a href="AdminEnvoyer.dc.html" style="padding: 16px 14px; color: rgba(0,0,0,0.6); text-decoration: none">Envoyer</a>
+    <a href="AdminBibliotheque.dc.html" style="padding: 16px 14px; color: rgba(0,0,0,0.6); text-decoration: none">Collections</a>
+    <a href="AdminReglages.dc.html" style="padding: 16px 14px; color: rgba(0,0,0,0.95); font-weight: 700; text-decoration: none; border-bottom: 2px solid #2185D0">Réglages</a>
+    <a href="AdminEnvoyer.dc.html" style="padding: 16px 14px; color: rgba(0,0,0,0.6); text-decoration: none">Tâches</a>
+    <a href="AdminReglages.dc.html" style="padding: 16px 14px; color: rgba(0,0,0,0.6); text-decoration: none">État</a>
+    <div style="margin-left: auto; display: flex; align-items: center; gap: 8px; color: rgba(0,0,0,0.6)"><span aria-hidden="true" style="width: 10px; height: 10px; border-radius: 50%; background: #21BA45"></span>Serveur en ligne · 23 vidéos · 112 Go libres</div>
+  </nav>
+
+  <main style="max-width: 900px; margin: 0 auto; padding: 28px 24px 40px; display: flex; flex-direction: column; gap: 22px">
+    <h1 style="margin: 0; font-size: 28px; font-weight: 700">Réglages</h1>
+
+    <section style="background: #FFFFFF; border: 1px solid rgba(34,36,38,0.15); border-radius: 4px; box-shadow: 0 1px 2px rgba(34,36,38,0.15); padding: 18px; display: flex; flex-direction: column; gap: 14px">
+      <h2 style="margin: 0; font-size: 18px; font-weight: 700">Temps d'écran</h2>
+      <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px">
+        <input id="limite" type="checkbox" checked><label for="limite" style="font-weight: 700">Limite par jour</label>
+        <input type="number" value="45" aria-label="Minutes par jour" style="width: 80px; padding: 8px 10px; border: 1px solid rgba(34,36,38,0.15); border-radius: 4px; font-family: Lato, sans-serif; font-size: 14px"><span>minutes</span>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px">
+        <input id="coucher" type="checkbox" checked><label for="coucher" style="font-weight: 700">Pas de vidéo entre</label>
+        <input type="time" value="19:30" aria-label="Début" style="padding: 8px 10px; border: 1px solid rgba(34,36,38,0.15); border-radius: 4px; font-family: Lato, sans-serif; font-size: 14px"><span>et</span>
+        <input type="time" value="07:00" aria-label="Fin" style="padding: 8px 10px; border: 1px solid rgba(34,36,38,0.15); border-radius: 4px; font-family: Lato, sans-serif; font-size: 14px">
+      </div>
+      <p style="margin: 0; color: rgba(0,0,0,0.6); line-height: 1.5">Quand la limite est atteinte, l'app reste sur l'image ci-dessous. Seul le code parent permet d'en sortir. Aujourd'hui : 23 min utilisées.</p>
+    </section>
+
+    <section style="background: #FFFFFF; border: 1px solid rgba(34,36,38,0.15); border-radius: 4px; box-shadow: 0 1px 2px rgba(34,36,38,0.15); padding: 18px; display: flex; flex-wrap: wrap; align-items: center; gap: 18px">
+      <div style="width: 120px; height: 260px; border-radius: 12px; overflow: hidden; border: 1px solid rgba(34,36,38,0.15); flex: 0 0 auto">
+        <svg viewBox="0 0 390 844" width="120" height="260" aria-hidden="true" style="display: block"><rect width="390" height="844" fill="#232B4E"/><circle cx="195" cy="330" r="120" fill="#FFF3B0" stroke="#1F2A44" stroke-width="8"/><path d="M150 335 q16 12 32 0" fill="none" stroke="#1F2A44" stroke-width="7" stroke-linecap="round"/><path d="M208 335 q16 12 32 0" fill="none" stroke="#1F2A44" stroke-width="7" stroke-linecap="round"/><path d="M170 385 q25 26 50 0" fill="none" stroke="#1F2A44" stroke-width="7" stroke-linecap="round"/><ellipse cx="80" cy="760" rx="220" ry="120" fill="#2E5D4A"/><ellipse cx="330" cy="800" rx="200" ry="110" fill="#244A3C"/></svg>
+      </div>
+      <div style="flex: 1 1 320px; display: flex; flex-direction: column; gap: 10px">
+        <h2 style="margin: 0; font-size: 18px; font-weight: 700">Image de fin de journée</h2>
+        <p style="margin: 0; color: rgba(0,0,0,0.6); line-height: 1.5">L'image que l'enfant voit quand c'est terminé. Une photo verticale de la famille marche très bien. Par défaut : la lune qui dort.</p>
+        <div style="display: flex; gap: 8px">
+          <label for="image" style="background: #2185D0; color: #FFFFFF; font-weight: 700; padding: 10px 18px; border-radius: 4px; cursor: pointer">Changer l'image</label>
+          <input id="image" type="file" style="position: absolute; width: 1px; height: 1px; opacity: 0">
+          <button type="button" style="background: #E0E1E2; color: rgba(0,0,0,0.7); font-weight: 700; padding: 10px 18px; border: 0; border-radius: 4px; font-family: Lato, sans-serif; font-size: 14px">Remettre la lune</button>
+        </div>
+      </div>
+    </section>
+
+    <section style="background: #FFFFFF; border: 1px solid rgba(34,36,38,0.15); border-radius: 4px; box-shadow: 0 1px 2px rgba(34,36,38,0.15); padding: 18px; display: flex; flex-direction: column; gap: 12px">
+      <h2 style="margin: 0; font-size: 18px; font-weight: 700">Code parent</h2>
+      <p style="margin: 0; color: rgba(0,0,0,0.6); line-height: 1.5">Le même code sert à appairer un iPhone, à ouvrir l'espace parent dans l'app et à entrer ici. 4 à 6 chiffres.</p>
+      <div style="display: flex; flex-wrap: wrap; gap: 10px">
+        <input type="password" placeholder="Nouveau code" aria-label="Nouveau code" style="width: 160px; padding: 9px 12px; border: 1px solid rgba(34,36,38,0.15); border-radius: 4px; font-family: Lato, sans-serif; font-size: 14px">
+        <input type="password" placeholder="Encore une fois" aria-label="Confirmation" style="width: 160px; padding: 9px 12px; border: 1px solid rgba(34,36,38,0.15); border-radius: 4px; font-family: Lato, sans-serif; font-size: 14px">
+        <button type="button" style="background: #2185D0; color: #FFFFFF; font-weight: 700; padding: 10px 18px; border: 0; border-radius: 4px; font-family: Lato, sans-serif; font-size: 14px">Changer le code</button>
+      </div>
+    </section>
+
+    <section style="background: #FFFFFF; border: 1px solid rgba(34,36,38,0.15); border-radius: 4px; box-shadow: 0 1px 2px rgba(34,36,38,0.15); padding: 18px; display: flex; flex-direction: column; gap: 12px">
+      <h2 style="margin: 0; font-size: 18px; font-weight: 700">Appareils appairés</h2>
+      <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; padding: 10px 0; border-top: 1px solid rgba(34,36,38,0.1)">
+        <span style="font-weight: 700; min-width: 200px">iPhone de Martial</span>
+        <span style="color: rgba(0,0,0,0.6); flex: 1 1 200px">appairé le 13 octobre, vu il y a 2 min</span>
+        <button type="button" style="background: #FFFFFF; color: #DB2828; font-weight: 700; padding: 8px 14px; border: 1px solid #DB2828; border-radius: 4px; font-family: Lato, sans-serif; font-size: 14px">Révoquer</button>
+      </div>
+      <p style="margin: 0; color: rgba(0,0,0,0.6); line-height: 1.5">Un nouvel iPhone s'appaire depuis l'app avec le code parent. Nom du serveur sur le réseau : <span style="font-weight: 700">Kidzy</span>.</p>
+    </section>
+
+    <div><button type="button" style="background: #21BA45; color: #FFFFFF; font-weight: 700; padding: 11px 22px; border: 0; border-radius: 4px; font-family: Lato, sans-serif; font-size: 14px">Enregistrer</button></div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":800}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>
