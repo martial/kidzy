@@ -1,0 +1,30 @@
+# secrets and local config: never in the repo
+.env
+.env.*
+*.local.xcconfig
+cookies.txt
+*.p8
+asc.env
+
+# build output
+server/bin/
+server/internal/web/dist/*
+!server/internal/web/dist/.gitkeep
+admin/node_modules/
+admin/dist/
+ios/build/
+ios/Kidzy/.build/
+ios/Kidzy/.swiftpm/
+xcuserdata/
+*.xcuserdatad/
+DerivedData/
+*.xcresult
+
+# runtime data
+var/
+*.db
+*.db-wal
+*.db-shm
+
+# macOS
+.DS_Store

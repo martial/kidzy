@@ -1,0 +1,2 @@
+// Copy to Signing.local.xcconfig (gitignored) and put your Apple team id.
+DEVELOPMENT_TEAM = YOUR_TEAM_ID
