@@ -12,6 +12,11 @@ public struct ServerEndpoint: Codable, Hashable, Sendable {
         self.name = name
     }
 
+    /// False for an address a URL cannot carry (an IPv6 link-local with its zone, for example).
+    public var isUsable: Bool {
+        !host.isEmpty && !host.contains("%") && !host.hasPrefix("[") && baseURL != nil
+    }
+
     public var baseURL: URL? {
         var c = URLComponents()
         c.scheme = "http"

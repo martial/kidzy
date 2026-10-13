@@ -55,14 +55,17 @@ final class AppModel {
     // MARK: - lifecycle
 
     func start() {
-        if let data = UserDefaults.standard.data(forKey: Self.endpointKey), let ep = try? JSONDecoder().decode(ServerEndpoint.self, from: data) {
+        if let data = UserDefaults.standard.data(forKey: Self.endpointKey), let ep = try? JSONDecoder().decode(ServerEndpoint.self, from: data), ep.isUsable {
             endpoint = ep
+        } else {
+            UserDefaults.standard.removeObject(forKey: Self.endpointKey)
         }
         token = Keychain.get(Self.tokenKey)
         browser.onFound = { [weak self] ep in
             guard let self else { return }
             if !found.contains(where: { $0.host == ep.host && $0.port == ep.port }) { found.append(ep) }
-            if endpoint == nil || (endpoint?.host != ep.host && route == .connecting) {
+            let replace = endpoint == nil || !(endpoint?.isUsable ?? false) || token == nil || (endpoint?.host != ep.host && route == .connecting)
+            if replace, ep.isUsable {
                 endpoint = ep
                 saveEndpoint()
                 if token != nil { Task { await connect() } }
