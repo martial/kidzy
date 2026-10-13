@@ -14,11 +14,11 @@ final class FluidSimulator {
     }
 
     static let velocityDissipation: Float = 0.985
-    static let pigmentDissipation: Float = 0.996
+    static let pigmentDissipation: Float = 0.9985
     static let curlStrength: Float = 25
     static let pressureIterations = 20
     static let splatForce: Float = 6000
-    static let splatRadius: Float = 0.0022
+    static let splatRadius: Float = 0.0032
 
     let device: MTLDevice
     let queue: MTLCommandQueue
@@ -82,7 +82,7 @@ final class FluidSimulator {
     // MARK: - input
 
     /// A finger: `point` and `delta` in uv (0...1, origin top-left), `color` the paint colour.
-    func touch(at point: SIMD2<Float>, delta: SIMD2<Float>, color: SIMD3<Float>, radius: Float = FluidSimulator.splatRadius, strength: Float = 0.5) {
+    func touch(at point: SIMD2<Float>, delta: SIMD2<Float>, color: SIMD3<Float>, radius: Float = FluidSimulator.splatRadius, strength: Float = 1.2) {
         pending.append(Splat(point: point, value: SIMD4(delta.x * Self.splatForce, delta.y * Self.splatForce, 0, 0), radius: radius, isVelocity: true))
         let pigment = (SIMD3<Float>(repeating: 1) - color) * strength
         pending.append(Splat(point: point, value: SIMD4(pigment.x, pigment.y, pigment.z, 0), radius: radius, isVelocity: false))
@@ -93,7 +93,7 @@ final class FluidSimulator {
         for i in 0..<count {
             let p = SIMD2<Float>(Float.random(in: 0.1...0.9), Float.random(in: 0.1...0.9))
             let d = SIMD2<Float>(Float.random(in: -0.08...0.08), Float.random(in: -0.08...0.08))
-            touch(at: p, delta: d, color: palette[(i + Int.random(in: 0..<palette.count)) % palette.count], radius: Self.splatRadius * 2, strength: 0.7)
+            touch(at: p, delta: d, color: palette[(i + Int.random(in: 0..<palette.count)) % palette.count], radius: Self.splatRadius * 2.5, strength: 2.2)
         }
     }
 

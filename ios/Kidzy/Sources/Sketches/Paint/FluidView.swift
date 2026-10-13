@@ -52,7 +52,7 @@ final class FluidMTKView: MTKView {
             colorIndex += 1
             let p = t.location(in: self)
             fingers[ObjectIdentifier(t)] = (p, color)
-            sim.touch(at: uv(p), delta: .zero, color: color, radius: FluidSimulator.splatRadius * 1.5, strength: 0.6)
+            sim.touch(at: uv(p), delta: .zero, color: color, radius: FluidSimulator.splatRadius * 1.5, strength: 1.6)
         }
         onTouchDown?()
     }
