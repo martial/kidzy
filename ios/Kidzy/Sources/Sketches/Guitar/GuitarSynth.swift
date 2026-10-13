@@ -1,7 +1,7 @@
 import AVFoundation
 import Foundation
 
-private let stringCount = 6
+private let stringCount = 10   // six strings + four melody voices
 private let bufferSize = 2400
 
 /// Six plucked strings (Karplus-Strong) rendered in real time.
@@ -55,6 +55,14 @@ final class GuitarSynth {
         bank.pluck(index: index, frequency: Float(frequency), velocity: Float(velocity))
     }
 
+    private var melodyVoice = 0
+
+    /// A melody note on one of four extra voices, round robin so notes overlap.
+    func melody(midi: Int, velocity: Double) {
+        melodyVoice = (melodyVoice + 1) % 4
+        bank.pluck(index: 6 + melodyVoice, frequency: Float(Chord.frequency(midi: midi)), velocity: Float(velocity))
+    }
+
     func mute(string index: Int) { bank.mute(index: index) }
 }
 
@@ -91,8 +99,9 @@ final class StringBank: @unchecked Sendable {
         }
         s.index = 0
         s.active = true
-        s.decay = 0.994 + 0.004 * (1 - Float(index) / Float(stringCount - 1))  // low strings ring longer
-        s.pan = (Float(index) / Float(stringCount - 1) - 0.5) * 0.8
+        let lane = Float(min(index, 5)) / 5
+        s.decay = index >= 6 ? 0.9965 : 0.994 + 0.004 * (1 - lane)  // low strings ring longer, melody rings a while
+        s.pan = index >= 6 ? 0.15 : (lane - 0.5) * 0.8
         s.ticks = 0
         strings[index] = s
     }

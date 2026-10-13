@@ -31,9 +31,9 @@ final class TiltSensor {
         onTilt?(Self.tilt(gx: gx, gy: gy))
     }
 
-    /// Upright is (0, -1) → 0; the right edge down at 45° → +1; flat on a table → fades to 0.
+    /// Upright or upside down: the right edge down at 45° → +1, left → -1; flat on a table → fades to 0.
     static func tilt(gx: Double, gy: Double) -> Double {
-        let raw = atan2(gx, -gy) / (.pi / 4)
+        let raw = atan2(gx, abs(gy)) / (.pi / 4)
         let weight = min(1, hypot(gx, gy) / 0.35)
         return min(1, max(-1, raw)) * weight
     }
