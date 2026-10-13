@@ -20,6 +20,8 @@ public struct Boat: Sendable {
     /// Heel from the surface slope, radians, positive when the right side is higher.
     public private(set) var angle = 0.0
     public private(set) var isHeld = false
+    /// Set when the hull hit an edge during the last step; the toy plays a bump.
+    public private(set) var bumped = false
     private var lastX: Double
 
     public init(x: Double) {
@@ -68,8 +70,10 @@ public struct Boat: Sendable {
             vx *= max(0, 1 - Self.dragCoefficient * dt)
             x += vx * dt
             let clamped = Self.clamp(x, width: sea.width)
+            bumped = false
             if clamped != x {
                 x = clamped
+                bumped = abs(vx) > 40
                 vx = -vx * Self.bounce
             }
         }

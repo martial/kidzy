@@ -13,19 +13,26 @@ struct SeaSketchView: View {
     @Environment(\.scenePhase) private var phase
     @State private var box = SeaToyBox()
     @State private var sensor = TiltSensor()
+    @State private var sounds = SoundBank()
 
     var body: some View {
         TimelineView(.animation(paused: phase != .active)) { ctx in
             Canvas(rendersAsynchronously: false) { gc, size in
-                let toy = box.toy(for: size, mode: mode, sensorAvailable: sensor.isAvailable)
+                let toy = box.toy(for: size, mode: mode, sensorAvailable: sensor.isAvailable, sounds: mode == .toy ? sounds : nil)
                 toy.advance(to: ctx.date)
                 SeaPainter.draw(toy: toy, in: &gc, size: size, mode: mode)
             }
         }
         .ignoresSafeArea()
         .gesture(drag, including: mode == .toy ? .all : .none)
-        .onAppear { startSensor() }
-        .onDisappear { sensor.stop() }
+        .onAppear {
+            startSensor()
+            if mode == .toy { sounds.load() }
+        }
+        .onDisappear {
+            sensor.stop()
+            sounds.unload()
+        }
         .onChange(of: phase) { _, p in
             if p == .active { startSensor() } else { sensor.stop() }
         }
@@ -56,7 +63,7 @@ struct SeaSketchView: View {
 final class SeaToyBox {
     private(set) var current: SeaToy?
 
-    func toy(for size: CGSize, mode: SeaSketchView.Mode, sensorAvailable: Bool) -> SeaToy {
+    func toy(for size: CGSize, mode: SeaSketchView.Mode, sensorAvailable: Bool, sounds: SoundBank?) -> SeaToy {
         if let current, abs(current.size.width - size.width) < 1, abs(current.size.height - size.height) < 1 {
             return current
         }
@@ -64,7 +71,11 @@ final class SeaToyBox {
         t.sensorAvailable = sensorAvailable
         if mode == .toy {
             t.onSplash = { UIImpactFeedbackGenerator(style: .light).impactOccurred() }
+            t.onSound = { [weak sounds] name in sounds?.play(name, volume: name == "bump" ? 0.6 : 0.9, rate: Double.random(in: 0.92...1.08)) }
         }
+        #if DEBUG
+        if let sunY = ProcessInfo.processInfo.environment["KIDZY_SUN_Y"].flatMap(Double.init) { t.sun.y = sunY }
+        #endif
         current = t
         return t
     }
@@ -77,14 +88,25 @@ enum SeaPainter {
         let w = size.width, h = size.height
         let restY = toy.restY
         let sea = toy.sea
+        let day = toy.daylight, night = toy.night
+        let sunset = 1 - day
+        var deepColor = Theme.oceanDeep
+        var lightColor = Theme.oceanLight
         if mode == .toy {
-            gc.fill(Path(CGRect(origin: .zero, size: size)), with: .linearGradient(Gradient(colors: [Theme.sky, .white]), startPoint: .zero, endPoint: CGPoint(x: 0, y: restY)))
-            SeaArt.drawSun(in: &gc, center: CGPoint(x: w - 76, y: 118), radius: 38)
+            let top = SeaArt.mix(SeaArt.mix(Theme.sky, Theme.sunsetTop, sunset), Theme.nightTop, night)
+            let bottom = SeaArt.mix(SeaArt.mix(.white, Theme.sunsetBottom, sunset), Theme.nightBottom, night)
+            gc.fill(Path(CGRect(origin: .zero, size: size)), with: .linearGradient(Gradient(colors: [top, bottom]), startPoint: .zero, endPoint: CGPoint(x: 0, y: restY)))
+            SeaArt.drawStars(in: &gc, size: size, below: restY, alpha: night)
+            SeaArt.drawSun(in: &gc, center: toy.sun, radius: SeaToy.sunRadius, giggle: toy.giggle, warmth: sunset)
             let t = sea.time
             let c1 = (t * 10 + 60).truncatingRemainder(dividingBy: w + 200) - 100
             let c2 = (t * 16 + 300).truncatingRemainder(dividingBy: w + 200) - 100
-            SeaArt.drawCloud(in: &gc, at: CGPoint(x: c1, y: 150))
-            SeaArt.drawCloud(in: &gc, at: CGPoint(x: c2, y: 230), scale: 0.7)
+            var clouds = gc
+            clouds.opacity = 1 - 0.6 * night
+            SeaArt.drawCloud(in: &clouds, at: CGPoint(x: c1, y: 150))
+            SeaArt.drawCloud(in: &clouds, at: CGPoint(x: c2, y: 230), scale: 0.7)
+            deepColor = SeaArt.mix(SeaArt.mix(Theme.oceanDeep, Theme.oceanSunset, sunset), Theme.oceanNight, night)
+            lightColor = SeaArt.mix(Theme.oceanLight, Theme.oceanNightLight, night)
         }
 
         var surface = Path()
@@ -96,7 +118,7 @@ enum SeaPainter {
         deep.addLine(to: CGPoint(x: w, y: h))
         deep.addLine(to: CGPoint(x: 0, y: h))
         deep.closeSubpath()
-        gc.fill(deep, with: .color(Theme.oceanDeep))
+        gc.fill(deep, with: .color(deepColor))
 
         if mode == .toy {
             SeaArt.drawBoat(in: &gc, at: CGPoint(x: toy.boat.x, y: restY - toy.boat.y), angle: toy.boat.angle)
@@ -107,7 +129,7 @@ enum SeaPainter {
             band.addLine(to: CGPoint(x: sea.x(of: i), y: restY - sea.heights[i] + 26))
         }
         band.closeSubpath()
-        gc.fill(band, with: .color(Theme.oceanLight.opacity(0.7)))
+        gc.fill(band, with: .color(lightColor.opacity(0.7)))
         gc.stroke(surface, with: .color(Theme.ink), style: StrokeStyle(lineWidth: 4, lineJoin: .round))
 
         if mode == .background {

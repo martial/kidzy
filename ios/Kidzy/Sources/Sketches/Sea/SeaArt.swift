@@ -39,9 +39,12 @@ enum SeaArt {
         c.stroke(porthole, with: .color(Theme.ink), lineWidth: 2)
     }
 
-    static func drawSun(in gc: inout GraphicsContext, center: CGPoint, radius r: CGFloat) {
+    /// The sun. `giggle` 0...1 bounces it and spins the rays; `warmth` 0...1 reddens it at sunset.
+    static func drawSun(in gc: inout GraphicsContext, center: CGPoint, radius base: CGFloat, giggle: Double = 0, warmth: Double = 0) {
+        let r = base * (1 + 0.25 * CGFloat(sin(giggle * .pi)))
+        let spin = giggle * 2 * .pi
         for i in 0..<8 {
-            let a = Double(i) * .pi / 4
+            let a = Double(i) * .pi / 4 + spin
             var ray = Path()
             ray.move(to: CGPoint(x: center.x + CGFloat(cos(a)) * (r + 12), y: center.y + CGFloat(sin(a)) * (r + 12)))
             ray.addLine(to: CGPoint(x: center.x + CGFloat(cos(a)) * (r + 26), y: center.y + CGFloat(sin(a)) * (r + 26)))
@@ -49,14 +52,49 @@ enum SeaArt {
         }
         let disc = Path(ellipseIn: CGRect(x: center.x - r, y: center.y - r, width: 2 * r, height: 2 * r))
         gc.fill(disc, with: .color(Theme.lemon))
+        if warmth > 0 { gc.fill(disc, with: .color(Theme.coral.opacity(0.55 * warmth))) }
         gc.stroke(disc, with: .color(Theme.ink), lineWidth: 5)
-        for dx in [-r * 0.32, r * 0.32] {
-            gc.fill(Path(ellipseIn: CGRect(x: center.x + dx - 4.5, y: center.y - r * 0.2 - 4.5, width: 9, height: 9)), with: .color(Theme.ink))
+        if giggle > 0 {
+            for dx in [-r * 0.32, r * 0.32] {
+                var eye = Path()
+                eye.move(to: CGPoint(x: center.x + dx - 6, y: center.y - r * 0.15))
+                eye.addQuadCurve(to: CGPoint(x: center.x + dx + 6, y: center.y - r * 0.15), control: CGPoint(x: center.x + dx, y: center.y - r * 0.15 - 9))
+                gc.stroke(eye, with: .color(Theme.ink), style: StrokeStyle(lineWidth: 4, lineCap: .round))
+            }
+        } else {
+            for dx in [-r * 0.32, r * 0.32] {
+                gc.fill(Path(ellipseIn: CGRect(x: center.x + dx - 4.5, y: center.y - r * 0.2 - 4.5, width: 9, height: 9)), with: .color(Theme.ink))
+            }
         }
         var smile = Path()
+        let open = CGFloat(0.65 + 0.3 * sin(giggle * .pi))
         smile.move(to: CGPoint(x: center.x - r * 0.4, y: center.y + r * 0.25))
-        smile.addQuadCurve(to: CGPoint(x: center.x + r * 0.4, y: center.y + r * 0.25), control: CGPoint(x: center.x, y: center.y + r * 0.65))
+        smile.addQuadCurve(to: CGPoint(x: center.x + r * 0.4, y: center.y + r * 0.25), control: CGPoint(x: center.x, y: center.y + r * open))
         gc.stroke(smile, with: .color(Theme.ink), style: StrokeStyle(lineWidth: 4.5, lineCap: .round))
+    }
+
+    static func drawStars(in gc: inout GraphicsContext, size: CGSize, below: CGFloat, alpha: Double) {
+        guard alpha > 0.01 else { return }
+        var seed: UInt64 = 0x9E3779B97F4A7C15
+        func next() -> CGFloat {
+            seed = seed &* 6364136223846793005 &+ 1442695040888963407
+            return CGFloat((seed >> 33) % 10000) / 10000
+        }
+        for _ in 0..<26 {
+            let p = CGPoint(x: next() * size.width, y: next() * below * 0.9)
+            let r = 1.5 + next() * 2
+            gc.fill(Path(ellipseIn: CGRect(x: p.x - r, y: p.y - r, width: 2 * r, height: 2 * r)), with: .color(.white.opacity(alpha * (0.6 + 0.4 * Double(next())))))
+        }
+    }
+
+    static func mix(_ a: Color, _ b: Color, _ t: Double) -> Color {
+        let t = min(1, max(0, t))
+        let ca = UIColor(a), cb = UIColor(b)
+        var ar: CGFloat = 0, ag: CGFloat = 0, ab: CGFloat = 0, aa: CGFloat = 0
+        var br: CGFloat = 0, bg: CGFloat = 0, bb: CGFloat = 0, ba: CGFloat = 0
+        ca.getRed(&ar, green: &ag, blue: &ab, alpha: &aa)
+        cb.getRed(&br, green: &bg, blue: &bb, alpha: &ba)
+        return Color(.sRGB, red: Double(ar + (br - ar) * t), green: Double(ag + (bg - ag) * t), blue: Double(ab + (bb - ab) * t), opacity: 1)
     }
 
     static func drawCloud(in gc: inout GraphicsContext, at p: CGPoint, scale s: CGFloat = 1) {

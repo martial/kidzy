@@ -22,6 +22,8 @@ targets:
       - path: Shared
       - path: Assets.xcassets
       - path: PrivacyInfo.xcprivacy
+      - path: Resources
+        buildPhase: resources
     configFiles:
       Debug: Config/App.xcconfig
       Release: Config/App.xcconfig
