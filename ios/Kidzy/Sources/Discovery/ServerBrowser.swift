@@ -13,7 +13,7 @@ final class ServerBrowser {
     func start() {
         let params = NWParameters.tcp
         params.includePeerToPeer = true
-        let b = NWBrowser(for: .bonjour(type: "_kidzy._tcp", domain: nil), using: params)
+        let b = NWBrowser(for: .bonjourWithTXTRecord(type: "_kidzy._tcp", domain: nil), using: params)
         b.browseResultsChangedHandler = { [weak self] results, _ in
             Task { @MainActor in self?.resolve(results) }
         }
