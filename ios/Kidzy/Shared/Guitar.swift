@@ -62,7 +62,7 @@ public struct GuitarModel: Sendable {
 
     /// The x of each string across a width, low E on the left.
     public static func stringX(_ i: Int, width: Double) -> Double {
-        let inset = width * 0.17
+        let inset = width * 0.28
         return inset + (width - 2 * inset) * Double(i) / Double(strings - 1)
     }
 

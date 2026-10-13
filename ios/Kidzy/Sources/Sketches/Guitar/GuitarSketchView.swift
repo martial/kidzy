@@ -189,7 +189,7 @@ enum GuitarPainter {
         bodyIn.addEllipse(in: CGRect(x: w * 0.02 + 6, y: h * 0.50 + 6, width: w * 0.96 - 12, height: h * 0.34 - 12))
         gc.fill(bodyIn, with: .color(bodyColor))
         // neck
-        let neck = CGRect(x: w * 0.5 - w * 0.19, y: -10, width: w * 0.38, height: h * 0.42)
+        let neck = CGRect(x: w * 0.5 - w * 0.25, y: -10, width: w * 0.5, height: h * 0.42)
         gc.fill(Path(roundedRect: neck, cornerRadius: 18), with: .color(Color(hex: "8B5A2B")))
         gc.stroke(Path(roundedRect: neck, cornerRadius: 18), with: .color(Theme.ink), lineWidth: 5)
         for f in 1...6 {
@@ -202,7 +202,7 @@ enum GuitarPainter {
         gc.fill(hole, with: .color(Theme.ink))
         gc.stroke(Path(ellipseIn: CGRect(x: s.holeCenter.x - hr - 7, y: s.holeCenter.y - hr - 7, width: 2 * hr + 14, height: 2 * hr + 14)), with: .color(Theme.lemon), lineWidth: 6)
         // bridge
-        let bridge = CGRect(x: w * 0.5 - w * 0.2, y: s.stringBottom - 4, width: w * 0.4, height: 22)
+        let bridge = CGRect(x: w * 0.5 - w * 0.27, y: s.stringBottom - 4, width: w * 0.54, height: 22)
         gc.fill(Path(roundedRect: bridge, cornerRadius: 8), with: .color(Theme.ink))
         // strings, wobbling
         for i in 0..<GuitarModel.strings {
