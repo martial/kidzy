@@ -18,22 +18,10 @@ struct KidzyApp: App {
     }
 }
 
-/// Keeps the library portrait and the player landscape.
+/// Keeps the library portrait and the player landscape (see `OrientationLock`).
 final class AppDelegate: NSObject, UIApplicationDelegate {
-    @MainActor static var mask: UIInterfaceOrientationMask = .portrait
-
     func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
-        AppDelegate.mask
-    }
-}
-
-@MainActor
-enum Orientation {
-    static func set(_ mask: UIInterfaceOrientationMask) {
-        AppDelegate.mask = mask
-        guard let scene = UIApplication.shared.connectedScenes.first(where: { $0 is UIWindowScene }) as? UIWindowScene else { return }
-        scene.requestGeometryUpdate(.iOS(interfaceOrientations: mask)) { _ in }
-        scene.keyWindow?.rootViewController?.setNeedsUpdateOfSupportedInterfaceOrientations()
+        OrientationLock.mask
     }
 }
 
@@ -60,7 +48,7 @@ struct RootView: View {
             case .parent:
                 ParentAreaView()
             case .sketch(let id):
-                SketchHost(id: id).id(id)
+                ToyHost(id: id, chrome: .secretCorner) { model.exitSketch() }.id(id)
             }
         }
         .statusBarHidden(true)

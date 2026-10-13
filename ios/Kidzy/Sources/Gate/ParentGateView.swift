@@ -9,7 +9,7 @@ struct ParentGateView: View {
         PinKeypad(title: "Code parent", onClose: { model.closeGate(origin) }) { pin in
             await model.unlock(pin: pin)
         }
-        .onAppear { Orientation.set(.portrait) }
+        .onAppear { OrientationLock.set(.portrait) }
     }
 }
 

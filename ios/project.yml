@@ -1,0 +1,37 @@
+# XcodeGen definition for both apps. Regenerate ios/Kidzy.xcodeproj with `make xcodeproj` after editing.
+# Kidzy (the video player) and SketchesForKids (the toys alone) compile ios/Toys as plain sources.
+name: Kidzy
+options:
+  bundleIdPrefix: com.screenclub
+  deploymentTarget:
+    iOS: "17.0"
+  createIntermediateGroups: true
+  generateEmptyDirectories: true
+configs:
+  Debug: debug
+  Release: release
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    SWIFT_STRICT_CONCURRENCY: complete
+targets:
+  Kidzy:
+    type: application
+    platform: iOS
+    sources:
+      - path: Kidzy/Sources
+      - path: Kidzy/Shared
+      - path: Toys/Sources
+      - path: Toys/Resources
+        buildPhase: resources
+      - path: Kidzy/Assets.xcassets
+      - path: Kidzy/PrivacyInfo.xcprivacy
+    configFiles:
+      Debug: Kidzy/Config/App.xcconfig
+      Release: Kidzy/Config/App.xcconfig
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: NO
+        INFOPLIST_FILE: Kidzy/Config/Info.plist
+        ENABLE_PREVIEWS: YES
+    scheme: {}

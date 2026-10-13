@@ -282,7 +282,7 @@ final class AppModel {
 
     /// Toys are never blocked by the time limits: they are not video.
     func openSketch(_ id: String) {
-        guard Sketches.entry(id) != nil else { return }
+        guard Toys.entry(id) != nil else { return }
         routeBeforeSketch = route
         route = .sketch(id)
     }

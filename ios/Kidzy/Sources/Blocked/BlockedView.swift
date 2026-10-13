@@ -20,19 +20,16 @@ struct BlockedView: View {
                     HStack {
                         Spacer()
                         HStack(spacing: 8) {
-                            StickerButton(size: 48, systemImage: "bird.fill", label: "Le perroquet") { model.openSketch("parrot") }
-                            StickerButton(size: 48, systemImage: "guitars.fill", label: "La guitare") { model.openSketch("guitar") }
-                            StickerButton(size: 48, systemImage: "pawprint.fill", label: "Les animaux") { model.openSketch("animals") }
-                            StickerButton(size: 48, systemImage: "square.grid.3x3.fill", label: "Les formes") { model.openSketch("tiles") }
-                            StickerButton(size: 48, systemImage: "paintbrush.pointed.fill", label: "Peindre") { model.openSketch("paint") }
-                            StickerButton(size: 48, systemImage: "sailboat.fill", label: "Jouer avec la mer") { model.openSketch("sea") }
+                            ForEach(Toys.all.reversed()) { entry in
+                                StickerButton(size: 48, systemImage: entry.symbol, label: entry.title) { model.openSketch(entry.id) }
+                            }
                         }
                         .padding(24)
                     }
                 }
             }
         }
-        .onAppear { Orientation.set(.portrait) }
+        .onAppear { OrientationLock.set(.portrait) }
         .task {
             if let url = model.mediaURL("/api/finished-image") {
                 image = await ImageStore.shared.image(for: url, maxPixel: 2400)

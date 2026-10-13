@@ -6,7 +6,7 @@ struct LibraryView: View {
 
     enum Cell: Identifiable {
         case collection(Collection)
-        case sketch(SketchEntry)
+        case sketch(ToyEntry)
         var id: String {
             switch self {
             case .collection(let c): return "c:" + c.id
@@ -17,7 +17,7 @@ struct LibraryView: View {
 
     private var cells: [Cell] {
         var out = model.collections.map(Cell.collection)
-        if model.sketchesVisible { out += Sketches.all.map(Cell.sketch) }
+        if model.sketchesVisible { out += Toys.all.map(Cell.sketch) }
         return out
     }
 
@@ -60,18 +60,9 @@ struct LibraryView: View {
                                     Button {
                                         model.openSketch(entry.id)
                                     } label: {
-                                        StickerTile(color: entry.id == "paint" ? Theme.coral : entry.id == "tiles" ? Theme.lemon : entry.id == "animals" ? Theme.grass : entry.id == "guitar" ? Color(hex: "FFA62B") : entry.id == "parrot" ? Color(hex: "9B5DE5") : Theme.ocean, tilt: index % 2 == 0 ? -2 : 2) {
-                                            Group {
-                                                switch entry.id {
-                                                case "paint": PaintSticker()
-                                                case "tiles": TilesSticker()
-                                                case "animals": AnimalsSticker()
-                                                case "guitar": GuitarSticker()
-                                                case "parrot": ParrotSticker()
-                                                default: SeaSticker()
-                                                }
-                                            }
-                                            .frame(width: inner, height: inner)
+                                        StickerTile(color: entry.color, tilt: index % 2 == 0 ? -2 : 2) {
+                                            entry.sticker()
+                                                .frame(width: inner, height: inner)
                                         }
                                     }
                                     .buttonStyle(PressStyle())
@@ -94,7 +85,7 @@ struct LibraryView: View {
             }
             SecretCorner { model.openGate(from: .library) }
         }
-        .onAppear { Orientation.set(.portrait) }
+        .onAppear { OrientationLock.set(.portrait) }
         .task { await model.refresh() }
     }
 }

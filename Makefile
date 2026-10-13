@@ -24,5 +24,5 @@ test-ios:
 run: server                  ## run in the foreground with ~/.config/kidzy/kidzy.env
 	./server/bin/kidzy
 
-xcodeproj:                   ## regenerate ios/Kidzy/Kidzy.xcodeproj from project.yml
-	cd ios/Kidzy && xcodegen generate
+xcodeproj:                   ## regenerate ios/Kidzy.xcodeproj (both apps) from ios/project.yml
+	cd ios && xcodegen generate

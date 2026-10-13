@@ -55,6 +55,6 @@ struct CollectionView: View {
             .frame(maxWidth: .infinity)
             SecretCorner { model.openGate(from: .library) }
         }
-        .onAppear { Orientation.set(.portrait) }
+        .onAppear { OrientationLock.set(.portrait) }
     }
 }

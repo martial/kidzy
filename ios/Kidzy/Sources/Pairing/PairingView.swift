@@ -53,7 +53,7 @@ struct PairingView: View {
                 .background(Theme.sky.ignoresSafeArea())
             }
         }
-        .onAppear { Orientation.set(.portrait) }
+        .onAppear { OrientationLock.set(.portrait) }
     }
 }
 
@@ -73,6 +73,6 @@ struct ConnectingView: View {
         .padding(30)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Theme.sky.ignoresSafeArea())
-        .onAppear { Orientation.set(.portrait) }
+        .onAppear { OrientationLock.set(.portrait) }
     }
 }

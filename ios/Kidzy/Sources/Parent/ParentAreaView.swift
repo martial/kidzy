@@ -120,7 +120,7 @@ struct ParentAreaView: View {
             }
         }
         .foregroundStyle(Theme.ink)
-        .onAppear { Orientation.set(.portrait) }
+        .onAppear { OrientationLock.set(.portrait) }
         .task { await load() }
     }
 

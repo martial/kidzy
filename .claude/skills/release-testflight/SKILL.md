@@ -11,7 +11,7 @@ Prerequisites (Martial only, once): paid Apple Developer membership; the app rec
 
 1. Bump `MARKETING_VERSION` in `ios/Kidzy/Config/App.xcconfig` if the version changes; the build
    number is `git rev-list --count HEAD`, so commit first.
-2. `ios/scripts/archive-upload.sh` → ends with "Upload succeeded".
+2. `ios/scripts/archive-upload.sh` (or `archive-upload.sh sketches` for « Sketches for kids! ») → ends with "Upload succeeded".
 3. App Store Connect → TestFlight: the build appears after processing (5-15 min). First time:
    fill "Beta App Information" and add Martial to an internal group; internal testing needs no review.
 4. Common failures: missing 1024 px icon (no alpha); "Missing Compliance" (the Info.plist sets

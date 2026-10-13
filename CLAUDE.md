@@ -17,8 +17,10 @@ of a video is 4 taps in the top-left corner; the parent area and the admin need 
 | Bonjour | `server/internal/bonjour` | spawns `/usr/bin/dns-sd -R` on macOS |
 | Source plugins | `server/internal/sources`, `docs/sources.md` | seam; the plugins themselves are linked in from private repos |
 | Admin UI | `admin/` (Vite + React + TS, Semantic UI) | built into `server/internal/web/dist`, served at `/admin/` |
-| iPhone app | `ios/Kidzy/` (`project.yml` → XcodeGen) | `Shared/` = `KidzyCore` package tested with `swift test` |
-| Sketches (toys) | `ios/Kidzy/Sources/Sketches/`, `Shared/SeaSimulation.swift`, `Shared/Boat.swift`, `Resources/Shaders/Fluid.metal.txt` | registry + full-screen host; « La mer » = spring-column water + boat, tilt via CoreMotion; « Peinture » = Metal stable-fluids paint, shaders compiled at runtime from the .txt (Xcode 26 ships no Metal compiler by default); « Perroquet » = microphone → `Shared/RepeatDetector.swift` (phrase ends after 0.8 s of silence) → pitched playback (AVAudioUnitTimePitch), frames in `Resources/Parrot/` (simulator check: grant the mic with `simctl privacy`, `say` a sentence through the Mac speaker, read `log show --predicate 'subsystem == "com.screenclub.kidzy"'`, `KIDZY_PARROT_TRACE=1` logs levels four times a second); `KIDZY_SHOW=sketch:sea|paint|tiles|animals|guitar|parrot` opens one in the simulator |
+| iPhone apps | `ios/project.yml` (XcodeGen → `ios/Kidzy.xcodeproj`, targets `Kidzy` and `SketchesForKids`) | `ios/Kidzy/` = the video app; `ios/Kidzy/Shared/` = `KidzyCore` package tested with `swift test` (`Shared/Toys/` = the toys' pure logic) |
+| Toys (shared) | `ios/Toys/Sources/` (`Kit/` = Theme, stickers, ToyHost, registry, sensors, synths; one folder per toy), `ios/Toys/Resources/` | compiled into both apps as plain sources: nothing in `Toys/` may reference an app's model; toys leave through `\.toyExit` |
+| « Sketches for kids! » | `ios/SketchesForKids/` | the toys alone, free + one unlock purchase, Kids Category; see the plan in `docs/` |
+| Toy details | `ios/Toys/Sources/*`, `ios/Kidzy/Shared/Toys/*`, `ios/Toys/Resources/Shaders/Fluid.metal.txt` | registry (`Toys.all`) + full-screen host (`ToyHost`); « La mer » = spring-column water + boat, tilt via CoreMotion; « Peinture » = Metal stable-fluids paint, shaders compiled at runtime from the .txt (Xcode 26 ships no Metal compiler by default); « Perroquet » = microphone → `Shared/RepeatDetector.swift` (phrase ends after 0.8 s of silence) → pitched playback (AVAudioUnitTimePitch), frames in `Resources/Parrot/` (simulator check: grant the mic with `simctl privacy`, `say` a sentence through the Mac speaker, read `log show --predicate 'subsystem == "com.screenclub.kidzy"'`, `KIDZY_PARROT_TRACE=1` logs levels four times a second); `KIDZY_SHOW=sketch:sea|paint|tiles|animals|guitar|parrot` opens one in the simulator |
 | Designs | `docs/design/` | approved mock-ups: change them before changing the app's look |
 | Ops | `ops/`, `ios/scripts/` | launchd agent, install on phone, TestFlight upload |
 
@@ -26,8 +28,8 @@ of a video is 4 taps in the top-left corner; the parent area and the admin need 
 - `make build` then `make run` (or `ops/install-launchd.sh` for the background service)
 - `make test` (Go with `-race` + vet, admin vitest, Swift core tests)
 - `npm --prefix admin run dev` (Vite with `/api` proxied to `127.0.0.1:8800`)
-- `make xcodeproj` after editing `ios/Kidzy/project.yml`
-- `ios/scripts/install-phone.sh` (USB install), `ios/scripts/archive-upload.sh` (TestFlight)
+- `make xcodeproj` after editing `ios/project.yml` or adding files
+- `ios/scripts/install-phone.sh [kidzy|sketches]` (install on the phone), `ios/scripts/archive-upload.sh [kidzy|sketches]` (TestFlight)
 
 ## Skills
 | Skill | When |

@@ -9,7 +9,7 @@ struct SeaSketchView: View {
     }
 
     var mode: Mode = .toy
-    @Environment(AppModel.self) private var model
+    @Environment(\.toyExit) private var toyExit
     @Environment(\.scenePhase) private var phase
     @State private var box = SeaToyBox()
     @State private var sensor = TiltSensor()
@@ -52,7 +52,7 @@ struct SeaSketchView: View {
             guard mode == .toy else { return }
             while !Task.isCancelled {
                 try? await Task.sleep(for: .seconds(10))
-                if let toy = box.current, Date().timeIntervalSince(toy.lastActivity) > 300 { model.exitSketch() }
+                if let toy = box.current, Date().timeIntervalSince(toy.lastActivity) > 300 { toyExit() }
             }
         }
     }

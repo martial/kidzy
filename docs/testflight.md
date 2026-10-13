@@ -16,7 +16,7 @@ What Martial does once (only he can):
    ASC_KEY_PATH=/Users/screen-club/.config/kidzy/AuthKey_<KEYID>.p8
    ```
 
-Then every release is `ios/scripts/archive-upload.sh` (see the `release-testflight` skill).
+Then every release is `ios/scripts/archive-upload.sh` (`archive-upload.sh sketches` for « Sketches for kids! »; see the `release-testflight` skill).
 After the first upload: TestFlight tab → fill « Beta App Information » (contact e-mail,
 privacy policy URL can be « none » for internal testing) → Internal Testing → create a group
 « Famille » with Martial's Apple ID. Internal builds need no review. Install the TestFlight app on

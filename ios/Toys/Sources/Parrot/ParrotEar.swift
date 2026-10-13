@@ -33,7 +33,7 @@ final class ParrotEar {
     private var lastVoice = -1
     private var lastLevelLog = 0.0
     private let traceEvery = ProcessInfo.processInfo.environment["KIDZY_PARROT_TRACE"] == nil ? 2.0 : 0.25
-    private let log = Logger(subsystem: "com.screenclub.kidzy", category: "parrot")
+    private let log = Logger(subsystem: Bundle.main.bundleIdentifier ?? "com.screenclub", category: "parrot")
 
     /// The silly voices, in cents and speed: mostly tiny, now and then a giant.
     static let voices: [(pitch: Float, rate: Float)] = [(900, 1.0), (700, 1.12), (1100, 1.0), (1200, 1.15), (-500, 0.92)]

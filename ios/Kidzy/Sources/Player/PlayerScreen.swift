@@ -55,7 +55,7 @@ struct PlayerScreen: View {
     }
 
     private func start() {
-        Orientation.set(.landscape)
+        OrientationLock.set(.landscape)
         UIApplication.shared.isIdleTimerDisabled = true
         try? AVAudioSession.sharedInstance().setCategory(.playback, mode: .moviePlayback)
         try? AVAudioSession.sharedInstance().setActive(true)
@@ -131,7 +131,7 @@ struct PlayerScreen: View {
         }
         observers.removeAll()
         UIApplication.shared.isIdleTimerDisabled = false
-        Orientation.set(.portrait)
+        OrientationLock.set(.portrait)
     }
 }
 

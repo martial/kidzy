@@ -1,8 +1,14 @@
 #!/bin/sh
 # Archive a Release build and upload it to App Store Connect (TestFlight).
+# Usage: archive-upload.sh [kidzy|sketches]   (default kidzy)
 # Needs ~/.config/kidzy/asc.env with ASC_KEY_ID, ASC_ISSUER_ID and ASC_KEY_PATH (the .p8).
 set -eu
 cd "$(dirname "$0")/.."
+case "${1:-kidzy}" in
+  kidzy) SCHEME=Kidzy ;;
+  sketches) SCHEME=SketchesForKids ;;
+  *) echo "usage: $0 [kidzy|sketches]" >&2; exit 2 ;;
+esac
 ENV="${HOME}/.config/kidzy/asc.env"
 [ -f "$ENV" ] || { echo "missing $ENV (ASC_KEY_ID, ASC_ISSUER_ID, ASC_KEY_PATH)" >&2; exit 1; }
 # shellcheck disable=SC1090
@@ -10,10 +16,10 @@ ENV="${HOME}/.config/kidzy/asc.env"
 : "${ASC_KEY_ID:?}" "${ASC_ISSUER_ID:?}" "${ASC_KEY_PATH:?}"
 [ -f "$ASC_KEY_PATH" ] || { echo "missing key file $ASC_KEY_PATH" >&2; exit 1; }
 BUILD="$(git rev-list --count HEAD)"
-ARCHIVE="$PWD/build/Kidzy.xcarchive"
+ARCHIVE="$PWD/build/$SCHEME.xcarchive"
 rm -rf "$ARCHIVE" "$PWD/build/export"
 echo "archiving build $BUILD"
-xcodebuild archive -project Kidzy/Kidzy.xcodeproj -scheme Kidzy -configuration Release \
+xcodebuild archive -project Kidzy.xcodeproj -scheme "$SCHEME" -configuration Release \
   -destination 'generic/platform=iOS' -archivePath "$ARCHIVE" \
   CURRENT_PROJECT_VERSION="$BUILD" \
   -allowProvisioningUpdates \

@@ -10,7 +10,7 @@ struct ParrotSketchView: View {
         case listen
     }
 
-    @Environment(AppModel.self) private var model
+    @Environment(\.toyExit) private var toyExit
     @Environment(\.scenePhase) private var phase
     @State private var ear = ParrotEar()
     @State private var frames = ParrotFrames()
@@ -82,7 +82,7 @@ struct ParrotSketchView: View {
         .task {
             while !Task.isCancelled {
                 try? await Task.sleep(for: .seconds(10))
-                if Date().timeIntervalSince(lastActivity) > 300 { model.exitSketch() }
+                if Date().timeIntervalSince(lastActivity) > 300 { toyExit() }
             }
         }
     }
