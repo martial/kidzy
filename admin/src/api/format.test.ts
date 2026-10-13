@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { formatBytes, formatDuration } from './format'
+import { formatAgo, formatBytes, formatDuration } from './format'
 
 describe('formatDuration', () => {
   it('formats seconds, minutes and hours', () => {
@@ -14,5 +14,13 @@ describe('formatBytes', () => {
     expect(formatBytes(900)).toBe('900 o')
     expect(formatBytes(1536)).toBe('1.5 Ko')
     expect(formatBytes(3 * 1024 ** 3)).toBe('3.0 Go')
+  })
+})
+
+describe('formatAgo', () => {
+  it('speaks French', () => {
+    expect(formatAgo(Date.now())).toBe("à l'instant")
+    expect(formatAgo(Date.now() - 5 * 60000)).toBe('il y a 5 min')
+    expect(formatAgo(0)).toBe('')
   })
 })
