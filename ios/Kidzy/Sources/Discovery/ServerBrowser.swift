@@ -38,6 +38,13 @@ final class ServerBrowser {
     private func resolve(_ results: Set<NWBrowser.Result>) {
         for r in results {
             guard case .service(let name, _, _, _) = r.endpoint, !resolved.contains(name) else { continue }
+            // The server publishes its .local hostname and port in the TXT record; mDNS resolves it.
+            if case .bonjour(let txt) = r.metadata, let host = txt.dictionary["host"], !host.isEmpty {
+                let port = Int(txt.dictionary["port"] ?? "") ?? 8800
+                resolved.insert(name)
+                onFound?(ServerEndpoint(host: host, port: port, name: name))
+                continue
+            }
             let params = NWParameters.tcp
             if let ip = params.defaultProtocolStack.internetProtocol as? NWProtocolIP.Options { ip.version = .v4 }
             let c = NWConnection(to: r.endpoint, using: params)
@@ -47,9 +54,8 @@ final class ServerBrowser {
                 let hostString: String
                 switch host {
                 case .ipv4(let a): hostString = "\(a)"
-                case .ipv6(let a): hostString = "[\(a)]"
                 case .name(let n, _): hostString = n
-                @unknown default: hostString = "\(host)"
+                default: return // an IPv6 link-local address does not fit in a URL; wait for IPv4 or the TXT host
                 }
                 let ep = ServerEndpoint(host: hostString, port: Int(port.rawValue), name: serviceName)
                 c.cancel()

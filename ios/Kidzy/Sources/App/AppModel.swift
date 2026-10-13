@@ -271,7 +271,7 @@ final class AppModel {
     func describe(_ error: Error) -> String {
         if let f = error as? KidzyClient.Failure {
             switch f {
-            case .badURL: return "Adresse invalide"
+            case .badURL: return "Adresse du serveur inutilisable (\(endpoint?.host ?? "?"))"
             case .http(_, let m): return m
             case .decoding: return "Réponse illisible"
             }

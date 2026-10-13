@@ -77,7 +77,11 @@ func run() error {
 	worker := &jobs.Worker{Store: st, Runners: runners, Log: log, Timeout: 6 * time.Hour}
 	srv := &api.Server{Cfg: cfg, Store: st, Worker: worker, Ingest: pipe, Log: log, Sources: enabled, Deps: deps, Started: time.Now()}
 	watcher := &watch.Watcher{Dir: cfg.InboxDir(), Log: log, OnFile: srv.ImportInbox}
-	adv := bonjour.New(cfg.Name, cfg.Port(), map[string]string{"id": serverID, "path": "/api", "v": version}, log)
+	txt := map[string]string{"id": serverID, "path": "/api", "v": version, "port": cfg.Port()}
+	if h := bonjour.LocalHostname(); h != "" {
+		txt["host"] = h // the phone builds its URLs from this, no address resolution needed
+	}
+	adv := bonjour.New(cfg.Name, cfg.Port(), txt, log)
 
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()

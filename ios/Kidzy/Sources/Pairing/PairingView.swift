@@ -10,7 +10,7 @@ struct PairingView: View {
     var body: some View {
         ZStack {
             if let ep = model.endpoint, !showManual {
-                PinKeypad(title: "Code parent", subtitle: "pour relier cet iPhone à « \(ep.name) »\n\(error)", onClose: { showManual = true }) { pin in
+                PinKeypad(title: "Code parent", subtitle: "pour relier cet iPhone à « \(ep.name) » (\(ep.host):\(ep.port))\n\(error)", onClose: { showManual = true }) { pin in
                     if let msg = await model.pair(pin: pin) {
                         error = msg
                         return false
