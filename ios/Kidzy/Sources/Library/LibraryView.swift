@@ -60,8 +60,11 @@ struct LibraryView: View {
                                     Button {
                                         model.openSketch(entry.id)
                                     } label: {
-                                        StickerTile(color: Theme.ocean, tilt: index % 2 == 0 ? -2 : 2) {
-                                            SeaSticker().frame(width: inner, height: inner)
+                                        StickerTile(color: entry.id == "paint" ? Theme.coral : Theme.ocean, tilt: index % 2 == 0 ? -2 : 2) {
+                                            Group {
+                                                if entry.id == "paint" { PaintSticker() } else { SeaSticker() }
+                                            }
+                                            .frame(width: inner, height: inner)
                                         }
                                     }
                                     .buttonStyle(PressStyle())

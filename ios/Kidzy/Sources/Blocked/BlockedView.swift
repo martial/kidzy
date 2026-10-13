@@ -19,8 +19,11 @@ struct BlockedView: View {
                     Spacer()
                     HStack {
                         Spacer()
-                        StickerButton(size: 64, systemImage: "sailboat.fill", label: "Jouer avec la mer") { model.openSketch("sea") }
-                            .padding(24)
+                        HStack(spacing: 16) {
+                            StickerButton(size: 64, systemImage: "paintbrush.pointed.fill", label: "Peindre") { model.openSketch("paint") }
+                            StickerButton(size: 64, systemImage: "sailboat.fill", label: "Jouer avec la mer") { model.openSketch("sea") }
+                        }
+                        .padding(24)
                     }
                 }
             }

@@ -1,0 +1,164 @@
+// Stable-fluids simulation (Jos Stam) on textures: advection, vorticity
+// confinement, pressure projection. Velocity lives on a small grid in
+// texels per second; pigment (dye) on a larger grid. The finger adds
+// pigment and velocity; the paper shows white minus pigment, like paint.
+#include <metal_stdlib>
+using namespace metal;
+
+constexpr sampler linearSampler(coord::normalized, address::clamp_to_edge, filter::linear);
+
+struct AdvectParams {
+    float dt;
+    float dissipation;
+    float2 velTexel;
+};
+
+struct SplatParams {
+    float2 point;
+    float4 value;
+    float radius;
+    float aspect;
+};
+
+struct VorticityParams {
+    float curl;
+    float dt;
+};
+
+static inline bool outside(uint2 gid, texture2d<float, access::write> t) {
+    return gid.x >= t.get_width() || gid.y >= t.get_height();
+}
+
+kernel void advect(texture2d<float, access::sample> velocity [[texture(0)]],
+                   texture2d<float, access::sample> source [[texture(1)]],
+                   texture2d<float, access::write> dest [[texture(2)]],
+                   constant AdvectParams &p [[buffer(0)]],
+                   uint2 gid [[thread_position_in_grid]]) {
+    if (outside(gid, dest)) return;
+    float2 size = float2(dest.get_width(), dest.get_height());
+    float2 uv = (float2(gid) + 0.5) / size;
+    float2 vel = velocity.sample(linearSampler, uv).xy;
+    float2 coord = uv - p.dt * vel * p.velTexel;
+    dest.write(source.sample(linearSampler, coord) * p.dissipation, gid);
+}
+
+kernel void splat(texture2d<float, access::read> source [[texture(0)]],
+                  texture2d<float, access::write> dest [[texture(1)]],
+                  constant SplatParams &p [[buffer(0)]],
+                  uint2 gid [[thread_position_in_grid]]) {
+    if (outside(gid, dest)) return;
+    float2 size = float2(dest.get_width(), dest.get_height());
+    float2 uv = (float2(gid) + 0.5) / size;
+    float2 d = uv - p.point;
+    d.x *= p.aspect;
+    float s = exp(-dot(d, d) / p.radius);
+    dest.write(source.read(gid) + p.value * s, gid);
+}
+
+kernel void curl(texture2d<float, access::read> velocity [[texture(0)]],
+                 texture2d<float, access::write> dest [[texture(1)]],
+                 uint2 gid [[thread_position_in_grid]]) {
+    if (outside(gid, dest)) return;
+    int w = velocity.get_width(), h = velocity.get_height();
+    int x = gid.x, y = gid.y;
+    float L = velocity.read(uint2(max(x - 1, 0), y)).y;
+    float R = velocity.read(uint2(min(x + 1, w - 1), y)).y;
+    float T = velocity.read(uint2(x, min(y + 1, h - 1))).x;
+    float B = velocity.read(uint2(x, max(y - 1, 0))).x;
+    dest.write(float4(0.5 * (R - L - T + B), 0, 0, 0), gid);
+}
+
+kernel void vorticity(texture2d<float, access::read> velocity [[texture(0)]],
+                      texture2d<float, access::read> curlTex [[texture(1)]],
+                      texture2d<float, access::write> dest [[texture(2)]],
+                      constant VorticityParams &p [[buffer(0)]],
+                      uint2 gid [[thread_position_in_grid]]) {
+    if (outside(gid, dest)) return;
+    int w = curlTex.get_width(), h = curlTex.get_height();
+    int x = gid.x, y = gid.y;
+    float L = curlTex.read(uint2(max(x - 1, 0), y)).x;
+    float R = curlTex.read(uint2(min(x + 1, w - 1), y)).x;
+    float T = curlTex.read(uint2(x, min(y + 1, h - 1))).x;
+    float B = curlTex.read(uint2(x, max(y - 1, 0))).x;
+    float C = curlTex.read(gid).x;
+    float2 force = 0.5 * float2(abs(T) - abs(B), abs(R) - abs(L));
+    force /= length(force) + 0.0001;
+    force *= p.curl * C;
+    force.y *= -1.0;
+    float2 vel = velocity.read(gid).xy + force * p.dt;
+    vel = clamp(vel, -1000.0, 1000.0);
+    dest.write(float4(vel, 0, 0), gid);
+}
+
+kernel void divergence(texture2d<float, access::read> velocity [[texture(0)]],
+                       texture2d<float, access::write> dest [[texture(1)]],
+                       uint2 gid [[thread_position_in_grid]]) {
+    if (outside(gid, dest)) return;
+    int w = velocity.get_width(), h = velocity.get_height();
+    int x = gid.x, y = gid.y;
+    float2 C = velocity.read(gid).xy;
+    float L = x > 0 ? velocity.read(uint2(x - 1, y)).x : -C.x;
+    float R = x < w - 1 ? velocity.read(uint2(x + 1, y)).x : -C.x;
+    float T = y < h - 1 ? velocity.read(uint2(x, y + 1)).y : -C.y;
+    float B = y > 0 ? velocity.read(uint2(x, y - 1)).y : -C.y;
+    dest.write(float4(0.5 * (R - L + T - B), 0, 0, 0), gid);
+}
+
+kernel void scale(texture2d<float, access::read> source [[texture(0)]],
+                  texture2d<float, access::write> dest [[texture(1)]],
+                  constant float &factor [[buffer(0)]],
+                  uint2 gid [[thread_position_in_grid]]) {
+    if (outside(gid, dest)) return;
+    dest.write(source.read(gid) * factor, gid);
+}
+
+kernel void pressure(texture2d<float, access::read> pressureTex [[texture(0)]],
+                     texture2d<float, access::read> divergenceTex [[texture(1)]],
+                     texture2d<float, access::write> dest [[texture(2)]],
+                     uint2 gid [[thread_position_in_grid]]) {
+    if (outside(gid, dest)) return;
+    int w = pressureTex.get_width(), h = pressureTex.get_height();
+    int x = gid.x, y = gid.y;
+    float L = pressureTex.read(uint2(max(x - 1, 0), y)).x;
+    float R = pressureTex.read(uint2(min(x + 1, w - 1), y)).x;
+    float T = pressureTex.read(uint2(x, min(y + 1, h - 1))).x;
+    float B = pressureTex.read(uint2(x, max(y - 1, 0))).x;
+    float div = divergenceTex.read(gid).x;
+    dest.write(float4((L + R + B + T - div) * 0.25, 0, 0, 0), gid);
+}
+
+kernel void gradientSubtract(texture2d<float, access::read> pressureTex [[texture(0)]],
+                             texture2d<float, access::read> velocity [[texture(1)]],
+                             texture2d<float, access::write> dest [[texture(2)]],
+                             uint2 gid [[thread_position_in_grid]]) {
+    if (outside(gid, dest)) return;
+    int w = pressureTex.get_width(), h = pressureTex.get_height();
+    int x = gid.x, y = gid.y;
+    float L = pressureTex.read(uint2(max(x - 1, 0), y)).x;
+    float R = pressureTex.read(uint2(min(x + 1, w - 1), y)).x;
+    float T = pressureTex.read(uint2(x, min(y + 1, h - 1))).x;
+    float B = pressureTex.read(uint2(x, max(y - 1, 0))).x;
+    float2 vel = velocity.read(gid).xy - 0.5 * float2(R - L, T - B);
+    dest.write(float4(vel, 0, 0), gid);
+}
+
+struct PaintVertex {
+    float4 position [[position]];
+    float2 uv;
+};
+
+vertex PaintVertex paintVertex(uint vid [[vertex_id]]) {
+    float2 pos[3] = { float2(-1, -1), float2(3, -1), float2(-1, 3) };
+    PaintVertex out;
+    out.position = float4(pos[vid], 0, 1);
+    out.uv = float2((pos[vid].x + 1) * 0.5, 1 - (pos[vid].y + 1) * 0.5);
+    return out;
+}
+
+fragment float4 paintFragment(PaintVertex in [[stage_in]],
+                              texture2d<float, access::sample> dye [[texture(0)]]) {
+    float3 pigment = dye.sample(linearSampler, in.uv).rgb;
+    float3 paper = float3(1.0, 0.99, 0.96);
+    float3 color = clamp(paper - pigment, 0.0, 1.0);
+    return float4(color, 1.0);
+}

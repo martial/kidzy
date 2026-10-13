@@ -17,12 +17,15 @@
 		2EBD9FB905F322CC989616B9 /* plop.wav in Resources */ = {isa = PBXBuildFile; fileRef = C01AA1BA5E6E9BF9F98DB83C /* plop.wav */; };
 		351ED624B8D37316BAC563A9 /* Keychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB64FEF32F7B058AA67F0CE9 /* Keychain.swift */; };
 		4C4820D3619FD2F18F9A42DD /* PlayerLayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABAE7E4920DFF7E6AD93C6D1 /* PlayerLayerView.swift */; };
+		541ACE05A9384D56BFD5123B /* FluidSimulator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9180C86A7ABD3B4C7E20ADE7 /* FluidSimulator.swift */; };
 		56CC21C85BCAAE2C96D22E15 /* CornerTapLock.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFC6A12FBFC28EC6EA418084 /* CornerTapLock.swift */; };
 		57B58C79BA866FF31D65D225 /* LibraryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B93AB1D9FFDA3E6D0D0253C1 /* LibraryView.swift */; };
 		57C9B65F389355B69CB25900 /* TimeLimitRules.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72DE41B1BB919859F656F785 /* TimeLimitRules.swift */; };
+		5A0DDCD1138422E17A13BC8D /* FluidView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA1A04568CB2B8C543B659B3 /* FluidView.swift */; };
 		5A99B14EA78CBEF9D6E780AB /* SeaToy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AEDCCCEBA4ACB801508F177 /* SeaToy.swift */; };
 		6D2FACD049FCEBF9BB02CE6C /* BlockedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3711D388ECEE5A49ACF38B5F /* BlockedView.swift */; };
 		6DE2D8D3CC12B466E6DA2CDF /* PinEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93428ED4F170B70CB47D4252 /* PinEntry.swift */; };
+		70C88D244193DBDDBD666BAE /* Fluid.metal.txt in Resources */ = {isa = PBXBuildFile; fileRef = CE0D1E85CE4EFD8680C0C88E /* Fluid.metal.txt */; };
 		731EB878CA490AA1A24BB843 /* SeaSimulation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A3EACF700EC5D4C19DC6AF8 /* SeaSimulation.swift */; };
 		7707E0E3CE1D5081D02D688A /* ParentAreaView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83CF5BE5F2E5CB90757DD9D7 /* ParentAreaView.swift */; };
 		7E1704F0392CDDEF3CEE200F /* PairingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F25229236338E3145C8940CC /* PairingView.swift */; };
@@ -39,6 +42,7 @@
 		BFCCCC8F74E39690B31C72EE /* CollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F90DA23659D702FB6E0F460A /* CollectionView.swift */; };
 		C560E0BC0663F0ED9A2CB59E /* Stickers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54A371CE75B7A09EE278F39D /* Stickers.swift */; };
 		CD6918C4A4A3ACBF9FBB5EFB /* ParentGateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9192C14F6E26A5C06D8C5405 /* ParentGateView.swift */; };
+		D5FDDAC86A0997C420FA4E84 /* PaintSketchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 848E584CC6834AB0F9106BB9 /* PaintSketchView.swift */; };
 		E172C28E3E68C79F1EA7298F /* Sketch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E776E01FC5B79E5EE26AE3B /* Sketch.swift */; };
 		E1E972EF2E061630543AD058 /* KidzyClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 409AE5296B6605D1CC8987E2 /* KidzyClient.swift */; };
 		E392888CE65306442F9A1B30 /* SoundBank.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E681C1D584CD697224B929B /* SoundBank.swift */; };
@@ -71,7 +75,9 @@
 		72DE41B1BB919859F656F785 /* TimeLimitRules.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeLimitRules.swift; sourceTree = "<group>"; };
 		819AC9210F43BD3C9A2B3870 /* Kidzy.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Kidzy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		83CF5BE5F2E5CB90757DD9D7 /* ParentAreaView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParentAreaView.swift; sourceTree = "<group>"; };
+		848E584CC6834AB0F9106BB9 /* PaintSketchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaintSketchView.swift; sourceTree = "<group>"; };
 		84C40730CBF9D8B126D05ADB /* PlayerScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerScreen.swift; sourceTree = "<group>"; };
+		9180C86A7ABD3B4C7E20ADE7 /* FluidSimulator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FluidSimulator.swift; sourceTree = "<group>"; };
 		9192C14F6E26A5C06D8C5405 /* ParentGateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParentGateView.swift; sourceTree = "<group>"; };
 		93428ED4F170B70CB47D4252 /* PinEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinEntry.swift; sourceTree = "<group>"; };
 		936281E75DBF6F2603C5898D /* RemoteImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteImage.swift; sourceTree = "<group>"; };
@@ -81,6 +87,8 @@
 		B93AB1D9FFDA3E6D0D0253C1 /* LibraryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryView.swift; sourceTree = "<group>"; };
 		C01AA1BA5E6E9BF9F98DB83C /* plop.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = plop.wav; sourceTree = "<group>"; };
 		C4B64EF88C3F31496B258E5B /* giggle.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = giggle.wav; sourceTree = "<group>"; };
+		CA1A04568CB2B8C543B659B3 /* FluidView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FluidView.swift; sourceTree = "<group>"; };
+		CE0D1E85CE4EFD8680C0C88E /* Fluid.metal.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = Fluid.metal.txt; sourceTree = "<group>"; };
 		DC6280F367CD28F6E2161F36 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		DFC6A12FBFC28EC6EA418084 /* CornerTapLock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CornerTapLock.swift; sourceTree = "<group>"; };
 		E038BF08F6BD24648940289F /* KidzyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KidzyApp.swift; sourceTree = "<group>"; };
@@ -118,6 +126,14 @@
 			path = Discovery;
 			sourceTree = "<group>";
 		};
+		190B1C115863998F19B86D55 /* Shaders */ = {
+			isa = PBXGroup;
+			children = (
+				CE0D1E85CE4EFD8680C0C88E /* Fluid.metal.txt */,
+			);
+			path = Shaders;
+			sourceTree = "<group>";
+		};
 		1AEBC688B305D882524EC670 /* Gate */ = {
 			isa = PBXGroup;
 			children = (
@@ -145,6 +161,7 @@
 		4F69F8E8F48BA152D3059CE2 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				190B1C115863998F19B86D55 /* Shaders */,
 				B17C241A42D778532CF0A9C2 /* Sounds */,
 			);
 			path = Resources;
@@ -185,6 +202,16 @@
 				661092EBD7C32515FFF6DD5D /* TiltSensor.swift */,
 			);
 			path = Sea;
+			sourceTree = "<group>";
+		};
+		8C2C896C1DD388925BF6F7AE /* Paint */ = {
+			isa = PBXGroup;
+			children = (
+				9180C86A7ABD3B4C7E20ADE7 /* FluidSimulator.swift */,
+				CA1A04568CB2B8C543B659B3 /* FluidView.swift */,
+				848E584CC6834AB0F9106BB9 /* PaintSketchView.swift */,
+			);
+			path = Paint;
 			sourceTree = "<group>";
 		};
 		94BC9BD2A12C5014C7EC30C2 = {
@@ -244,6 +271,7 @@
 			children = (
 				1E776E01FC5B79E5EE26AE3B /* Sketch.swift */,
 				ECCDBBE818B2775C2E55D86B /* SketchHost.swift */,
+				8C2C896C1DD388925BF6F7AE /* Paint */,
 				7BA8DF735D8794D56032AAF1 /* Sea */,
 			);
 			path = Sketches;
@@ -344,6 +372,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				ECF9BCFB58634EF85668A8ED /* Assets.xcassets in Resources */,
+				70C88D244193DBDDBD666BAE /* Fluid.metal.txt in Resources */,
 				F01052243C3119DBEEA25DA8 /* PrivacyInfo.xcprivacy in Resources */,
 				8515A0721FA02A5960414F69 /* bump.wav in Resources */,
 				12CFE05C31D5AD7F2CABC577 /* chime.wav in Resources */,
@@ -366,11 +395,14 @@
 				921EAF914BD62365AE60BCE8 /* Boat.swift in Sources */,
 				BFCCCC8F74E39690B31C72EE /* CollectionView.swift in Sources */,
 				56CC21C85BCAAE2C96D22E15 /* CornerTapLock.swift in Sources */,
+				541ACE05A9384D56BFD5123B /* FluidSimulator.swift in Sources */,
+				5A0DDCD1138422E17A13BC8D /* FluidView.swift in Sources */,
 				351ED624B8D37316BAC563A9 /* Keychain.swift in Sources */,
 				FBBF8AC22826BA21AA5912A5 /* KidzyApp.swift in Sources */,
 				E1E972EF2E061630543AD058 /* KidzyClient.swift in Sources */,
 				57B58C79BA866FF31D65D225 /* LibraryView.swift in Sources */,
 				94A7EB0A391814EFA949985B /* Models.swift in Sources */,
+				D5FDDAC86A0997C420FA4E84 /* PaintSketchView.swift in Sources */,
 				7E1704F0392CDDEF3CEE200F /* PairingView.swift in Sources */,
 				7707E0E3CE1D5081D02D688A /* ParentAreaView.swift in Sources */,
 				CD6918C4A4A3ACBF9FBB5EFB /* ParentGateView.swift in Sources */,

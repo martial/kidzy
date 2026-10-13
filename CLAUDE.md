@@ -18,7 +18,7 @@ of a video is 4 taps in the top-left corner; the parent area and the admin need 
 | Source plugins | `server/internal/sources`, `docs/sources.md` | seam; the plugins themselves are linked in from private repos |
 | Admin UI | `admin/` (Vite + React + TS, Semantic UI) | built into `server/internal/web/dist`, served at `/admin/` |
 | iPhone app | `ios/Kidzy/` (`project.yml` → XcodeGen) | `Shared/` = `KidzyCore` package tested with `swift test` |
-| Sketches (toys) | `ios/Kidzy/Sources/Sketches/`, `Shared/SeaSimulation.swift`, `Shared/Boat.swift` | registry + full-screen host; « La mer » = spring-column water + boat, tilt via CoreMotion; `KIDZY_SHOW=sketch:sea` opens it in the simulator |
+| Sketches (toys) | `ios/Kidzy/Sources/Sketches/`, `Shared/SeaSimulation.swift`, `Shared/Boat.swift`, `Resources/Shaders/Fluid.metal.txt` | registry + full-screen host; « La mer » = spring-column water + boat, tilt via CoreMotion; « Peinture » = Metal stable-fluids paint, shaders compiled at runtime from the .txt (Xcode 26 ships no Metal compiler by default); `KIDZY_SHOW=sketch:sea|paint` opens one in the simulator |
 | Designs | `docs/design/` | approved mock-ups: change them before changing the app's look |
 | Ops | `ops/`, `ios/scripts/` | launchd agent, install on phone, TestFlight upload |
 
