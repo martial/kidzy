@@ -7,6 +7,20 @@ options:
     iOS: "17.0"
   createIntermediateGroups: true
   generateEmptyDirectories: true
+packages:
+  # Toy audio (MIT): one AudioKit engine shared by every toy, see Toys/Sources/Kit/ToyAudio.swift
+  AudioKit:
+    url: https://github.com/AudioKit/AudioKit
+    from: 5.7.2
+  SoundpipeAudioKit:
+    url: https://github.com/AudioKit/SoundpipeAudioKit
+    from: 5.7.4
+  AudioKitEX:
+    url: https://github.com/AudioKit/AudioKitEX
+    from: 5.7.0
+  DunneAudioKit:
+    url: https://github.com/AudioKit/DunneAudioKit
+    from: 5.6.2
 configs:
   Debug: debug
   Release: release
@@ -27,6 +41,11 @@ targets:
       - path: Toys/Toys.xcstrings
       - path: Kidzy/Assets.xcassets
       - path: Kidzy/PrivacyInfo.xcprivacy
+    dependencies:
+      - package: AudioKit
+      - package: SoundpipeAudioKit
+      - package: AudioKitEX
+      - package: DunneAudioKit
     configFiles:
       Debug: Kidzy/Config/App.xcconfig
       Release: Kidzy/Config/App.xcconfig
@@ -54,6 +73,11 @@ targets:
       - path: SketchesForKids/InfoPlist.xcstrings
       - path: SketchesForKids/Store.storekit
         buildPhase: none
+    dependencies:
+      - package: AudioKit
+      - package: SoundpipeAudioKit
+      - package: AudioKitEX
+      - package: DunneAudioKit
     configFiles:
       Debug: SketchesForKids/Config/App.xcconfig
       Release: SketchesForKids/Config/App.xcconfig

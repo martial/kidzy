@@ -68,7 +68,10 @@ struct ParrotSketchView: View {
             }
             Task { await ear.start() }
         }
-        .onDisappear { ear.stop() }
+        .onDisappear {
+            ear.stop()
+            squawk.unload()
+        }
         .onChange(of: phase) { _, p in
             if p == .active { Task { await ear.start() } } else { ear.stop() }
         }
@@ -155,20 +158,11 @@ struct ParrotImage: View {
 /// The parrot's own cry (a Gemini TTS performance), for a tap before any phrase.
 @MainActor
 final class Squawk {
-    private var player: AVAudioPlayer?
+    private let bank = SoundBank(names: ["animal-perroquet"], copies: 2)
 
-    func load() {
-        guard player == nil, let url = Bundle.main.url(forResource: "animal-perroquet", withExtension: "wav") else { return }
-        player = try? AVAudioPlayer(contentsOf: url)
-        player?.prepareToPlay()
-    }
-
-    func play() {
-        guard let player else { return }
-        player.currentTime = 0
-        player.volume = 0.8
-        player.play()
-    }
+    func load() { bank.load() }
+    func unload() { bank.unload() }
+    func play() { bank.play("animal-perroquet", volume: 0.8, rate: Double.random(in: 0.96...1.06)) }
 }
 
 /// Little notes that fly out of the beak while the parrot talks.

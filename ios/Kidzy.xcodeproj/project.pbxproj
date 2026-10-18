@@ -13,7 +13,9 @@
 		059E817AA4776E0EA424079E /* name-cochon.wav in Resources */ = {isa = PBXBuildFile; fileRef = 8638612426228B24E1BA1624 /* name-cochon.wav */; };
 		06A8753CA1A56ECE4B94A328 /* Toys.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 5C627E5EA7198A477C9AF556 /* Toys.xcstrings */; };
 		07606B2AA7D261E04747DEED /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDC5C6DD2A337C381B6E7071 /* Theme.swift */; };
+		076427AF353AB8F06119DA94 /* ToyAudio.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85867F24BB0B85706C956FF2 /* ToyAudio.swift */; };
 		08B9E4DA574D8029AAFF8B94 /* TimeLimitRules.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C37D0E7CBE5EFF954020162 /* TimeLimitRules.swift */; };
+		09B74C49075FCE9E3B4B1419 /* AudioKit in Frameworks */ = {isa = PBXBuildFile; productRef = 13593A97E3F7740E135457C3 /* AudioKit */; };
 		0AB605B21B3F9A2BE2F72BB5 /* name-chien.wav in Resources */ = {isa = PBXBuildFile; fileRef = 322A5D87CF3319438347E806 /* name-chien.wav */; };
 		0AF9B61007502CD832167B25 /* grenouille.png in Resources */ = {isa = PBXBuildFile; fileRef = 96D5F6D8D644FB94290E2DF3 /* grenouille.png */; };
 		0EA7808E0AF9929577A54995 /* animal-chien.wav in Resources */ = {isa = PBXBuildFile; fileRef = FABCE28697E0AE796A97C4A4 /* animal-chien.wav */; };
@@ -57,6 +59,7 @@
 		4ECD2F27B68BDCCE8EB07D65 /* FluidSimulator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA9621BCFAD52AC6D20DFCC /* FluidSimulator.swift */; };
 		4FA95C645FD62A8EEA18ABC8 /* GuitarSketchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D681CAB879619553F6A58C3 /* GuitarSketchView.swift */; };
 		4FF0FB07DF011E35929F2F37 /* name-grenouille.wav in Resources */ = {isa = PBXBuildFile; fileRef = 7387E959315DAA11246C6BD6 /* name-grenouille.wav */; };
+		50C82BA0201343E007F569BF /* SoundpipeAudioKit in Frameworks */ = {isa = PBXBuildFile; productRef = 71553A53B953EA5667292D6D /* SoundpipeAudioKit */; };
 		51A30E61201A63DFFA36AED5 /* SketchesApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9266A40438F0C16E59BD9EEE /* SketchesApp.swift */; };
 		52FD0EF8C8BF80ED1B13AF59 /* grenouille.png in Resources */ = {isa = PBXBuildFile; fileRef = 96D5F6D8D644FB94290E2DF3 /* grenouille.png */; };
 		530BB5773B408852A7F41F8D /* plop.wav in Resources */ = {isa = PBXBuildFile; fileRef = 6C2830357FA0D7259C525B4F /* plop.wav */; };
@@ -65,7 +68,9 @@
 		55D4D33E396785D9A3A1F075 /* name-coq.wav in Resources */ = {isa = PBXBuildFile; fileRef = 2FF128B20686649342858B22 /* name-coq.wav */; };
 		589156E452B8B658569A96FD /* animal-grenouille.wav in Resources */ = {isa = PBXBuildFile; fileRef = 54FBB24C8BF8B85B62C6F894 /* animal-grenouille.wav */; };
 		58C4BF0E7EFBD7604DEC1CC0 /* PaintSketchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E266B9BE61A9A668EDF283 /* PaintSketchView.swift */; };
+		5D23CBB41778F3AA2DE632F3 /* AudioKitEX in Frameworks */ = {isa = PBXBuildFile; productRef = 7F7EDC4FBF3D00AB9552D3A6 /* AudioKitEX */; };
 		5D561F791E4AC1BC00BE0620 /* PickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C6B5753661C6ACB36BBF065 /* PickerView.swift */; };
+		5DDA44353114DA9A9DD17097 /* DunneAudioKit in Frameworks */ = {isa = PBXBuildFile; productRef = 3E7A8D5BAF162CB6C02C8898 /* DunneAudioKit */; };
 		5E6FBBBFE5653B0E06BF16BC /* Boat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FD76D73AE92A8654FB6C45F /* Boat.swift */; };
 		6006DCA9E0B1EFA938FD9186 /* TiltSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCEE052AD371DDF7553B366E /* TiltSensor.swift */; };
 		602153F30F1E4619D2372EA0 /* TileGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4873F3D7228C4D9531EA3F0B /* TileGrid.swift */; };
@@ -82,6 +87,7 @@
 		6F3333F0EDD819DFD39CE879 /* TilesSketchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ED0ABEA2C6521FFECAFCE01 /* TilesSketchView.swift */; };
 		6F3B3A003F239512960DB56F /* name-canard.wav in Resources */ = {isa = PBXBuildFile; fileRef = FAF57753993FAA51DA2EE8DA /* name-canard.wav */; };
 		71A041C776CD60769CC1338B /* PaintSketchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E266B9BE61A9A668EDF283 /* PaintSketchView.swift */; };
+		72A7CABE30816AD8A2FC425D /* SoundpipeAudioKit in Frameworks */ = {isa = PBXBuildFile; productRef = 098AE6027D19969E0B548F61 /* SoundpipeAudioKit */; };
 		734493ADD02DD7DC08C5E418 /* animal-vache.wav in Resources */ = {isa = PBXBuildFile; fileRef = 86FB63EF19A339D2D6828877 /* animal-vache.wav */; };
 		7513EB34A6AD9074A2BF95A0 /* Keychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B9AE447B00D8B5EE694B625 /* Keychain.swift */; };
 		7786534E176BF8D6C02EF859 /* ParentAreaView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F44D801B4DDD526A30E12FDE /* ParentAreaView.swift */; };
@@ -107,6 +113,7 @@
 		91C13A39354D1F4CFF9CB7C8 /* chat.png in Resources */ = {isa = PBXBuildFile; fileRef = 1B5AEE0371898B2718F360A7 /* chat.png */; };
 		921E1760AE92E2278D49EB53 /* ServerEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8DBDEA27AA4BBACF5E1525 /* ServerEndpoint.swift */; };
 		93F5ECF82A9DE6F6B5C0D7AC /* Stickers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96332842A38908205D087B48 /* Stickers.swift */; };
+		98BE499ED5B561CAE6D9A1E2 /* AudioKit in Frameworks */ = {isa = PBXBuildFile; productRef = 766D120018845791290A889B /* AudioKit */; };
 		98F7CBF29D9ADB9B194ABC98 /* CornerTapLock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 202FB40944E3E381EEF16BC7 /* CornerTapLock.swift */; };
 		9BC76B792470F811CEA9FF53 /* name-grenouille.wav in Resources */ = {isa = PBXBuildFile; fileRef = 7387E959315DAA11246C6BD6 /* name-grenouille.wav */; };
 		9E595D0D2865C4ABCFFE11AF /* ane.png in Resources */ = {isa = PBXBuildFile; fileRef = B8749E0741FC47DEDAC7C776 /* ane.png */; };
@@ -139,9 +146,11 @@
 		BA0CF1CC0247429E43D30FE6 /* SoundBank.swift in Sources */ = {isa = PBXBuildFile; fileRef = 923C71F8EFFD007535CA2E18 /* SoundBank.swift */; };
 		BA3E1C5A3ED0AB89485F1591 /* Store.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 97B0D11982F034FD6100D64C /* Store.storekit */; };
 		BAA1F403A195ACB0B1676D83 /* animal-chat.wav in Resources */ = {isa = PBXBuildFile; fileRef = B43801A741FFBC3A66010C47 /* animal-chat.wav */; };
+		BB29E1186F158E7DA4FC1943 /* DunneAudioKit in Frameworks */ = {isa = PBXBuildFile; productRef = 3D6973C0EC5E8E2A8AB45C20 /* DunneAudioKit */; };
 		BD1053B44727B11BB3B6ABB8 /* TimelineReporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69FD38F31690C1C82E091CB2 /* TimelineReporter.swift */; };
 		BD2B4C5628726CCB2E957F35 /* animal-chien.wav in Resources */ = {isa = PBXBuildFile; fileRef = FABCE28697E0AE796A97C4A4 /* animal-chien.wav */; };
 		BDEE8B8A63A75717FF68257D /* lion.png in Resources */ = {isa = PBXBuildFile; fileRef = 095C5E38E18EFCB156993372 /* lion.png */; };
+		BDFE161FC9D1D7FE2DCC3E8F /* ToyAudio.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85867F24BB0B85706C956FF2 /* ToyAudio.swift */; };
 		C13C2A23F1AAE5BEA3928A91 /* mouton.png in Resources */ = {isa = PBXBuildFile; fileRef = 83AFF61D96720B6BF0DDA77E /* mouton.png */; };
 		C1B0AC03505F3DCE830C217E /* FingerMusic.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8B00A6346E34F7D45E4868D /* FingerMusic.swift */; };
 		C2DE021983312604C9F6248F /* animal-chat.wav in Resources */ = {isa = PBXBuildFile; fileRef = B43801A741FFBC3A66010C47 /* animal-chat.wav */; };
@@ -165,12 +174,14 @@
 		E6003511C827B14D1E19E9F7 /* chime.wav in Resources */ = {isa = PBXBuildFile; fileRef = 131879AA49E450B70BE258DB /* chime.wav */; };
 		E6690F41990F13D8CE991E92 /* animal-lion.wav in Resources */ = {isa = PBXBuildFile; fileRef = A0BD43C34919E9D9CA75D9DC /* animal-lion.wav */; };
 		E8627914CDFEC19C4D3FDF4D /* parrot-idle.png in Resources */ = {isa = PBXBuildFile; fileRef = 12DD6F59021CA0DA2B6D4882 /* parrot-idle.png */; };
+		EA61FD9772D18F883311D945 /* ToyAudioTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 841C1454585C474A89E39135 /* ToyAudioTests.swift */; };
 		EA6A732D981D365D5ABCF3DB /* ToyRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 619AAACA29163B97B42BA851 /* ToyRegistry.swift */; };
 		EB1AC433D673EDB3C1AD1D64 /* animal-coq.wav in Resources */ = {isa = PBXBuildFile; fileRef = 8C296D2B945A9F74C657AA4B /* animal-coq.wav */; };
 		EC7615BDA305FA9429C1AB92 /* animal-coq.wav in Resources */ = {isa = PBXBuildFile; fileRef = 8C296D2B945A9F74C657AA4B /* animal-coq.wav */; };
 		EC87400723F97BAB05BB96ED /* TiltSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCEE052AD371DDF7553B366E /* TiltSensor.swift */; };
 		ECD006661858FC3BEBF1284B /* FluidView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABFBAE21EC29B7DCB9034549 /* FluidView.swift */; };
 		EEBCACB4D1F7CB86263EA3AE /* vache.png in Resources */ = {isa = PBXBuildFile; fileRef = 702E91DA1615A5BBA8ABE284 /* vache.png */; };
+		EF1B96C8219006B163726F8E /* AudioKitEX in Frameworks */ = {isa = PBXBuildFile; productRef = 48BD768C28BD3BD2B4773AB2 /* AudioKitEX */; };
 		F1D316D136349EB290403FE0 /* TilesSketchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ED0ABEA2C6521FFECAFCE01 /* TilesSketchView.swift */; };
 		F23B880D9133614550FE9359 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6416CE990E2EB10BB40BF042 /* Assets.xcassets */; };
 		F3AA197BEE9DC22144A49F51 /* animal-grenouille.wav in Resources */ = {isa = PBXBuildFile; fileRef = 54FBB24C8BF8B85B62C6F894 /* animal-grenouille.wav */; };
@@ -261,7 +272,9 @@
 		7C13B3A867D8945F6D658C23 /* splash.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = splash.wav; sourceTree = "<group>"; };
 		819AC9210F43BD3C9A2B3870 /* Kidzy.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Kidzy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		83AFF61D96720B6BF0DDA77E /* mouton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = mouton.png; sourceTree = "<group>"; };
+		841C1454585C474A89E39135 /* ToyAudioTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToyAudioTests.swift; sourceTree = "<group>"; };
 		8505999A2287B1647F6A8954 /* KidzyUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = KidzyUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		85867F24BB0B85706C956FF2 /* ToyAudio.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToyAudio.swift; sourceTree = "<group>"; };
 		8638612426228B24E1BA1624 /* name-cochon.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "name-cochon.wav"; sourceTree = "<group>"; };
 		86FB63EF19A339D2D6828877 /* animal-vache.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "animal-vache.wav"; sourceTree = "<group>"; };
 		8944EDCAF493B854B73C90C8 /* animal-ane.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "animal-ane.wav"; sourceTree = "<group>"; };
@@ -323,11 +336,37 @@
 		FF85D00F37008CB689576289 /* parrot-listen.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "parrot-listen.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
+/* Begin PBXFrameworksBuildPhase section */
+		41019E78D9170BA70AA07E1D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				09B74C49075FCE9E3B4B1419 /* AudioKit in Frameworks */,
+				50C82BA0201343E007F569BF /* SoundpipeAudioKit in Frameworks */,
+				EF1B96C8219006B163726F8E /* AudioKitEX in Frameworks */,
+				BB29E1186F158E7DA4FC1943 /* DunneAudioKit in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AB0761F7DEA8113273C601B3 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				98BE499ED5B561CAE6D9A1E2 /* AudioKit in Frameworks */,
+				72A7CABE30816AD8A2FC425D /* SoundpipeAudioKit in Frameworks */,
+				5D23CBB41778F3AA2DE632F3 /* AudioKitEX in Frameworks */,
+				5DDA44353114DA9A9DD17097 /* DunneAudioKit in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
 /* Begin PBXGroup section */
 		00E510768CC2A9EDCE285E2E /* Tests */ = {
 			isa = PBXGroup;
 			children = (
 				BD4FF95088B6A25BBA48FD42 /* StoreTests.swift */,
+				841C1454585C474A89E39135 /* ToyAudioTests.swift */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -715,6 +754,7 @@
 				96332842A38908205D087B48 /* Stickers.swift */,
 				BDC5C6DD2A337C381B6E7071 /* Theme.swift */,
 				BCEE052AD371DDF7553B366E /* TiltSensor.swift */,
+				85867F24BB0B85706C956FF2 /* ToyAudio.swift */,
 				D2DF8115C281FB3AC945D76C /* ToyHost.swift */,
 				619AAACA29163B97B42BA851 /* ToyRegistry.swift */,
 			);
@@ -793,6 +833,7 @@
 			buildPhases = (
 				B4B799EEBB40ADEF39A4FF8D /* Sources */,
 				B18E9775D83794E98F9F5BDC /* Resources */,
+				AB0761F7DEA8113273C601B3 /* Frameworks */,
 			);
 			buildRules = (
 			);
@@ -800,6 +841,10 @@
 			);
 			name = Kidzy;
 			packageProductDependencies = (
+				766D120018845791290A889B /* AudioKit */,
+				098AE6027D19969E0B548F61 /* SoundpipeAudioKit */,
+				7F7EDC4FBF3D00AB9552D3A6 /* AudioKitEX */,
+				3E7A8D5BAF162CB6C02C8898 /* DunneAudioKit */,
 			);
 			productName = Kidzy;
 			productReference = 819AC9210F43BD3C9A2B3870 /* Kidzy.app */;
@@ -811,6 +856,7 @@
 			buildPhases = (
 				2352C286EE69F32A80D04389 /* Sources */,
 				062EFCE7A9B8C9B1E9C6409D /* Resources */,
+				41019E78D9170BA70AA07E1D /* Frameworks */,
 			);
 			buildRules = (
 			);
@@ -818,6 +864,10 @@
 			);
 			name = SketchesForKids;
 			packageProductDependencies = (
+				13593A97E3F7740E135457C3 /* AudioKit */,
+				71553A53B953EA5667292D6D /* SoundpipeAudioKit */,
+				48BD768C28BD3BD2B4773AB2 /* AudioKitEX */,
+				3D6973C0EC5E8E2A8AB45C20 /* DunneAudioKit */,
 			);
 			productName = SketchesForKids;
 			productReference = 7C109E2748CBAE3BF11640E0 /* SketchesForKids.app */;
@@ -873,6 +923,12 @@
 			);
 			mainGroup = 94BC9BD2A12C5014C7EC30C2;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				3ADEB75A6A2B6492EFEF8402 /* XCRemoteSwiftPackageReference "AudioKit" */,
+				A9D12D2627671BE4952CB761 /* XCRemoteSwiftPackageReference "AudioKitEX" */,
+				BDF00ED89865AB9BF3619A1F /* XCRemoteSwiftPackageReference "DunneAudioKit" */,
+				FB3A2F509CB1066BC7ED7B26 /* XCRemoteSwiftPackageReference "SoundpipeAudioKit" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 4ADFFC0E9DA3C41C6C848043 /* Products */;
 			projectDirPath = "";
@@ -1037,6 +1093,7 @@
 				6286F27609120DA1F2602E17 /* TileGrid.swift in Sources */,
 				6F3333F0EDD819DFD39CE879 /* TilesSketchView.swift in Sources */,
 				6006DCA9E0B1EFA938FD9186 /* TiltSensor.swift in Sources */,
+				076427AF353AB8F06119DA94 /* ToyAudio.swift in Sources */,
 				53A2AC614C35F162EAD721AB /* ToyHost.swift in Sources */,
 				33B4DD2A260BCDB2EC3AC602 /* ToyRegistry.swift in Sources */,
 				546158EF787486FA11B03F33 /* UnlockView.swift in Sources */,
@@ -1108,6 +1165,7 @@
 				EC87400723F97BAB05BB96ED /* TiltSensor.swift in Sources */,
 				08B9E4DA574D8029AAFF8B94 /* TimeLimitRules.swift in Sources */,
 				BD1053B44727B11BB3B6ABB8 /* TimelineReporter.swift in Sources */,
+				BDFE161FC9D1D7FE2DCC3E8F /* ToyAudio.swift in Sources */,
 				7818C5F002F6205AF8D1453C /* ToyHost.swift in Sources */,
 				EA6A732D981D365D5ABCF3DB /* ToyRegistry.swift in Sources */,
 			);
@@ -1118,6 +1176,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4DE87E716F76E89FDE18C054 /* StoreTests.swift in Sources */,
+				EA61FD9772D18F883311D945 /* ToyAudioTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1479,6 +1538,84 @@
 			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		3ADEB75A6A2B6492EFEF8402 /* XCRemoteSwiftPackageReference "AudioKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/AudioKit/AudioKit";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.7.2;
+			};
+		};
+		A9D12D2627671BE4952CB761 /* XCRemoteSwiftPackageReference "AudioKitEX" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/AudioKit/AudioKitEX";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.7.0;
+			};
+		};
+		BDF00ED89865AB9BF3619A1F /* XCRemoteSwiftPackageReference "DunneAudioKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/AudioKit/DunneAudioKit";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.6.2;
+			};
+		};
+		FB3A2F509CB1066BC7ED7B26 /* XCRemoteSwiftPackageReference "SoundpipeAudioKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/AudioKit/SoundpipeAudioKit";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.7.4;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		098AE6027D19969E0B548F61 /* SoundpipeAudioKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FB3A2F509CB1066BC7ED7B26 /* XCRemoteSwiftPackageReference "SoundpipeAudioKit" */;
+			productName = SoundpipeAudioKit;
+		};
+		13593A97E3F7740E135457C3 /* AudioKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3ADEB75A6A2B6492EFEF8402 /* XCRemoteSwiftPackageReference "AudioKit" */;
+			productName = AudioKit;
+		};
+		3D6973C0EC5E8E2A8AB45C20 /* DunneAudioKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BDF00ED89865AB9BF3619A1F /* XCRemoteSwiftPackageReference "DunneAudioKit" */;
+			productName = DunneAudioKit;
+		};
+		3E7A8D5BAF162CB6C02C8898 /* DunneAudioKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BDF00ED89865AB9BF3619A1F /* XCRemoteSwiftPackageReference "DunneAudioKit" */;
+			productName = DunneAudioKit;
+		};
+		48BD768C28BD3BD2B4773AB2 /* AudioKitEX */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A9D12D2627671BE4952CB761 /* XCRemoteSwiftPackageReference "AudioKitEX" */;
+			productName = AudioKitEX;
+		};
+		71553A53B953EA5667292D6D /* SoundpipeAudioKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FB3A2F509CB1066BC7ED7B26 /* XCRemoteSwiftPackageReference "SoundpipeAudioKit" */;
+			productName = SoundpipeAudioKit;
+		};
+		766D120018845791290A889B /* AudioKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3ADEB75A6A2B6492EFEF8402 /* XCRemoteSwiftPackageReference "AudioKit" */;
+			productName = AudioKit;
+		};
+		7F7EDC4FBF3D00AB9552D3A6 /* AudioKitEX */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A9D12D2627671BE4952CB761 /* XCRemoteSwiftPackageReference "AudioKitEX" */;
+			productName = AudioKitEX;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 4E4C315252E919E8AD3E2347 /* Project object */;
 }

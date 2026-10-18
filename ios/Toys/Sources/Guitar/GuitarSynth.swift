@@ -1,153 +1,300 @@
+@preconcurrency import AudioKit
+@preconcurrency import AudioKitEX
 import AVFoundation
 import Foundation
+import os
+@preconcurrency import SoundpipeAudioKit
 
-private let stringCount = 10   // six strings + four melody voices
-private let bufferSize = 2400
-
-/// Six plucked strings (Karplus-Strong) rendered in real time.
+/// Six strings and four melody voices, through `ToyAudio`.
+///
+/// AudioKit's own `PluckedString` cannot go below 110 Hz (the low E is 82 Hz)
+/// and restarts from raw noise on every trigger, so the strings are an
+/// extended Karplus-Strong model running as an AudioKit node (`StringsNode`):
+/// exact tuning (allpass in the loop), a pick-position comb and a velocity
+/// low-pass on the excitation (soft = warm, hard = bright), a decay per string,
+/// and two voices per string: a new pluck takes the free voice while the ringing
+/// one is damped over 60 ms, like a pick touching the string, so nothing clicks.
+/// After it, AudioKit filters give the wooden body (100 and 220 Hz resonances,
+/// softened top), and the shared reverb the room.
 @MainActor
 final class GuitarSynth {
-    private let engine = AVAudioEngine()
-    private let bank = StringBank()
-    private var source: AVAudioSourceNode?
+    private let audio: ToyAudio
+    private var graph: (strings: StringsNode, out: Fader)?
     private var running = false
+    private var turn = [Int](repeating: 0, count: 6)
+    private var melodyVoice = 0
+
+    init(audio: ToyAudio = .shared) {
+        self.audio = audio
+    }
 
     func start() {
         guard !running else { return }
-        try? AVAudioSession.sharedInstance().setCategory(.ambient, mode: .default)
-        try? AVAudioSession.sharedInstance().setActive(true)
-        let output = engine.outputNode.outputFormat(forBus: 0)
-        let sampleRate = output.sampleRate > 0 ? output.sampleRate : 48000
-        guard let format = AVAudioFormat(standardFormatWithSampleRate: sampleRate, channels: 2) else { return }
-        bank.sampleRate = Float(sampleRate)
-        let node = AVAudioSourceNode(format: format, renderBlock: Self.renderBlock(for: bank))
-        engine.attach(node)
-        engine.connect(node, to: engine.mainMixerNode, format: format)
-        engine.mainMixerNode.outputVolume = 0.8
-        source = node
-        do {
-            try engine.start()
-            running = true
-        } catch {
-            engine.detach(node)
-            source = nil
-        }
-    }
-
-    nonisolated static func renderBlock(for bank: StringBank) -> AVAudioSourceNodeRenderBlock {
-        { _, _, frameCount, audioBufferList -> OSStatus in
-            bank.render(frameCount: Int(frameCount), buffers: UnsafeMutableAudioBufferListPointer(audioBufferList))
-            return noErr
-        }
+        running = true
+        let g = graph ?? build()
+        graph = g
+        g.out.gain = 0.9
+        audio.attach(g.out)
+        audio.setRoom(.small)
+        audio.acquire()
     }
 
     func stop() {
-        guard running else { return }
-        engine.stop()
-        if let source { engine.detach(source) }
-        source = nil
+        guard running, let g = graph else { return }
         running = false
-        bank.silence()
+        g.strings.dsp.send(.init(kind: .silence))
+        audio.detach(g.out)
+        audio.release()
     }
 
     /// Plucks string `index` (0 = low E) at `frequency`; `velocity` 0...1 sets loudness and brightness.
     func pluck(string index: Int, frequency: Double, velocity: Double) {
-        bank.pluck(index: index, frequency: Float(frequency), velocity: Float(velocity))
+        guard running, let g = graph, (0..<6).contains(index), frequency > 20 else { return }
+        let fresh = index * 2 + turn[index], old = index * 2 + (1 - turn[index])
+        turn[index] ^= 1
+        let lane = Float(index) / 5
+        g.strings.dsp.send(.init(kind: .damp, voice: Int32(old), time: 0.06))
+        g.strings.dsp.send(.init(kind: .pluck, voice: Int32(fresh), frequency: Float(frequency), velocity: Float(velocity), pan: (lane - 0.5) * 0.7, t60: 4.6 - 2.2 * lane))
     }
-
-    private var melodyVoice = 0
 
     /// A melody note on one of four extra voices, round robin so notes overlap.
     func melody(midi: Int, velocity: Double) {
+        guard running, let g = graph else { return }
         melodyVoice = (melodyVoice + 1) % 4
-        bank.pluck(index: 6 + melodyVoice, frequency: Float(Chord.frequency(midi: midi)), velocity: Float(velocity))
+        g.strings.dsp.send(.init(kind: .pluck, voice: Int32(12 + melodyVoice), frequency: Float(Chord.frequency(midi: midi)), velocity: Float(velocity), pan: 0.12, t60: 2.6))
     }
 
-    func mute(string index: Int) { bank.mute(index: index) }
+    /// A string not in the chord: damped quickly.
+    func mute(string index: Int) {
+        guard running, let g = graph, (0..<6).contains(index) else { return }
+        g.strings.dsp.send(.init(kind: .damp, voice: Int32(index * 2), time: 0.08))
+        g.strings.dsp.send(.init(kind: .damp, voice: Int32(index * 2 + 1), time: 0.08))
+    }
+
+    private func build() -> (strings: StringsNode, out: Fader) {
+        let strings = StringsNode()
+        let body = PeakingParametricEqualizerFilter(strings, centerFrequency: 102, gain: 1.45, q: 0.9)
+        let top = PeakingParametricEqualizerFilter(body, centerFrequency: 225, gain: 1.25, q: 1.1)
+        let soft = HighShelfParametricEqualizerFilter(top, centerFrequency: 4800, gain: 0.6, q: 0.7)
+        return (strings, Fader(soft, gain: 0.9))
+    }
 }
 
-/// Karplus-Strong ring buffers, one per string, shared with the audio thread.
-final class StringBank: @unchecked Sendable {
-    private struct Str {
-        var buffer = [Float](repeating: 0, count: bufferSize)
-        var length = 100
-        var index = 0
-        var active = false
-        var decay: Float = 0.996
+/// An AudioKit node whose sound comes from `StringsDSP`.
+final class StringsNode: Node {
+    let dsp: StringsDSP
+    let avAudioNode: AVAudioNode
+    var connections: [Node] { [] }
+
+    init(format: AVAudioFormat = AudioKit.Settings.audioFormat) {
+        let dsp = StringsDSP(sampleRate: Float(format.sampleRate))
+        self.dsp = dsp
+        avAudioNode = AVAudioSourceNode(format: format, renderBlock: Self.renderBlock(for: dsp))
+    }
+
+    // Built outside any actor: the block runs on the audio thread.
+    nonisolated static func renderBlock(for dsp: StringsDSP) -> AVAudioSourceNodeRenderBlock {
+        { _, _, frameCount, audioBufferList -> OSStatus in
+            dsp.render(frameCount: Int(frameCount), buffers: UnsafeMutableAudioBufferListPointer(audioBufferList))
+            return noErr
+        }
+    }
+}
+
+/// Extended Karplus-Strong strings. Everything the audio thread touches is
+/// allocated up front; commands arrive through a small queue that the audio
+/// thread only reads when the lock is free (it never waits).
+final class StringsDSP: @unchecked Sendable {
+    struct Command: Sendable {
+        enum Kind: UInt8, Sendable { case pluck, damp, silence }
+        var kind: Kind
+        var voice: Int32 = 0
+        var frequency: Float = 0
+        var velocity: Float = 0
         var pan: Float = 0
-        var ticks = 0
+        var t60: Float = 3
+        var time: Float = 0.06
     }
 
-    private let lock = NSLock()
-    private var strings = [Str](repeating: Str(), count: stringCount)
-    var sampleRate: Float = 48000
+    private struct Queue: Sendable {
+        var items = [Command](repeating: Command(kind: .silence), count: StringsDSP.queueCapacity)
+        var count = 0
+    }
 
-    func pluck(index: Int, frequency: Float, velocity: Float) {
-        guard index >= 0, index < stringCount, frequency > 20 else { return }
-        lock.lock()
-        defer { lock.unlock() }
-        var s = strings[index]
-        s.length = max(2, min(bufferSize - 1, Int(sampleRate / frequency)))
-        let v = max(0.15, min(1, velocity))
-        var prev: Float = 0
-        let brightness = 0.35 + 0.65 * v  // a harder strum has more treble
-        for i in 0..<s.length {
-            let noise = Float.random(in: -1...1)
-            let smoothed = prev + (noise - prev) * brightness
-            s.buffer[i] = smoothed * v
-            prev = smoothed
+    private struct Voice {
+        var length = 0          // whole samples in the loop
+        var index = 0
+        var previous: Float = 0 // loop filter memory
+        var apIn: Float = 0, apOut: Float = 0, apCoef: Float = 0
+        var rho: Float = 0.996  // loop gain per period
+        var gainL: Float = 0, gainR: Float = 0
+        var envelope: Float = 1 // 1, or falling to 0 while damped
+        var envelopeStep: Float = 0
+        var active = false
+        var quiet = 0           // samples in a row below the floor
+    }
+
+    static let voiceCount = 16  // two per string, four melody
+    static let queueCapacity = 128
+    static let maxLength = 4096
+
+    let sampleRate: Float
+    private let queue = OSAllocatedUnfairLock(initialState: Queue())
+    private let pending: UnsafeMutablePointer<Command>
+    private let voices: UnsafeMutablePointer<Voice>
+    private let lines: UnsafeMutablePointer<Float>
+    private let scratch: UnsafeMutablePointer<Float>
+    private var seed: UInt32 = 0x9E37_79B9
+    private var dcIn: Float = 0, dcOutL: Float = 0, dcOutR: Float = 0, dcInR: Float = 0
+
+    init(sampleRate: Float) {
+        self.sampleRate = sampleRate > 0 ? sampleRate : 44100
+        pending = .allocate(capacity: Self.queueCapacity)
+        pending.initialize(repeating: Command(kind: .silence), count: Self.queueCapacity)
+        voices = .allocate(capacity: Self.voiceCount)
+        voices.initialize(repeating: Voice(), count: Self.voiceCount)
+        lines = .allocate(capacity: Self.voiceCount * Self.maxLength)
+        lines.initialize(repeating: 0, count: Self.voiceCount * Self.maxLength)
+        scratch = .allocate(capacity: Self.maxLength)
+        scratch.initialize(repeating: 0, count: Self.maxLength)
+    }
+
+    deinit {
+        pending.deallocate()
+        voices.deallocate()
+        lines.deallocate()
+        scratch.deallocate()
+    }
+
+    /// From the main thread.
+    func send(_ command: Command) {
+        queue.withLock { q in
+            guard q.count < StringsDSP.queueCapacity else { return }
+            q.items[q.count] = command
+            q.count += 1
         }
-        s.index = 0
-        s.active = true
-        let lane = Float(min(index, 5)) / 5
-        s.decay = index >= 6 ? 0.9965 : 0.994 + 0.004 * (1 - lane)  // low strings ring longer, melody rings a while
-        s.pan = index >= 6 ? 0.15 : (lane - 0.5) * 0.8
-        s.ticks = 0
-        strings[index] = s
     }
 
-    func mute(index: Int) {
-        guard index >= 0, index < stringCount else { return }
-        lock.lock()
-        strings[index].decay = 0.9
-        lock.unlock()
-    }
-
-    func silence() {
-        lock.lock()
-        strings = [Str](repeating: Str(), count: stringCount)
-        lock.unlock()
-    }
-
+    /// From the audio thread.
     func render(frameCount: Int, buffers: UnsafeMutableAudioBufferListPointer) {
-        guard buffers.count >= 1 else { return }
-        let left = UnsafeMutablePointer<Float>(OpaquePointer(buffers[0].mData!))
-        let right = buffers.count > 1 ? UnsafeMutablePointer<Float>(OpaquePointer(buffers[1].mData!)) : nil
+        guard buffers.count >= 1, let l = buffers[0].mData?.assumingMemoryBound(to: Float.self) else { return }
+        let r = buffers.count > 1 ? buffers[1].mData?.assumingMemoryBound(to: Float.self) : nil
+        // only this thread reads `pending`; the lock guards the queue it copies from
+        nonisolated(unsafe) let pending = self.pending
+        let n = queue.withLockIfAvailable { q -> Int in
+            let n = q.count
+            for i in 0..<n { pending[i] = q.items[i] }
+            q.count = 0
+            return n
+        } ?? 0
+        for i in 0..<n { apply(pending[i]) }
+
         for i in 0..<frameCount {
-            left[i] = 0
-            right?[i] = 0
+            l[i] = 0
+            r?[i] = 0
         }
-        lock.lock()
-        for k in strings.indices where strings[k].active {
-            var s = strings[k]
-            let angle = (s.pan + 1) * 0.25 * Float.pi
-            let gl = cos(angle), gr = sin(angle)
-            var energy: Float = 0
+        for v in 0..<Self.voiceCount where voices[v].active {
+            var s = voices[v]
+            let line = lines + v * Self.maxLength
             for i in 0..<frameCount {
-                let cur = s.buffer[s.index]
-                let nextIndex = s.index + 1 == s.length ? 0 : s.index + 1
-                let next = s.buffer[nextIndex]
-                let out = cur * 0.45
-                s.buffer[s.index] = (cur + next) * 0.5 * s.decay
-                s.index = nextIndex
-                left[i] += out * gl
-                right?[i] += out * gr
-                energy += abs(out)
+                let y = line[s.index]
+                // loop: two-point average (the string's losses), allpass (exact pitch), gain (decay)
+                let averaged = 0.5 * (y + s.previous)
+                s.previous = y
+                let ap = s.apCoef * averaged + s.apIn - s.apCoef * s.apOut
+                s.apIn = averaged
+                s.apOut = ap
+                line[s.index] = ap * s.rho
+                s.index += 1
+                if s.index >= s.length { s.index = 0 }
+                var out = y * s.envelope
+                if s.envelopeStep > 0 {
+                    s.envelope = max(0, s.envelope - s.envelopeStep)
+                }
+                if !out.isFinite { out = 0 }
+                l[i] += out * s.gainL
+                r?[i] += out * s.gainR
+                s.quiet = abs(out) < 0.0002 ? s.quiet + 1 : 0
             }
-            s.ticks += 1
-            if s.ticks > 20, energy / Float(frameCount) < 0.0004 { s.active = false }
-            strings[k] = s
+            if s.envelope <= 0 || s.quiet > Int(sampleRate * 0.25) {
+                s.active = false
+                for k in 0..<s.length { line[k] = 0 }
+            }
+            voices[v] = s
         }
-        lock.unlock()
+        // remove any DC the strings carry (one-pole high-pass at ~20 Hz)
+        let R: Float = 0.9972
+        for i in 0..<frameCount {
+            let x = l[i]
+            dcOutL = x - dcIn + R * dcOutL
+            dcIn = x
+            l[i] = dcOutL
+            if let r {
+                let xr = r[i]
+                dcOutR = xr - dcInR + R * dcOutR
+                dcInR = xr
+                r[i] = dcOutR
+            }
+        }
+    }
+
+    private func apply(_ c: Command) {
+        switch c.kind {
+        case .silence:
+            for v in 0..<Self.voiceCount where voices[v].active {
+                voices[v].envelopeStep = 1 / (0.04 * sampleRate)
+            }
+        case .damp:
+            let v = Int(c.voice)
+            guard (0..<Self.voiceCount).contains(v), voices[v].active else { return }
+            voices[v].envelopeStep = 1 / (max(0.005, c.time) * sampleRate)
+        case .pluck:
+            pluck(c)
+        }
+    }
+
+    private func pluck(_ c: Command) {
+        let v = Int(c.voice)
+        guard (0..<Self.voiceCount).contains(v), c.frequency > 20 else { return }
+        // loop length P = N + 0.5 (average) + d (allpass), 0.1 <= d < 1.1
+        let period = sampleRate / c.frequency
+        let whole = max(8, min(Self.maxLength - 1, Int(period - 0.6)))
+        let d = max(0.1, period - 0.5 - Float(whole))
+        let velocity = max(0.12, min(1, c.velocity))
+        // excitation: noise, low-passed by the velocity, combed at the pick position, centred
+        let brightness = 0.22 + 0.62 * velocity
+        var lp: Float = 0
+        var mean: Float = 0
+        for k in 0..<whole {
+            lp += brightness * (noise() - lp)
+            scratch[k] = lp
+        }
+        let pick = max(1, Int(Float(whole) * 0.13))
+        for k in stride(from: whole - 1, through: pick, by: -1) { scratch[k] -= scratch[k - pick] }
+        for k in 0..<whole { mean += scratch[k] }
+        mean /= Float(whole)
+        var peak: Float = 0.0001
+        for k in 0..<whole {
+            scratch[k] -= mean
+            peak = max(peak, abs(scratch[k]))
+        }
+        let level = 0.55 * pow(velocity, 1.3) / peak
+        let line = lines + v * Self.maxLength
+        for k in 0..<whole { line[k] = scratch[k] * level }
+        let angle = (min(1, max(-1, c.pan)) + 1) * 0.25 * .pi
+        voices[v] = Voice(
+            length: whole, index: 0, previous: 0, apIn: 0, apOut: 0,
+            apCoef: (1 - d) / (1 + d),
+            rho: pow(10, -3 / (max(0.3, c.t60) * c.frequency)),
+            gainL: cos(angle), gainR: sin(angle),
+            envelope: 1, envelopeStep: 0, active: true, quiet: 0
+        )
+    }
+
+    private func noise() -> Float {
+        seed ^= seed << 13
+        seed ^= seed >> 17
+        seed ^= seed << 5
+        return Float(seed) / Float(UInt32.max) * 2 - 1
     }
 }

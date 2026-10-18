@@ -79,7 +79,7 @@ struct AnimalsSketchView: View {
             )
         }
         .onAppear { sounds.prepare() }
-        .onDisappear { sounds.stop() }
+        .onDisappear { sounds.unload() }
         .onChange(of: phase) { _, p in
             if p != .active { sounds.stop() }
         }
@@ -131,42 +131,38 @@ struct AnimalImage: View {
 }
 
 /// The name (name-<id>.wav, a Gemini TTS voice) then the cry (animal-<id>.wav,
-/// Gemini TTS performing the onomatopoeia); the system voice only as fallback.
+/// Gemini TTS performing the onomatopoeia), through the shared `ToyAudio`
+/// engine (streamed from disk, one player each); the system voice only as fallback.
 @MainActor
 final class AnimalSounds {
     private let synthesizer = AVSpeechSynthesizer()
-    private var cries: [String: AVAudioPlayer] = [:]
-    private var names: [String: AVAudioPlayer] = [:]
-    private let bank = SoundBank()
+    private let clips = SoundBank(names: AnimalsSketchView.animals.flatMap { ["name-" + $0.id, "animal-" + $0.id] }, copies: 1, buffered: false)
+    private let bank = SoundBank(names: ["plop"], copies: 3)
 
     func prepare() {
-        try? AVAudioSession.sharedInstance().setCategory(.ambient, mode: .default)
-        try? AVAudioSession.sharedInstance().setActive(true)
         bank.load()
-        for a in AnimalsSketchView.animals {
-            if let url = Bundle.main.url(forResource: "animal-" + a.id, withExtension: "wav"), let p = try? AVAudioPlayer(contentsOf: url) {
-                p.prepareToPlay()
-                cries[a.id] = p
-            }
-            if let url = Bundle.main.url(forResource: "name-" + a.id, withExtension: "wav"), let p = try? AVAudioPlayer(contentsOf: url) {
-                p.prepareToPlay()
-                names[a.id] = p
-            }
-        }
+        clips.load()
+        ToyAudio.shared.setRoom(.small)
     }
 
     func stop() {
         synthesizer.stopSpeaking(at: .immediate)
-        for p in cries.values { p.stop() }
-        for p in names.values { p.stop() }
+        clips.stopAll()
+    }
+
+    /// Leaving the toy: silence, then hand the engine back.
+    func unload() {
+        stop()
+        clips.unload()
+        bank.unload()
     }
 
     /// Plays the recorded name and waits for it; falls back to the system voice.
     func say(_ id: String, fallback text: String) async {
-        if let p = names[id] {
-            p.currentTime = 0
-            p.play()
-            try? await Task.sleep(for: .seconds(max(0.3, p.duration + 0.15)))
+        let name = "name-" + id
+        if clips.has(name) {
+            clips.play(name, volume: 0.95)
+            try? await Task.sleep(for: .seconds(max(0.3, clips.duration(name) + 0.15)))
             return
         }
         let u = AVSpeechUtterance(string: text)
@@ -177,9 +173,7 @@ final class AnimalSounds {
     }
 
     func cry(_ id: String) {
-        guard let p = cries[id] else { return }
-        p.currentTime = 0
-        p.play()
+        clips.play("animal-" + id, volume: 0.95)
     }
 
     func plop() { bank.play("plop", volume: 0.3, rate: Double.random(in: 0.9...1.2)) }
