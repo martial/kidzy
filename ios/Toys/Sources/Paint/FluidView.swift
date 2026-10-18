@@ -8,7 +8,7 @@ final class FluidMTKView: MTKView {
     var sim: FluidSimulator?
     var palette: [SIMD3<Float>] = []
     var onTouchDown: (() -> Void)?
-    /// Music hooks: finger id, position (uv), speed (pt/s), direction (radians).
+    /// Sound hooks: finger id, position (uv), speed (pt/s), direction (radians).
     var onFingerBegan: ((Int, CGPoint) -> Void)?
     var onFingerMoved: ((Int, CGPoint, Double, Double) -> Void)?
     var onFingerEnded: ((Int) -> Void)?
@@ -40,11 +40,35 @@ final class FluidMTKView: MTKView {
         let now = CACurrentMediaTime()
         let dt = lastTime == 0 ? 1.0 / 60 : min(1.0 / 30, now - lastTime)
         lastTime = now
+        #if DEBUG
+        demoStroke(sim, now: now)
+        #endif
         sim.encodeStep(dt: Float(dt), into: cb)
         sim.encodeRender(into: cb, descriptor: rpd)
         cb.present(drawable)
         cb.commit()
     }
+
+    #if DEBUG
+    /// `KIDZY_PAINT_DEMO=1`: three fingers paint swirls for a few seconds (simulator captures).
+    private static let demo = ProcessInfo.processInfo.environment["KIDZY_PAINT_DEMO"] == "1"
+    private var demoStart: CFTimeInterval = 0
+
+    private func demoStroke(_ sim: FluidSimulator, now: CFTimeInterval) {
+        guard Self.demo, !palette.isEmpty else { return }
+        if demoStart == 0 { demoStart = now + 0.6 }
+        let t = Float(now - demoStart)
+        guard t > 0, t < 4.5 else { return }
+        for k in 0..<3 {
+            let phase = Float(k) * 2.1
+            func at(_ t: Float) -> SIMD2<Float> {
+                SIMD2(0.5 + 0.32 * sin(t * 1.3 + phase) * cos(t * 0.4), 0.5 + 0.3 * sin(t * 0.9 + phase * 1.7))
+            }
+            let p = at(t), q = at(t - 1.0 / 60)
+            sim.touch(at: p, delta: p - q, color: palette[(k * 2) % palette.count])
+        }
+    }
+    #endif
 
     private func uv(_ p: CGPoint) -> SIMD2<Float> {
         SIMD2(Float(p.x / max(1, bounds.width)), Float(p.y / max(1, bounds.height)))
@@ -97,7 +121,7 @@ final class FluidMTKView: MTKView {
 struct FluidView: UIViewRepresentable {
     let palette: [SIMD3<Float>]
     let onTouchDown: () -> Void
-    let synth: FingerSynth
+    let brush: BrushSynth
     @Binding var burstRequests: Int
 
     func makeUIView(context: Context) -> FluidMTKView {
@@ -106,10 +130,10 @@ struct FluidView: UIViewRepresentable {
         view.sim = sim
         view.palette = palette
         view.onTouchDown = onTouchDown
-        let synth = self.synth
-        view.onFingerBegan = { id, p in synth.began(id: id, voice: FingerMusic.voice(x: p.x, y: p.y, speed: 120, angle: 0)) }
-        view.onFingerMoved = { id, p, speed, angle in synth.update(id: id, voice: FingerMusic.voice(x: p.x, y: p.y, speed: speed, angle: angle)) }
-        view.onFingerEnded = { id in synth.ended(id: id) }
+        let brush = self.brush
+        view.onFingerBegan = { id, p in brush.began(id: id, x: p.x) }
+        view.onFingerMoved = { id, p, speed, _ in brush.moved(id: id, x: p.x, speed: speed) }
+        view.onFingerEnded = { id in brush.ended(id: id) }
         context.coordinator.view = view
         return view
     }

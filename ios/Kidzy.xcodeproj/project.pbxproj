@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		00054E5391EC247FDA616E27 /* RepeatDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6101585DB0CF4B374F7C22D1 /* RepeatDetector.swift */; };
+		013F270BDED57B76B62BE736 /* DSP.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4816B4D2BBF20616E26DFDD /* DSP.swift */; };
 		019E37493FF4CBE4F12476B4 /* SeaSketchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A9CC3927FBCFF2D8DD98A59 /* SeaSketchView.swift */; };
 		031E4F2FAE8393A61239EAC9 /* SeaSimulation.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA89C33767A05306879C99D4 /* SeaSimulation.swift */; };
 		059E817AA4776E0EA424079E /* name-cochon.wav in Resources */ = {isa = PBXBuildFile; fileRef = 8638612426228B24E1BA1624 /* name-cochon.wav */; };
@@ -25,6 +26,7 @@
 		14A1483441A2C4FAC44466E4 /* PinEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCDC10BE1D0E3F652683B740 /* PinEntry.swift */; };
 		18FC7B319993569B0B7FE40F /* GuitarSynth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C4998D4F3A1C6C411440DB7 /* GuitarSynth.swift */; };
 		1AA61D4AED9762B85132DB25 /* name-coq.wav in Resources */ = {isa = PBXBuildFile; fileRef = 2FF128B20686649342858B22 /* name-coq.wav */; };
+		1BED75693076DA76B00CD642 /* BrushDSP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CD21A5EAF8B35D1940DC2B8 /* BrushDSP.swift */; };
 		1DA409CD4E5AB4A5E85A6FF1 /* SketchesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 205792F2B2559DC7241F6F01 /* SketchesModel.swift */; };
 		215518FAE92D2FA13DFB8ED0 /* name-chien.wav in Resources */ = {isa = PBXBuildFile; fileRef = 322A5D87CF3319438347E806 /* name-chien.wav */; };
 		21B5768527F430E973418C84 /* animal-mouton.wav in Resources */ = {isa = PBXBuildFile; fileRef = 9D905F897D0D675924F17C73 /* animal-mouton.wav */; };
@@ -37,6 +39,7 @@
 		2AF8BCF4F73A02F0F5445413 /* animal-cochon.wav in Resources */ = {isa = PBXBuildFile; fileRef = 9F43C5A24433DC559BA9D2CD /* animal-cochon.wav */; };
 		2C4B53C459708FA327F29BBD /* ParrotEar.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFF50F9CE7E2F65FED985645 /* ParrotEar.swift */; };
 		2F93822D1002B996D4187F11 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 78B0123AEB63B6835F47D912 /* PrivacyInfo.xcprivacy */; };
+		30182FC2F715EE70CE19ED1E /* RenderNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EFF6BCB759FDE0A4FCBEA47 /* RenderNode.swift */; };
 		332F42D7F4F62BC7857E00AA /* GateQuestion.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEA96C0CD64B68566CD3CFF5 /* GateQuestion.swift */; };
 		33B4DD2A260BCDB2EC3AC602 /* ToyRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 619AAACA29163B97B42BA851 /* ToyRegistry.swift */; };
 		3453D1C9E585337F47AE4175 /* parrot-listen.png in Resources */ = {isa = PBXBuildFile; fileRef = FF85D00F37008CB689576289 /* parrot-listen.png */; };
@@ -73,6 +76,7 @@
 		58C4BF0E7EFBD7604DEC1CC0 /* PaintSketchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E266B9BE61A9A668EDF283 /* PaintSketchView.swift */; };
 		5CFDB8F743CF2B84EEE1E6C8 /* toy3d-paint.png in Resources */ = {isa = PBXBuildFile; fileRef = F03E375186D53EB3F616FC79 /* toy3d-paint.png */; };
 		5D23CBB41778F3AA2DE632F3 /* AudioKitEX in Frameworks */ = {isa = PBXBuildFile; productRef = 7F7EDC4FBF3D00AB9552D3A6 /* AudioKitEX */; };
+		5D3BA96D050A4158E4470941 /* BrushSynth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D1D81F4AF3514975AB887ED /* BrushSynth.swift */; };
 		5D561F791E4AC1BC00BE0620 /* PickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C6B5753661C6ACB36BBF065 /* PickerView.swift */; };
 		5DDA44353114DA9A9DD17097 /* DunneAudioKit in Frameworks */ = {isa = PBXBuildFile; productRef = 3E7A8D5BAF162CB6C02C8898 /* DunneAudioKit */; };
 		5E6FBBBFE5653B0E06BF16BC /* Boat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FD76D73AE92A8654FB6C45F /* Boat.swift */; };
@@ -85,6 +89,7 @@
 		6A12E5778E936F1A6D20660E /* GuitarSynth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C4998D4F3A1C6C411440DB7 /* GuitarSynth.swift */; };
 		6A515DD5A0F1A4E02139C8FE /* name-vache.wav in Resources */ = {isa = PBXBuildFile; fileRef = A41A23814CD1C9001DFABF02 /* name-vache.wav */; };
 		6AFD8679095A1F2F808E3FC7 /* Guitar.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1962DD46D8C11643264D966 /* Guitar.swift */; };
+		6C6F94BBCA4A442A97CD6FD8 /* RenderNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EFF6BCB759FDE0A4FCBEA47 /* RenderNode.swift */; };
 		6D3B970EC2BF6582C8AB42BC /* Stickers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96332842A38908205D087B48 /* Stickers.swift */; };
 		6D718AA64915B93493905BEC /* PlayerLayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB916C04F96AFFD97D2A77F2 /* PlayerLayerView.swift */; };
 		6DF77747C647C6D02E2E75DB /* Fluid.metal.txt in Resources */ = {isa = PBXBuildFile; fileRef = 4E85DD2D1FEF5411D8600288 /* Fluid.metal.txt */; };
@@ -102,6 +107,7 @@
 		7AEBE83482821C1E7F62C2A8 /* FingerMusic.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8B00A6346E34F7D45E4868D /* FingerMusic.swift */; };
 		7B9A03345E1E4741E78E306E /* chien.png in Resources */ = {isa = PBXBuildFile; fileRef = E9B0D1515FE221A03738C953 /* chien.png */; };
 		7BCD320570C81BC4A82AC1F7 /* HomeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7BEBFE8E716CF8EBA72A6FA /* HomeButton.swift */; };
+		7D81BF65D8FAB335043A00A5 /* DSP.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4816B4D2BBF20616E26DFDD /* DSP.swift */; };
 		7E227AA74F63FCE4F192C64D /* Toys.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 5C627E5EA7198A477C9AF556 /* Toys.xcstrings */; };
 		8077142FD775A4BAC020DAF7 /* ParentGateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4809529667C9B86E5FAF9D0C /* ParentGateView.swift */; };
 		81A10C221C2BEB7A83E98CE2 /* name-canard.wav in Resources */ = {isa = PBXBuildFile; fileRef = FAF57753993FAA51DA2EE8DA /* name-canard.wav */; };
@@ -175,6 +181,7 @@
 		D43CCF8089F7D5726B8488B5 /* OrientationLock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 545E008E619A8A32D2168456 /* OrientationLock.swift */; };
 		D5475FC15D79FA020D51ED8E /* FingerSynth.swift in Sources */ = {isa = PBXBuildFile; fileRef = C013221F797DDB3C865F36CF /* FingerSynth.swift */; };
 		D74344A8239C28297EB6A483 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 418AE499204D2C3580E2DDE6 /* Models.swift */; };
+		D857C7379E9F6A3F50620466 /* BrushDSP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CD21A5EAF8B35D1940DC2B8 /* BrushDSP.swift */; };
 		D90FE38292C237515CB65E97 /* SeaArt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B0984B14A3C2062A0CCF863 /* SeaArt.swift */; };
 		DB3FB2D749DBFDD86D5FD66F /* Baloo2-OFL.txt in Resources */ = {isa = PBXBuildFile; fileRef = D9A05B2C7C0A9529D89A51C7 /* Baloo2-OFL.txt */; };
 		DEC383043A5A2E0C94B11C9B /* name-cochon.wav in Resources */ = {isa = PBXBuildFile; fileRef = 8638612426228B24E1BA1624 /* name-cochon.wav */; };
@@ -190,6 +197,7 @@
 		E96A6F38928683806FD80E03 /* toy3d-tiles.png in Resources */ = {isa = PBXBuildFile; fileRef = AA27A821C4C96D3157E69DB8 /* toy3d-tiles.png */; };
 		EA61FD9772D18F883311D945 /* ToyAudioTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 841C1454585C474A89E39135 /* ToyAudioTests.swift */; };
 		EA6A732D981D365D5ABCF3DB /* ToyRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 619AAACA29163B97B42BA851 /* ToyRegistry.swift */; };
+		EB0742E1681121285DDD5057 /* BrushSynth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D1D81F4AF3514975AB887ED /* BrushSynth.swift */; };
 		EB1AC433D673EDB3C1AD1D64 /* animal-coq.wav in Resources */ = {isa = PBXBuildFile; fileRef = 8C296D2B945A9F74C657AA4B /* animal-coq.wav */; };
 		EC7615BDA305FA9429C1AB92 /* animal-coq.wav in Resources */ = {isa = PBXBuildFile; fileRef = 8C296D2B945A9F74C657AA4B /* animal-coq.wav */; };
 		EC87400723F97BAB05BB96ED /* TiltSensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCEE052AD371DDF7553B366E /* TiltSensor.swift */; };
@@ -237,6 +245,7 @@
 		01D689DBB65C6AD4D03DB372 /* RemoteImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteImage.swift; sourceTree = "<group>"; };
 		095C5E38E18EFCB156993372 /* lion.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = lion.png; sourceTree = "<group>"; };
 		0C4998D4F3A1C6C411440DB7 /* GuitarSynth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuitarSynth.swift; sourceTree = "<group>"; };
+		0D1D81F4AF3514975AB887ED /* BrushSynth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrushSynth.swift; sourceTree = "<group>"; };
 		1103A9D14CB60C117A6C1AA8 /* ParentGateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParentGateView.swift; sourceTree = "<group>"; };
 		12DD6F59021CA0DA2B6D4882 /* parrot-idle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "parrot-idle.png"; sourceTree = "<group>"; };
 		131879AA49E450B70BE258DB /* chime.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = chime.wav; sourceTree = "<group>"; };
@@ -270,6 +279,7 @@
 		5664A7883AEEDD484822DB43 /* name-chat.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "name-chat.wav"; sourceTree = "<group>"; };
 		5A9CC3927FBCFF2D8DD98A59 /* SeaSketchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeaSketchView.swift; sourceTree = "<group>"; };
 		5C627E5EA7198A477C9AF556 /* Toys.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Toys.xcstrings; sourceTree = "<group>"; };
+		5CD21A5EAF8B35D1940DC2B8 /* BrushDSP.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrushDSP.swift; sourceTree = "<group>"; };
 		5FD76D73AE92A8654FB6C45F /* Boat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Boat.swift; sourceTree = "<group>"; };
 		6101585DB0CF4B374F7C22D1 /* RepeatDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepeatDetector.swift; sourceTree = "<group>"; };
 		619AAACA29163B97B42BA851 /* ToyRegistry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToyRegistry.swift; sourceTree = "<group>"; };
@@ -279,6 +289,7 @@
 		69FD38F31690C1C82E091CB2 /* TimelineReporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimelineReporter.swift; sourceTree = "<group>"; };
 		6BB629CC34F16246CD1DEE12 /* App.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = App.xcconfig; sourceTree = "<group>"; };
 		6C2830357FA0D7259C525B4F /* plop.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = plop.wav; sourceTree = "<group>"; };
+		6EFF6BCB759FDE0A4FCBEA47 /* RenderNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenderNode.swift; sourceTree = "<group>"; };
 		702E91DA1615A5BBA8ABE284 /* vache.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = vache.png; sourceTree = "<group>"; };
 		704B702D6CF38F69D84C4B52 /* AutoplayQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoplayQueue.swift; sourceTree = "<group>"; };
 		7212026A8066436378B9D26F /* AnimalsSketchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimalsSketchView.swift; sourceTree = "<group>"; };
@@ -324,6 +335,7 @@
 		B3F2AF54D2DAED8D0C953CC9 /* App.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = App.xcconfig; sourceTree = "<group>"; };
 		B437D2D96227A8B032EE3306 /* SeaToy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeaToy.swift; sourceTree = "<group>"; };
 		B43801A741FFBC3A66010C47 /* animal-chat.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "animal-chat.wav"; sourceTree = "<group>"; };
+		B4816B4D2BBF20616E26DFDD /* DSP.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DSP.swift; sourceTree = "<group>"; };
 		B581603F94ED6617EF038A5F /* UnlockView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnlockView.swift; sourceTree = "<group>"; };
 		B8749E0741FC47DEDAC7C776 /* ane.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ane.png; sourceTree = "<group>"; };
 		B9B6DAF358FD417AA94006CA /* ToyExitUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToyExitUITests.swift; sourceTree = "<group>"; };
@@ -736,6 +748,8 @@
 		AAC5EABACDE55B7342D778F6 /* Paint */ = {
 			isa = PBXGroup;
 			children = (
+				5CD21A5EAF8B35D1940DC2B8 /* BrushDSP.swift */,
+				0D1D81F4AF3514975AB887ED /* BrushSynth.swift */,
 				AEA9621BCFAD52AC6D20DFCC /* FluidSimulator.swift */,
 				ABFBAE21EC29B7DCB9034549 /* FluidView.swift */,
 				38E266B9BE61A9A668EDF283 /* PaintSketchView.swift */,
@@ -808,9 +822,11 @@
 		E32B986A287E8EEEA474E546 /* Kit */ = {
 			isa = PBXGroup;
 			children = (
+				B4816B4D2BBF20616E26DFDD /* DSP.swift */,
 				C013221F797DDB3C865F36CF /* FingerSynth.swift */,
 				A7BEBFE8E716CF8EBA72A6FA /* HomeButton.swift */,
 				545E008E619A8A32D2168456 /* OrientationLock.swift */,
+				6EFF6BCB759FDE0A4FCBEA47 /* RenderNode.swift */,
 				923C71F8EFFD007535CA2E18 /* SoundBank.swift */,
 				96332842A38908205D087B48 /* Stickers.swift */,
 				BDC5C6DD2A337C381B6E7071 /* Theme.swift */,
@@ -1150,7 +1166,10 @@
 				8B2A49C6A88465A0EAA6D4C7 /* AnimalsSketchView.swift in Sources */,
 				5E6FBBBFE5653B0E06BF16BC /* Boat.swift in Sources */,
 				38CC597F11E6774BD4CE09C2 /* Brand.swift in Sources */,
+				1BED75693076DA76B00CD642 /* BrushDSP.swift in Sources */,
+				5D3BA96D050A4158E4470941 /* BrushSynth.swift in Sources */,
 				3F4102E196F622E803004373 /* CornerTapLock.swift in Sources */,
+				7D81BF65D8FAB335043A00A5 /* DSP.swift in Sources */,
 				7AEBE83482821C1E7F62C2A8 /* FingerMusic.swift in Sources */,
 				D5475FC15D79FA020D51ED8E /* FingerSynth.swift in Sources */,
 				A19E155C7C9F6FE25B2B7888 /* FluidSimulator.swift in Sources */,
@@ -1167,6 +1186,7 @@
 				2C4B53C459708FA327F29BBD /* ParrotEar.swift in Sources */,
 				F9B262D8D1EF150ADCA9EDD4 /* ParrotSketchView.swift in Sources */,
 				5D561F791E4AC1BC00BE0620 /* PickerView.swift in Sources */,
+				30182FC2F715EE70CE19ED1E /* RenderNode.swift in Sources */,
 				00054E5391EC247FDA616E27 /* RepeatDetector.swift in Sources */,
 				1260FEC4A455EFFF5FA49CAC /* SeaArt.swift in Sources */,
 				4D9D5CDCE8EC1F5ACB5D0387 /* SeaSimulation.swift in Sources */,
@@ -1213,8 +1233,11 @@
 				22A94C280E424CD2931B74A3 /* AutoplayQueue.swift in Sources */,
 				27D8F33C993C959DACFF771B /* BlockedView.swift in Sources */,
 				F4AFD78E3C15CCB3EFECEF42 /* Boat.swift in Sources */,
+				D857C7379E9F6A3F50620466 /* BrushDSP.swift in Sources */,
+				EB0742E1681121285DDD5057 /* BrushSynth.swift in Sources */,
 				B86FDE6C7C6EEF7529FD06A2 /* CollectionView.swift in Sources */,
 				98F7CBF29D9ADB9B194ABC98 /* CornerTapLock.swift in Sources */,
+				013F270BDED57B76B62BE736 /* DSP.swift in Sources */,
 				C1B0AC03505F3DCE830C217E /* FingerMusic.swift in Sources */,
 				F5D460D2D7C2A800A36CFBFC /* FingerSynth.swift in Sources */,
 				4ECD2F27B68BDCCE8EB07D65 /* FluidSimulator.swift in Sources */,
@@ -1239,6 +1262,7 @@
 				6D718AA64915B93493905BEC /* PlayerLayerView.swift in Sources */,
 				3F8B4D72ECB7355F790109E9 /* PlayerScreen.swift in Sources */,
 				D0BC7EA5696B6F61CEAB812B /* RemoteImage.swift in Sources */,
+				6C6F94BBCA4A442A97CD6FD8 /* RenderNode.swift in Sources */,
 				87C6A67A8014448FE7307309 /* RepeatDetector.swift in Sources */,
 				D90FE38292C237515CB65E97 /* SeaArt.swift in Sources */,
 				031E4F2FAE8393A61239EAC9 /* SeaSimulation.swift in Sources */,

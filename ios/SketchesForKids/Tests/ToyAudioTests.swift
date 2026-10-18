@@ -98,6 +98,57 @@ final class ToyAudioTests: XCTestCase {
         XCTAssertLessThan(tail.peak, 0.02, "all released")
     }
 
+    // MARK: - the paint brush
+
+    func testBrushStrokesDabsAndLifts() throws {
+        let audio = ToyAudio(offline: true)
+        let brush = BrushSynth(audio: audio)
+        brush.start()
+        let out = audio.engine.startTest(totalDuration: 6)
+        // eleven fingers for ten voices: one voice is taken over while it sounds
+        for finger in 0..<11 {
+            brush.began(id: finger, x: Double(finger) / 10)
+            out.append(audio.engine.render(duration: 0.02))
+        }
+        for step in 0..<90 {
+            let t = Double(step) / 90
+            for finger in 0..<11 {
+                brush.moved(id: finger, x: 0.5 + 0.4 * sin(t * 6 + Double(finger)), speed: 1600 * sin(.pi * t) + 200 * Double(finger % 3))
+            }
+            out.append(audio.engine.render(duration: 1.0 / 60))
+        }
+        for finger in 0..<11 { brush.ended(id: finger) }
+        out.append(audio.engine.render(duration: 0.6))
+        let s = Self.stats(out)
+        report("brush", s)
+        XCTAssertTrue(s.finite)
+        XCTAssertLessThanOrEqual(s.peak, 1.0, "eleven fast strokes stay under the ceiling")
+        XCTAssertGreaterThan(s.rms, 0.005, "it sounds")
+        let tail = Self.stats(out, from: Int(out.frameLength) - 4410)
+        XCTAssertLessThan(tail.peak, 0.01, "lifting the brushes ends the sound")
+    }
+
+    /// A brush that stops moving on the paper goes quiet, as a real one does.
+    func testBrushHeldStillIsQuiet() throws {
+        let audio = ToyAudio(offline: true)
+        let brush = BrushSynth(audio: audio)
+        brush.start()
+        let out = audio.engine.startTest(totalDuration: 2)
+        brush.began(id: 1, x: 0.5)
+        for _ in 0..<20 {
+            brush.moved(id: 1, x: 0.5, speed: 900)
+            out.append(audio.engine.render(duration: 1.0 / 60))
+        }
+        let moving = Self.stats(out, from: Int(out.frameLength) - 4410)
+        let held = Int(out.frameLength)
+        out.append(audio.engine.render(duration: 0.6))
+        let still = Self.stats(out, from: held + Int(out.format.sampleRate * 0.25))
+        report("brush moving", moving)
+        report("brush still", still)
+        XCTAssertGreaterThan(moving.rms, 0.01, "a moving brush sounds")
+        XCTAssertLessThan(still.rms, moving.rms * 0.05, "and a still one is quiet within a quarter second")
+    }
+
     // MARK: - guitar
 
     func testGuitarStrumsChordsAndMelody() throws {
@@ -226,9 +277,12 @@ final class ToyAudioTests: XCTestCase {
         let synth = FingerSynth(audio: audio)
         let guitar = GuitarSynth(audio: audio)
         let bank = SoundBank(audio: audio)
+        let brush = BrushSynth(audio: audio)
         synth.start()
         guitar.start()
         bank.load()
+        brush.start()
+        for f in 0..<10 { brush.began(id: f, x: Double(f) / 10) }
         let out = audio.engine.startTest(totalDuration: 4)
         for f in 0..<12 {
             synth.began(id: f, voice: FingerVoice(frequency: 200 + 60 * Double(f), amplitude: 1, pan: 0, vibrato: 0, brightness: 1))
@@ -236,6 +290,7 @@ final class ToyAudioTests: XCTestCase {
         for round in 0..<6 {
             for i in 0..<6 { guitar.pluck(string: i, frequency: 82.4 * pow(2, Double(i) * 5 / 12), velocity: 1) }
             bank.play(["splash", "bump", "chime"][round % 3], volume: 1)
+            for f in 0..<10 { brush.moved(id: f, x: Double(f) / 10, speed: 1600) }
             out.append(audio.engine.render(duration: 0.3))
         }
         out.append(audio.engine.render(duration: 1))

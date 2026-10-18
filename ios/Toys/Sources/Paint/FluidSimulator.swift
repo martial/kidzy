@@ -1,5 +1,6 @@
 import Metal
 import MetalKit
+import os
 import simd
 
 /// Runs the fluid kernels of Fluid.metal: a small velocity grid, a larger
@@ -40,7 +41,13 @@ final class FluidSimulator {
         // The shaders are compiled on the device from Resources/Shaders/Fluid.metal.txt:
         // Xcode 26 ships the Metal compiler as a separate download, and this needs none.
         guard let url = Bundle.main.url(forResource: "Fluid.metal", withExtension: "txt"), let source = try? String(contentsOf: url, encoding: .utf8) else { return nil }
-        guard let library = try? device.makeLibrary(source: source, options: nil) else { return nil }
+        let library: MTLLibrary
+        do {
+            library = try device.makeLibrary(source: source, options: nil)
+        } catch {
+            Logger(subsystem: Bundle.main.bundleIdentifier ?? "com.screenclub", category: "paint").error("shaders: \(error.localizedDescription, privacy: .public)")
+            return nil
+        }
         self.device = device
         self.queue = queue
         for name in ["advect", "splat", "curl", "vorticity", "divergence", "scale", "pressure", "gradientSubtract"] {

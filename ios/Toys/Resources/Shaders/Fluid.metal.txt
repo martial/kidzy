@@ -155,9 +155,37 @@ vertex PaintVertex paintVertex(uint vid [[vertex_id]]) {
     return out;
 }
 
+// Value noise for the paper's grain and the paint's texture.
+static inline float hash21(float2 p) {
+    p = fract(p * float2(123.34, 456.21));
+    p += dot(p, p + 45.32);
+    return fract(p.x * p.y);
+}
+
+static inline float valueNoise(float2 p) {
+    float2 i = floor(p), f = fract(p);
+    float2 u = f * f * (3.0 - 2.0 * f);
+    float a = hash21(i), b = hash21(i + float2(1, 0)), c = hash21(i + float2(0, 1)), d = hash21(i + float2(1, 1));
+    return mix(mix(a, b, u.x), mix(c, d, u.x), u.y);
+}
+
+// How thick the paint stands: grows with the amount of pigment, then saturates,
+// so a fresh blob is a soft mound and a thin wash lies flat. A fine grain on
+// top gives the paint and the paper their tooth.
+static inline float paintHeight(texture2d<float, access::sample> dye, float2 uv, float2 px) {
+    float a = dye.sample(linearSampler, uv).a;
+    float paint = 1.0 - exp(-a * 0.9);
+    float grain = valueNoise(px * 0.42) * 0.6 + valueNoise(px * 1.1) * 0.4;
+    float coverage = smoothstep(0.06, 0.7, 1.0 - exp(-a * 3.0));
+    return paint * (0.35 + 0.65 * coverage) + grain * mix(0.012, 0.035, coverage);
+}
+
 // The dye holds colour weighted by amount (rgb = sum of colour * weight, a = sum of
 // weights): mixes average the colours instead of darkening, and a saturation
-// boost keeps blends vivid on the paper.
+// boost keeps blends vivid on the paper. Then the relief: the paint's height
+// gives a normal, lit by a soft key light from the top left (shade on the far
+// side of each mound, a glossy wet highlight on the near side); the paper stays
+// matte with a faint grain.
 fragment float4 paintFragment(PaintVertex in [[stage_in]],
                               texture2d<float, access::sample> dye [[texture(0)]]) {
     float4 d = dye.sample(linearSampler, in.uv);
@@ -166,6 +194,30 @@ fragment float4 paintFragment(PaintVertex in [[stage_in]],
     float3 color = clamp(d.rgb / weight, 0.0, 1.0);
     float gray = dot(color, float3(0.299, 0.587, 0.114));
     color = clamp(gray + (color - gray) * 1.45, 0.0, 1.0);
-    float coverage = 1.0 - exp(-d.a * 2.2);
-    return float4(mix(paper, color, coverage), 1.0);
+    // real paint is there or not: a crisp edge instead of an airbrushed fog
+    float coverage = smoothstep(0.06, 0.7, 1.0 - exp(-d.a * 3.0));
+    float3 base = mix(paper, color, coverage);
+
+    // relief: central differences, a texel and a half apart, in screen pixels for the grain
+    float2 size = float2(dye.get_width(), dye.get_height());
+    float2 texel = 1.5 / size;
+    float2 px = in.position.xy;
+    float2 pxStep = float2(1.5 * 3.0, 1.5 * 3.0);   // the dye is about a third of the screen's pixels
+    float hL = paintHeight(dye, in.uv - float2(texel.x, 0), px - float2(pxStep.x, 0));
+    float hR = paintHeight(dye, in.uv + float2(texel.x, 0), px + float2(pxStep.x, 0));
+    float hT = paintHeight(dye, in.uv - float2(0, texel.y), px - float2(0, pxStep.y));
+    float hB = paintHeight(dye, in.uv + float2(0, texel.y), px + float2(0, pxStep.y));
+    float relief = 7.0;
+    float3 n = normalize(float3((hL - hR) * relief, (hT - hB) * relief, 1.0));
+    // the light comes from the top left (uv y points down), towards the viewer
+    float3 light = normalize(float3(-0.45, -0.6, 0.75));
+    float3 halfway = normalize(light + float3(0, 0, 1));
+    float flat = light.z;
+    float diffuse = clamp(dot(n, light) / flat, 0.0, 1.6);
+    float shade = mix(1.0, diffuse, mix(0.3, 0.7, coverage));
+    float gloss = pow(max(dot(n, halfway), 0.0), 70.0) * coverage;
+    float flatGloss = pow(halfway.z, 70.0);
+    float sheen = max(0.0, gloss - flatGloss * coverage) * 0.75;
+    float3 lit = base * clamp(shade, 0.7, 1.2) + sheen;
+    return float4(clamp(lit, 0.0, 1.0), 1.0);
 }
