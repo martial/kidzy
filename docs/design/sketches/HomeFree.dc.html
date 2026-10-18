@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Home, free version</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#1F2A44}a:hover{color:#1F2A44}
+.wall{background:radial-gradient(120% 55% at 50% 0%,rgba(255,255,255,.5),rgba(255,255,255,0) 60%),radial-gradient(circle at 14px 14px,rgba(255,255,255,.32) 2.6px,transparent 3.6px) 0 0/32px 32px,linear-gradient(180deg,#FFC530,#FFD95C 72%)}
+.floor{background:linear-gradient(#FFB21F,#FF9F12);box-shadow:inset 0 3px 0 rgba(255,255,255,.35)}
+.cab{background:linear-gradient(#FFFFFF,#F4F0FA);box-shadow:inset 0 2px 0 #fff,0 9px 0 #E6DFF0,0 30px 34px rgba(170,95,0,.30)}
+.cub{position:relative;display:flex;align-items:flex-end;justify-content:center;height:204px;border-radius:26px;overflow:hidden;text-decoration:none}
+.cub:before{content:"";position:absolute;inset:0;border-radius:26px;box-shadow:inset 0 18px 18px -12px rgba(60,20,80,.28),inset 10px 0 14px -12px rgba(60,20,80,.2),inset -10px 0 14px -12px rgba(60,20,80,.2);pointer-events:none}
+.cub .fl{position:absolute;left:0;right:0;bottom:0;height:44px;background:linear-gradient(rgba(255,255,255,.30),rgba(255,255,255,.12))}
+.cub .sh{position:absolute;bottom:18px;left:50%;width:64%;height:18px;transform:translateX(-50%);border-radius:50%;background:radial-gradient(rgba(40,10,60,.30),rgba(40,10,60,0) 70%)}
+.cub img{position:relative;margin-bottom:24px;filter:drop-shadow(0 4px 3px rgba(40,10,60,.18))}
+.lock{position:absolute;right:10px;top:10px;z-index:2;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:linear-gradient(#FFE27A,#FFC21F);box-shadow:0 4px 0 #D99A00,0 7px 10px rgba(60,30,0,.2)}
+.round{display:flex;align-items:center;justify-content:center;border-radius:50%;background:#fff;text-decoration:none}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.bob{animation:bob 3.2s ease-in-out infinite}
+@media (prefers-reduced-motion: reduce){.bob{animation:none}}
+</style>
+</helmet>
+<div class="wall" style="width: 390px; height: 844px; position: relative; overflow: hidden; font-family: 'Baloo 2', sans-serif; color: #1F2A44">
+  <svg aria-hidden="true" width="390" height="100" viewBox="0 0 390 100" style="position: absolute; left: 0; top: 0">
+    <path d="M-6 18 Q150 70 306 30" fill="none" stroke="#C97A00" stroke-width="2.5" stroke-linecap="round"/>
+    <path transform="translate(12.7 23.9) rotate(16.6)" d="M-13 0 L13 0 L0 30 Z" fill="#FF6B5B"/>
+    <path transform="translate(47.0 33.0) rotate(13.1)" d="M-13 0 L13 0 L0 30 Z" fill="#4DA3FF"/>
+    <path transform="translate(81.4 39.9) rotate(9.5)" d="M-13 0 L13 0 L0 30 Z" fill="#FFFFFF"/>
+    <path transform="translate(115.7 44.6) rotate(5.9)" d="M-13 0 L13 0 L0 30 Z" fill="#5FD068"/>
+    <path transform="translate(150.0 47.0) rotate(2.2)" d="M-13 0 L13 0 L0 30 Z" fill="#B48CFF"/>
+    <path transform="translate(184.3 47.2) rotate(-1.5)" d="M-13 0 L13 0 L0 30 Z" fill="#FF8FB1"/>
+    <path transform="translate(218.6 45.2) rotate(-5.2)" d="M-13 0 L13 0 L0 30 Z" fill="#4DA3FF"/>
+    <path transform="translate(253.0 40.9) rotate(-8.9)" d="M-13 0 L13 0 L0 30 Z" fill="#FF6B5B"/>
+    <path transform="translate(287.3 34.5) rotate(-12.5)" d="M-13 0 L13 0 L0 30 Z" fill="#FFFFFF"/>
+    <circle cx="306" cy="30" r="5" fill="#C97A00"/>
+  </svg>
+  <a href="Gate.dc.html" class="round" aria-label="For grown-ups" style="position: absolute; right: 16px; top: 22px; width: 48px; height: 48px; box-shadow: 0 5px 0 #E5A80E, 0 8px 14px rgba(150,90,0,.18)">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1F2A44" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>
+  </a>
+  <div class="floor" style="position: absolute; left: 0; right: 0; bottom: 0; height: 84px"></div>
+  <div class="cab" style="position: absolute; left: 14px; right: 14px; top: 96px; padding: 13px 13px 22px; border-radius: 38px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 13px">
+    <a href="Toy.dc.html" class="cub" aria-label="The sea" style="background: linear-gradient(#8FD3FF, #C6EAFF)"><span class="fl"></span><span class="sh"></span><img class="bob" src="/_blob/32b93117ce32c66f6b83fe1a4e5e17b6" alt="" style="height: 150px"></a>
+    <a href="Gate.dc.html" class="cub" aria-label="Paint, locked" style="background: linear-gradient(#FFA2C0, #FFCFDE)"><span class="fl"></span><span class="sh"></span><img src="/_blob/639bfc23856756ff4be30be991880236" alt="" style="width: 138px"><span class="lock"><svg width="18" height="18" viewBox="0 0 24 24" fill="#6B4300" aria-hidden="true"><path d="M7 10V8a5 5 0 0 1 10 0v2h.5A2.5 2.5 0 0 1 20 12.5v7A2.5 2.5 0 0 1 17.5 22h-11A2.5 2.5 0 0 1 4 19.5v-7A2.5 2.5 0 0 1 6.5 10H7Zm2.5 0h5V8a2.5 2.5 0 0 0-5 0v2Z"/></svg></span></a>
+    <a href="Gate.dc.html" class="cub" aria-label="Shapes, locked" style="background: linear-gradient(#B6A2FF, #DCD2FF)"><span class="fl"></span><span class="sh"></span><img src="/_blob/cdf753c34acdbc4c39d286de91511744" alt="" style="height: 146px"><span class="lock"><svg width="18" height="18" viewBox="0 0 24 24" fill="#6B4300" aria-hidden="true"><path d="M7 10V8a5 5 0 0 1 10 0v2h.5A2.5 2.5 0 0 1 20 12.5v7A2.5 2.5 0 0 1 17.5 22h-11A2.5 2.5 0 0 1 4 19.5v-7A2.5 2.5 0 0 1 6.5 10H7Zm2.5 0h5V8a2.5 2.5 0 0 0-5 0v2Z"/></svg></span></a>
+    <a href="Toy.dc.html" class="cub" aria-label="Animals" style="background: linear-gradient(#8FDB7C, #C3EEB6)"><span class="fl"></span><span class="sh"></span><img class="bob" src="/_blob/c8955a6f100a60971cd540a94935a621" alt="" style="height: 152px; animation-delay: -2.4s"></a>
+    <a href="Gate.dc.html" class="cub" aria-label="Guitar, locked" style="background: linear-gradient(#79D9CC, #B9EFE7)"><span class="fl"></span><span class="sh"></span><img src="/_blob/0ef9418f95656117e444813e06e857b5" alt="" style="height: 160px"><span class="lock"><svg width="18" height="18" viewBox="0 0 24 24" fill="#6B4300" aria-hidden="true"><path d="M7 10V8a5 5 0 0 1 10 0v2h.5A2.5 2.5 0 0 1 20 12.5v7A2.5 2.5 0 0 1 17.5 22h-11A2.5 2.5 0 0 1 4 19.5v-7A2.5 2.5 0 0 1 6.5 10H7Zm2.5 0h5V8a2.5 2.5 0 0 0-5 0v2Z"/></svg></span></a>
+    <a href="Gate.dc.html" class="cub" aria-label="Parrot, locked" style="background: linear-gradient(#FFD45A, #FFEAA4)"><span class="fl"></span><span class="sh"></span><img src="/_blob/4aa3afe8bc378cbca10d533d98238194" alt="" style="height: 146px"><span class="lock"><svg width="18" height="18" viewBox="0 0 24 24" fill="#6B4300" aria-hidden="true"><path d="M7 10V8a5 5 0 0 1 10 0v2h.5A2.5 2.5 0 0 1 20 12.5v7A2.5 2.5 0 0 1 17.5 22h-11A2.5 2.5 0 0 1 4 19.5v-7A2.5 2.5 0 0 1 6.5 10H7Zm2.5 0h5V8a2.5 2.5 0 0 0-5 0v2Z"/></svg></span></a>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

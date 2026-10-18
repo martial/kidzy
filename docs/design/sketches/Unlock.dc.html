@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Unlock all toys</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#1F2A44}a:hover{color:#1F2A44}
+.night{background:radial-gradient(90% 50% at 50% 0%,rgba(120,160,255,.35),rgba(120,160,255,0) 70%),radial-gradient(circle at 20px 20px,rgba(255,255,255,.10) 1.6px,transparent 2.4px) 0 0/44px 44px,linear-gradient(180deg,#2A3768,#3D57A6)}
+.sunny{background:radial-gradient(circle at 12px 12px,rgba(255,255,255,.35) 2.4px,transparent 3.4px) 0 0/28px 28px,linear-gradient(180deg,#FFC530,#FFE07A)}
+.tick{display:flex;align-items:center;gap:10px;font-size:17px;font-weight:600;color:#1F2A44}
+.tick i{flex:none;width:24px;height:24px;border-radius:50%;background:#5FD068;display:flex;align-items:center;justify-content:center}
+.cta{display:flex;align-items:center;justify-content:center;height:62px;border-radius:22px;background:linear-gradient(#FF6A5E,#F04A43);box-shadow:0 6px 0 #C8322C,0 14px 20px rgba(200,50,44,.28);color:#FFFFFF;font-size:23px;font-weight:800;text-decoration:none}
+.cta:hover{color:#FFFFFF}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(var(--r))}50%{transform:translateY(-5px) rotate(var(--r))}}
+.bob{animation:bob 3.2s ease-in-out infinite}
+@media (prefers-reduced-motion: reduce){.bob{animation:none}}
+</style>
+</helmet>
+<div class="night" style="width: 390px; height: 844px; position: relative; overflow: hidden; font-family: 'Baloo 2', sans-serif; color: #1F2A44">
+  <a href="Main.dc.html" aria-label="Close" style="position: absolute; right: 16px; top: 22px; z-index: 3; width: 48px; height: 48px; border-radius: 50%; background: #FFFFFF; box-shadow: 0 5px 0 #B9C4E6; display: flex; align-items: center; justify-content: center; text-decoration: none">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1F2A44" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+  </a>
+  <div style="position: absolute; left: 20px; right: 20px; top: 86px; padding: 14px 14px 24px; border-radius: 34px; background: #FFFFFF; box-shadow: 0 10px 0 #C6D0EE, 0 30px 50px rgba(10,20,60,.35); display: flex; flex-direction: column; gap: 14px">
+    <div class="sunny" style="position: relative; height: 232px; border-radius: 24px; overflow: hidden; box-shadow: inset 0 14px 16px -10px rgba(120,60,0,.25)">
+      <img class="bob" src="/_blob/cdf753c34acdbc4c39d286de91511744" alt="" style="--r: -6deg; animation-delay: -2s; position: absolute; left: 72px; top: 22px; height: 122px; filter: drop-shadow(0 8px 6px rgba(120,60,0,.25))">
+      <img class="bob" src="/_blob/0ef9418f95656117e444813e06e857b5" alt="" style="--r: 7deg; animation-delay: -1s; position: absolute; left: 150px; top: 18px; height: 172px; filter: drop-shadow(0 8px 6px rgba(120,60,0,.25))">
+      <img class="bob" src="/_blob/639bfc23856756ff4be30be991880236" alt="" style="--r: -8deg; position: absolute; left: 0; top: 104px; width: 128px; filter: drop-shadow(0 8px 6px rgba(120,60,0,.25))">
+      <img class="bob" src="/_blob/4aa3afe8bc378cbca10d533d98238194" alt="" style="--r: 5deg; animation-delay: -1.5s; position: absolute; right: 0; top: 70px; height: 146px; filter: drop-shadow(0 8px 6px rgba(120,60,0,.25))">
+    </div>
+    <div style="padding: 0 8px; display: flex; flex-direction: column; gap: 12px">
+      <h1 style="margin: 4px 0 0; font-size: 31px; font-weight: 800; line-height: 1.05">Unlock all toys</h1>
+      <p style="margin: 0; font-size: 17px; font-weight: 600; line-height: 1.35; color: #4A5878">Paint, Shapes, Guitar and Parrot join the sea and the animals.</p>
+      <div style="display: flex; flex-direction: column; gap: 8px; margin: 2px 0 6px">
+        <div class="tick"><i><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg></i>Pay once, no subscription</div>
+        <div class="tick"><i><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg></i>Shared with your family</div>
+        <div class="tick"><i><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg></i>No ads, no accounts, ever</div>
+      </div>
+      <a href="Main.dc.html" class="cta">Unlock for €2.99</a>
+      <div style="display: flex; justify-content: center; gap: 26px; margin-top: 4px">
+        <a href="Parents.dc.html" style="font-size: 16px; font-weight: 700; color: #3D57A6; text-decoration: none">Restore purchase</a>
+        <a href="Parents.dc.html" style="font-size: 16px; font-weight: 700; color: #3D57A6; text-decoration: none">Privacy</a>
+      </div>
+    </div>
+  </div>
+  <p style="position: absolute; left: 0; right: 0; bottom: 30px; margin: 0; text-align: center; font-size: 14px; font-weight: 600; color: #DCE4FF">Payment goes through Apple.</p>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

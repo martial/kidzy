@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>For grown-ups</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#1F2A44}a:hover{color:#1F2A44}
+.night{background:radial-gradient(90% 50% at 50% 0%,rgba(120,160,255,.35),rgba(120,160,255,0) 70%),radial-gradient(circle at 20px 20px,rgba(255,255,255,.10) 1.6px,transparent 2.4px) 0 0/44px 44px,linear-gradient(180deg,#2A3768,#3D57A6)}
+.key{display:flex;align-items:center;justify-content:center;height:62px;border:0;border-radius:22px;background:#F1F4FF;box-shadow:0 5px 0 #D3DAF0;font:700 28px 'Baloo 2',sans-serif;color:#1F2A44;cursor:pointer}
+.key:active{transform:translateY(3px);box-shadow:0 2px 0 #D3DAF0}
+.digit{display:flex;align-items:center;justify-content:center;width:64px;height:72px;border-radius:20px;background:#F1F4FF;box-shadow:inset 0 0 0 3px #D3DAF0;font:800 40px 'Baloo 2',sans-serif;color:#1F2A44}
+</style>
+</helmet>
+<div class="night" style="width: 390px; height: 844px; position: relative; overflow: hidden; font-family: 'Baloo 2', sans-serif; color: #1F2A44">
+  <a href="Main.dc.html" aria-label="Close" style="position: absolute; right: 16px; top: 22px; z-index: 3; width: 48px; height: 48px; border-radius: 50%; background: #FFFFFF; box-shadow: 0 5px 0 #B9C4E6; display: flex; align-items: center; justify-content: center; text-decoration: none">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1F2A44" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+  </a>
+  <img src="/_blob/4aa3afe8bc378cbca10d533d98238194" alt="" style="position: absolute; left: 50%; top: 58px; width: 150px; transform: translateX(-50%) rotate(-6deg); z-index: 1; filter: drop-shadow(0 10px 14px rgba(0,0,0,.25))">
+  <div style="position: absolute; left: 20px; right: 20px; top: 168px; z-index: 2; padding: 28px 22px 26px; border-radius: 34px; background: #FFFFFF; box-shadow: 0 10px 0 #C6D0EE, 0 30px 50px rgba(10,20,60,.35); display: flex; flex-direction: column; align-items: center; gap: 14px">
+    <h1 style="margin: 0; font-size: 30px; font-weight: 800; line-height: 1.1">For grown-ups</h1>
+    <p style="margin: 0; font-size: 22px; font-weight: 700; line-height: 1.25; text-align: center; color: #1F2A44">What is <span style="color: #E2453C">seven</span> plus <span style="color: #2F7FE0">five</span>?</p>
+    <div style="display: flex; gap: 12px; margin: 4px 0 6px">
+      <div class="digit">1</div>
+      <div class="digit" style="box-shadow: inset 0 0 0 3px #FF9F12">&#8203;</div>
+    </div>
+    <div style="width: 100%; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px">
+      <button class="key" type="button">1</button>
+      <a class="key" href="Unlock.dc.html" style="text-decoration: none">2</a>
+      <button class="key" type="button">3</button>
+      <button class="key" type="button">4</button>
+      <button class="key" type="button">5</button>
+      <button class="key" type="button">6</button>
+      <button class="key" type="button">7</button>
+      <button class="key" type="button">8</button>
+      <button class="key" type="button">9</button>
+      <span></span>
+      <button class="key" type="button">0</button>
+      <button class="key" type="button" aria-label="Delete"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1F2A44" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5h10a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H9l-6-7z"/><path d="M12 9l5 6M17 9l-5 6"/></svg></button>
+    </div>
+    <p style="margin: 2px 0 0; font-size: 15px; font-weight: 600; color: #4A5878; text-align: center">The question changes every time.</p>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

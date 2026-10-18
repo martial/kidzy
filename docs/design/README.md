@@ -30,23 +30,32 @@ layout). They are static markup; the canvas renders them.
 
 ## « Sketches for kids! » (second app, the toys alone)
 
-Same canvas, row at the bottom. Free app: La mer and Animaux offered, the other four behind one
-purchase; parental gate = a sum; a home sticker top-left of every toy (no secret corner); no text
-on kid screens, parent text in French and English.
+Its own canvas: https://claude.ai/artifact/RSLwADtiUHL5pJoQUEJQop (sources in `sketches/`; their
+images are uploads of that canvas, the originals are in `sketches/art/`). Round 4 of the design,
+2026-10-18, waiting for Martial's approval; the earlier sticker-style boards are retired.
+
+Direction: a sunny toy cabinet. Each toy is a glossy 3D designer toy (Gemini 3 Pro Image, one
+style reference, cut out with Vision) standing in its own coloured cubby of a white cabinet, on a
+polka-dot yellow wall with a party garland. Free toys bob gently; locked toys stay still with a
+yellow lock badge and lead to the gate. The grown-up zone is night blue. The parrot is the host:
+the app icon, and it peeks over the gate. Kid screens have no text.
 
 | File | Screen | Notes |
 |---|---|---|
-| `SketchesPicker.dc.html` | Choix des jouets (kid) | six toy stickers in the library grid, clouds, the sun mascot; a small parent sticker top-right opens the gate |
-| `SketchesPickerLocked.dc.html` | Choix, jouets verrouillés | lemon lock stickers on Peinture, Formes, Guitare, Perroquet; a locked tile leads to the gate, never to a price |
-| `SketchesGate.dc.html` | Barrière parent | « Pour les parents », a sum of two digits on the sticker keypad, new sum on a wrong answer; before the purchase and the parent page |
-| `SketchesUnlock.dc.html` | Débloquer | the chosen toy's sticker, « Tous les jouets », the four names, the App Store price, « Débloquer », « Restaurer un achat », « Confidentialité » |
-| `SketchesParent.dc.html` | Pour les parents | visible-toy switches, purchase state + restore, privacy, e-mail help, version, the microphone line |
-| `SketchesToy.dc.html` | Un jouet | the sea with the 52 px home sticker top-left (16 px margins); the same sticker on every toy |
-| `SketchesIcon.dc.html` | Icône | A = a tilted sticker tile with a paint swirl, B = the parrot; both on sky blue |
+| `sketches/Main.dc.html` | Home | the cabinet, six cubbies (sea, paint, shapes, animals, guitar, parrot), garland, floor; parent button top-right |
+| `sketches/HomeFree.dc.html` | Home, free | lock badges on paint, shapes, guitar, parrot; only sea and animals bob |
+| `sketches/Gate.dc.html` | For grown-ups | night blue, the parrot peeking over the card, « What is seven plus five? » in words (children who read digits can't guess), two answer boxes, chunky keypad |
+| `sketches/Unlock.dc.html` | Unlock all toys | the four toys fanned on a sunny panel, three ticks (pay once, family sharing, no ads), coral « Unlock for €2.99 », restore, privacy |
+| `sketches/Parents.dc.html` | Parents page | a switch per toy with its 3D thumbnail, the unlock row, restore, privacy, help, the microphone line |
+| `sketches/Toy.dc.html` | A toy | the real toy full screen, a 58 pt white home button with a coral house, top-left below the Dynamic Island |
+| `sketches/Store1…5.dc.html` | App Store | 430 × 932 (export at 3× = 1290 × 2796): hero with the wordmark, then sea (tilted), paint, parrot, parents; one cubby colour per shot |
+| `sketches/Icon.dc.html` | Icon | the 3D parrot on sunny orange, at 1024, 60, 40, 29 pt; « Sketches » under the icon |
+| `sketches/Brand.dc.html` | Brand kit | wordmark, colours, Baloo 2, buttons, badge, home button, cubby |
+| `sketches/Explore.dc.html` | Explorations | rounds 1 to 4: shelf / bubbles / cards, cabinet colours, lock styles, icons |
 
-Tokens: ground sky `#BFE3FF`, ink `#1F2A44`, stickers coral `#FF6B6B`, tangerine `#FFA62B`,
-lemon `#FFD23F`, grass `#5FD068`, ocean `#4D96FF`, berry `#9B5DE5`, bubblegum `#FF8FAB`.
-Type: Fredoka in the mock-ups, SF Rounded in the app. Tiles: 6 px ink border, 8 px hard offset
-shadow, radius 28 (collections) / 24 (episodes), tilt ±2°.
-
-Approval: _pending_ (Martial reviews on his phone; the date and remarks go here).
+Tokens: wall sun `#FFC530` → `#FFD95C`, floor tangerine `#FF9F12`, CTA coral `#F04A43` (lip
+`#C8322C`), ink `#1F2A44`, grown-up night `#2A3768` → `#3D57A6`, cabinet `#FFFFFF`/`#F4F0FA`
+(lip `#E6DFF0`); cubbies sea `#8FD3FF`, paint `#FFA2C0`, shapes `#B6A2FF`, animals `#8FDB7C`,
+guitar `#79D9CC`, parrot `#FFD45A`. Type: Baloo 2 (800 titles, 700 body, 600 small), bundled in
+the app. Buttons are chunky: a darker lip under each, pressed = moves down 3–4 px.
+Art: `ios/Tools/GenerateToyArt.py` (prompts) and `ios/Tools/Cutout.swift` (Vision subject lift).

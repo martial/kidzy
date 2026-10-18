@@ -1,0 +1,48 @@
+{
+  "v": 3,
+  "createdOnFiles": { "v": 1, "at": "2026-10-18T10:30:00Z" },
+  "title": "Sketches for kids! design",
+  "launch": { "view": "canvas" },
+  "pages": [],
+  "boards": {
+    "Main.dc.html": { "x": 0, "y": 0, "w": 390, "h": 844, "title": "Home", "is_interactive": true },
+    "HomeFree.dc.html": { "x": 470, "y": 0, "w": 390, "h": 844, "title": "Home, free version", "is_interactive": true },
+    "Gate.dc.html": { "x": 940, "y": 0, "w": 390, "h": 844, "title": "For grown-ups (parental gate)", "is_interactive": true },
+    "Unlock.dc.html": { "x": 1410, "y": 0, "w": 390, "h": 844, "title": "Unlock all toys", "is_interactive": true },
+    "Parents.dc.html": { "x": 1880, "y": 0, "w": 390, "h": 844, "title": "Parents page", "is_interactive": true },
+    "Toy.dc.html": { "x": 2350, "y": 0, "w": 390, "h": 844, "title": "A toy, with the home button", "is_interactive": true },
+    "Store1.dc.html": { "x": 0, "y": 1250, "w": 430, "h": 932, "title": "App Store 1 · hero" },
+    "Store2.dc.html": { "x": 510, "y": 1250, "w": 430, "h": 932, "title": "App Store 2 · sea" },
+    "Store3.dc.html": { "x": 1020, "y": 1250, "w": 430, "h": 932, "title": "App Store 3 · paint" },
+    "Store4.dc.html": { "x": 1530, "y": 1250, "w": 430, "h": 932, "title": "App Store 4 · parrot" },
+    "Store5.dc.html": { "x": 2040, "y": 1250, "w": 430, "h": 932, "title": "App Store 5 · for parents" },
+    "Icon.dc.html": { "x": 0, "y": 2560, "w": 900, "h": 560, "title": "App icon" },
+    "Brand.dc.html": { "x": 980, "y": 2560, "w": 900, "h": 560, "title": "Brand kit" },
+    "Explore.dc.html": { "x": 0, "y": 3480, "w": 1300, "h": 1040, "title": "Explorations, rounds 1 to 4" }
+  },
+  "order": [
+    "Main.dc.html",
+    "HomeFree.dc.html",
+    "Gate.dc.html",
+    "Unlock.dc.html",
+    "Parents.dc.html",
+    "Toy.dc.html",
+    "Store1.dc.html",
+    "Store2.dc.html",
+    "Store3.dc.html",
+    "Store4.dc.html",
+    "Store5.dc.html",
+    "Icon.dc.html",
+    "Brand.dc.html",
+    "Explore.dc.html"
+  ],
+  "notes": {
+    "t-app": { "x": 0, "y": -260, "text": "The app", "kind": "title1", "maxW": 2740 },
+    "n-app": { "x": 2830, "y": 0, "w": 320, "text": "A sunny toy cabinet: each toy is a glossy 3D toy in its own coloured cubby, big enough for a two-year-old's thumb, and it bobs gently so it asks to be touched. Kid screens have no text. Free: the sea and the animals. Paint, shapes, guitar and parrot open with one purchase, behind a sum only a grown-up can do. Parent screens are drawn in English; French ships too.", "fill": "orange" },
+    "t-store": { "x": 0, "y": 1000, "text": "App Store screenshots", "kind": "title1", "maxW": 2470 },
+    "n-store": { "x": 2550, "y": 1250, "w": 320, "text": "Five screenshots, 1290 × 2796 when exported at 3×. Each one has its own cubby colour so the carousel reads as a rainbow of toys, a real capture of the toy in the phone, and one 3D toy breaking out of the frame. Captions are short so they translate.", "fill": "blue" },
+    "t-brand": { "x": 0, "y": 2310, "text": "Icon and brand", "kind": "title1", "maxW": 1880 },
+    "t-explore": { "x": 0, "y": 3230, "text": "How we got here", "kind": "title1", "maxW": 1300 }
+  },
+  "designSystems": []
+}

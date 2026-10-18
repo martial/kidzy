@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>App Store 5, for parents</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#1F2A44}a:hover{color:#1F2A44}
+.night{background:radial-gradient(90% 50% at 50% 0%,rgba(120,160,255,.35),rgba(120,160,255,0) 70%),radial-gradient(circle at 20px 20px,rgba(255,255,255,.10) 1.6px,transparent 2.4px) 0 0/44px 44px,linear-gradient(180deg,#2A3768,#3D57A6)}
+.phone{position:absolute;border-radius:52px;background:#14161C;padding:9px;box-shadow:0 2px 0 3px #2A2D36,0 34px 60px rgba(0,0,30,.45)}
+.phone img.screen{display:block;width:100%;height:100%;border-radius:44px;object-fit:cover}
+.island{position:absolute;left:50%;top:20px;width:92px;height:27px;margin-left:-46px;border-radius:14px;background:#000}
+.chip{display:flex;align-items:center;gap:7px;padding:4px 14px 2px 8px;border-radius:999px;background:#FFFFFF;box-shadow:0 4px 0 #B9C4E6;font-size:19px;font-weight:800;color:#1F2A44}
+.chip i{width:24px;height:24px;border-radius:50%;background:#5FD068;display:flex;align-items:center;justify-content:center}
+</style>
+</helmet>
+<div class="night" style="width: 430px; height: 932px; position: relative; overflow: hidden; font-family: 'Baloo 2', sans-serif; color: #FFFFFF">
+  <h1 style="position: absolute; left: 24px; right: 24px; top: 64px; margin: 0; font-size: 46px; font-weight: 800; line-height: 1; text-align: center; letter-spacing: -.5px">Made for<br>little hands</h1>
+  <div style="position: absolute; left: 20px; right: 20px; top: 186px; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px">
+    <span class="chip"><i><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg></i>No ads</span>
+    <span class="chip"><i><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg></i>No accounts</span>
+    <span class="chip"><i><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg></i>Nothing to read</span>
+    <span class="chip"><i><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg></i>Works offline</span>
+  </div>
+  <div class="phone" style="left: 64px; top: 286px; width: 302px; height: 654px; transform: rotate(-3deg)">
+    <img class="screen" src="/_blob/0a0792a3ea29d2decf8f43098430023f" alt="The parents page: switches for each toy, restore purchase, privacy and help">
+    <span class="island"></span>
+  </div>
+  <img src="/_blob/c8955a6f100a60971cd540a94935a621" alt="" style="position: absolute; left: -30px; top: 718px; height: 214px; transform: rotate(-8deg); filter: drop-shadow(0 18px 20px rgba(0,0,30,.45))">
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":430,"height":932}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

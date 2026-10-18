@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Parents page</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#1F2A44}a:hover{color:#1F2A44}
+.night{background:radial-gradient(90% 50% at 50% 0%,rgba(120,160,255,.35),rgba(120,160,255,0) 70%),radial-gradient(circle at 20px 20px,rgba(255,255,255,.10) 1.6px,transparent 2.4px) 0 0/44px 44px,linear-gradient(180deg,#2A3768,#3D57A6)}
+.card{border-radius:28px;background:#FFFFFF;box-shadow:0 7px 0 #C6D0EE,0 20px 34px rgba(10,20,60,.28)}
+.row{display:flex;align-items:center;gap:12px;height:50px}
+.thumb{flex:none;width:42px;height:42px;border-radius:13px;display:flex;align-items:flex-end;justify-content:center;overflow:hidden}
+.thumb img{height:36px;margin-bottom:2px}
+.name{flex:1;font-size:18px;font-weight:700;color:#1F2A44}
+.sw{flex:none;position:relative;width:52px;height:32px;border-radius:16px;background:#5FD068;border:0;padding:0}
+.sw:after{content:"";position:absolute;right:3px;top:3px;width:26px;height:26px;border-radius:50%;background:#fff;box-shadow:0 2px 3px rgba(0,0,0,.2)}
+.sw.off{background:#D3DAF0}
+.sw.off:after{right:auto;left:3px}
+.link{display:flex;align-items:center;justify-content:space-between;height:46px;font-size:18px;font-weight:700;color:#1F2A44;text-decoration:none}
+.label{margin:0 0 4px;font-size:14px;font-weight:700;letter-spacing:.2px;color:#4A5878}
+</style>
+</helmet>
+<div class="night" style="width: 390px; height: 844px; position: relative; overflow: hidden; font-family: 'Baloo 2', sans-serif; color: #1F2A44">
+  <h1 style="position: absolute; left: 24px; top: 62px; margin: 0; font-size: 30px; font-weight: 800; color: #FFFFFF">For grown-ups</h1>
+  <a href="Main.dc.html" aria-label="Close" style="position: absolute; right: 16px; top: 60px; width: 48px; height: 48px; border-radius: 50%; background: #FFFFFF; box-shadow: 0 5px 0 #B9C4E6; display: flex; align-items: center; justify-content: center; text-decoration: none">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1F2A44" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+  </a>
+  <div style="position: absolute; left: 16px; right: 16px; top: 124px; display: flex; flex-direction: column; gap: 14px">
+    <div class="card" style="padding: 14px 18px 10px">
+      <p class="label">Toys your child sees</p>
+      <div class="row"><span class="thumb" style="background: #A8DCFF"><img src="/_blob/32b93117ce32c66f6b83fe1a4e5e17b6" alt=""></span><span class="name">Sea</span><button class="sw" type="button" aria-label="Show the sea" aria-pressed="true"></button></div>
+      <div class="row"><span class="thumb" style="background: #FFB8CF"><img src="/_blob/639bfc23856756ff4be30be991880236" alt="" style="height: 30px"></span><span class="name">Paint</span><button class="sw" type="button" aria-label="Show paint" aria-pressed="true"></button></div>
+      <div class="row"><span class="thumb" style="background: #C9BAFF"><img src="/_blob/cdf753c34acdbc4c39d286de91511744" alt=""></span><span class="name">Shapes</span><button class="sw" type="button" aria-label="Show shapes" aria-pressed="true"></button></div>
+      <div class="row"><span class="thumb" style="background: #A9E498"><img src="/_blob/c8955a6f100a60971cd540a94935a621" alt=""></span><span class="name">Animals</span><button class="sw" type="button" aria-label="Show animals" aria-pressed="true"></button></div>
+      <div class="row"><span class="thumb" style="background: #98E3D8"><img src="/_blob/0ef9418f95656117e444813e06e857b5" alt=""></span><span class="name">Guitar</span><button class="sw off" type="button" aria-label="Show the guitar" aria-pressed="false"></button></div>
+      <div class="row"><span class="thumb" style="background: #FFDE7E"><img src="/_blob/4aa3afe8bc378cbca10d533d98238194" alt=""></span><span class="name">Parrot</span><button class="sw" type="button" aria-label="Show the parrot" aria-pressed="true"></button></div>
+    </div>
+    <a href="Unlock.dc.html" class="card" style="display: flex; align-items: center; gap: 12px; padding: 14px 18px; text-decoration: none">
+      <span style="flex: none; position: relative; width: 64px; height: 50px">
+        <img src="/_blob/0ef9418f95656117e444813e06e857b5" alt="" style="position: absolute; left: 4px; top: 0; height: 50px; transform: rotate(-10deg)">
+        <img src="/_blob/4aa3afe8bc378cbca10d533d98238194" alt="" style="position: absolute; left: 22px; top: 6px; height: 44px">
+      </span>
+      <span style="flex: 1; display: flex; flex-direction: column">
+        <span style="font-size: 19px; font-weight: 800; color: #1F2A44; line-height: 1.1">Unlock all toys</span>
+        <span style="font-size: 15px; font-weight: 600; color: #4A5878">4 more toys, pay once</span>
+      </span>
+      <span style="flex: none; padding: 4px 12px 2px; border-radius: 999px; background: #F04A43; box-shadow: 0 3px 0 #C8322C; color: #FFFFFF; font-size: 16px; font-weight: 800">€2.99</span>
+    </a>
+    <div class="card" style="padding: 8px 18px 14px">
+      <a href="Unlock.dc.html" class="link">Restore purchase<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4A5878" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a>
+      <a href="https://martial.github.io/kidzy/sketches/privacy.html" class="link" style="border-top: 2px solid #EEF1FA">Privacy policy<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4A5878" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a>
+      <a href="https://martial.github.io/kidzy/sketches/support.html" class="link" style="border-top: 2px solid #EEF1FA">Help<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4A5878" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a>
+      <p style="margin: 8px 0 0; font-size: 14px; font-weight: 600; line-height: 1.35; color: #4A5878">The parrot listens on this phone only. Nothing is recorded or sent anywhere. Version 1.0</p>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>
