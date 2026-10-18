@@ -178,18 +178,17 @@ final class ToyAudioTests: XCTestCase {
         XCTAssertGreaterThan(s.rms, 0.02, "it plays")
     }
 
-    /// Damping a ringing string (a re-pluck, a muted string, leaving the toy) is a fade, not a cut.
-    func testStringsDampWithoutAClick() throws {
-        let dsp = StringsDSP(sampleRate: 44100)
+    /// Damping a ringing note (a muted string, leaving the toy) and re-plucking a
+    /// voice that still rings are fades, not cuts.
+    func testGuitarDampsAndRepluckWithoutAClick() throws {
+        let dsp = NylonDSP(sampleRate: 44100)
         let format = try XCTUnwrap(AVAudioFormat(standardFormatWithSampleRate: 44100, channels: 2))
-        let total = 44100
+        let total = 44100 * 2
         let buffer = try XCTUnwrap(AVAudioPCMBuffer(pcmFormat: format, frameCapacity: AVAudioFrameCount(total)))
         buffer.frameLength = AVAudioFrameCount(total)
-        dsp.send(.init(kind: .pluck, voice: 0, frequency: 82.4, velocity: 1, pan: 0, t60: 4.6))
         var at = 0
         let channels = try XCTUnwrap(buffer.floatChannelData)
         func render(_ frames: Int) {
-            // the DSP writes straight into the test buffer, at the current position
             let abl = AudioBufferList.allocate(maximumBuffers: 2)
             defer { free(abl.unsafeMutablePointer) }
             abl[0] = AudioBuffer(mNumberChannels: 1, mDataByteSize: UInt32(frames * 4), mData: channels[0] + at)
@@ -197,19 +196,26 @@ final class ToyAudioTests: XCTestCase {
             dsp.render(frameCount: frames, buffers: abl)
             at += frames
         }
+        dsp.queue.send(.init(kind: .pluck, voice: 0, frequency: 82.4, velocity: 1, pan: 0))
         for _ in 0..<20 { render(512) }          // ~0.23 s ringing
+        let ringing = Self.stats(buffer, from: at - 4410, to: at)
+        // re-pluck the same voice while it rings: the old note fades on a spare voice
+        let repluckAt = at
+        dsp.queue.send(.init(kind: .pluck, voice: 0, frequency: 82.4, velocity: 1, pan: 0))
+        for _ in 0..<20 { render(512) }
+        let repluck = Self.stats(buffer, from: repluckAt - 64, to: repluckAt + 2048)
         let dampAt = at
-        dsp.send(.init(kind: .damp, voice: 0, time: 0.06))
-        for _ in 0..<10 { render(512) }
-        let ringing = Self.stats(buffer, from: dampAt - 4410, to: dampAt)
+        dsp.queue.send(.init(kind: .damp, voice: 0, time: 0.06))
+        for _ in 0..<20 { render(512) }
         let damped = Self.stats(buffer, from: dampAt, to: at)
-        report("string ringing", ringing)
-        report("string damped", damped)
-        XCTAssertTrue(ringing.finite && damped.finite)
+        report("guitar ringing", ringing)
+        report("guitar re-pluck", repluck)
+        report("guitar damped", damped)
+        XCTAssertTrue(ringing.finite && repluck.finite && damped.finite)
         XCTAssertGreaterThan(ringing.rms, 0.01, "the low E rings")
         XCTAssertLessThanOrEqual(damped.curvature, ringing.curvature * 1.05, "the damp adds no spike")
         let end = Self.stats(buffer, from: at - 1024, to: at)
-        XCTAssertLessThan(end.peak, 0.001, "and it is silent after the damp")
+        XCTAssertLessThan(end.peak, 0.0005, "and it is silent after the damp (the spare's fade included)")
     }
 
     // MARK: - recorded sounds

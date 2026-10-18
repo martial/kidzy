@@ -460,6 +460,23 @@
         }
       }
     },
+    "parent.licenses": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Licenses and credits"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Licences et crédits"
+          }
+        }
+      }
+    },
     "parent.mic": {
       "extractionState": "manual",
       "localizations": {

@@ -108,50 +108,26 @@ final class VoicesAudioTests: XCTestCase {
         out.append(audio.engine.render(duration: 7))
         let s = ToyAudioTests.stats(out)
         let end = ToyAudioTests.stats(out, from: Int(out.frameLength) - 4410)
-        print("audio guitar body: peak \(s.peak) rms \(playing.rms) end \(end.peak)")
+        print("audio guitar: peak \(s.peak) rms \(playing.rms) end \(end.peak)")
         XCTAssertTrue(s.finite)
-        XCTAssertLessThanOrEqual(s.peak, 1.0, "sixteen full strums with the body, the open strings and the room stay under the ceiling")
+        XCTAssertLessThanOrEqual(s.peak, 1.0, "sixteen full strums and the room stay under the ceiling")
         XCTAssertGreaterThan(playing.rms, 0.03, "it plays")
-        XCTAssertLessThan(end.peak, 0.02, "the strings, the body and the open strings ring out")
+        XCTAssertLessThan(end.peak, 0.02, "the strings ring out")
     }
 
-    /// The body is there: the low mids (the air and top modes) are louder than on the bare strings.
-    func testTheBodyWarmsTheStrings() throws {
-        func lowMidShare(_ body: Bool) throws -> Float {
-            let sr: Float = 48000
-            let guitar = GuitarDSP(sampleRate: sr)
-            for (s, midi) in [(0, 40), (1, 45), (2, 50), (3, 55), (4, 59), (5, 64)] {
-                guitar.strings.send(.init(kind: .pluck, voice: Int32(s * 2), frequency: Float(Chord.frequency(midi: midi)), velocity: 0.8, pan: 0, t60: 3))
-            }
-            guitar.picks.send(.init(velocity: 0.8, pan: 0))
-            let n = 48000
-            let format = try XCTUnwrap(AVAudioFormat(standardFormatWithSampleRate: Double(sr), channels: 2))
-            let buffer = try XCTUnwrap(AVAudioPCMBuffer(pcmFormat: format, frameCapacity: AVAudioFrameCount(n)))
-            buffer.frameLength = AVAudioFrameCount(n)
-            let ch = try XCTUnwrap(buffer.floatChannelData)
-            var at = 0
-            while at < n {
-                let abl = AudioBufferList.allocate(maximumBuffers: 2)
-                defer { free(abl.unsafeMutablePointer) }
-                abl[0] = AudioBuffer(mNumberChannels: 1, mDataByteSize: 2048, mData: ch[0] + at)
-                abl[1] = AudioBuffer(mNumberChannels: 1, mDataByteSize: 2048, mData: ch[1] + at)
-                if body { guitar.render(frameCount: 512, buffers: abl) } else { guitar.strings.render(frameCount: 512, buffers: abl) }
-                at += 512
-            }
-            // share of energy below 300 Hz: a one-pole low-pass against the whole
-            var low: Float = 0, lowEnergy: Float = 0, all: Float = 0
-            let k = 1 - expf(-2 * .pi * 300 / sr)
-            for i in 0..<n {
-                let x = 0.5 * (ch[0][i] + ch[1][i])
-                low += (x - low) * k
-                lowEnergy += low * low
-                all += x * x
-            }
-            return lowEnergy / max(all, 1e-9)
+    /// The guitar is the recorded nylon guitar: every note is in the bundle, and the
+    /// nearest recording is retuned by at most a semitone, exactly.
+    func testTheGuitarIsRecordedAndInTune() {
+        let samples = GuitarSamples.shared
+        XCTAssertEqual(samples.lengths.count, 27)
+        XCTAssertTrue(samples.lengths.allSatisfy { $0 > 44100 }, "every note is there and lasts over a second")
+        for midi in 40...91 {
+            let f = Chord.frequency(midi: midi)
+            let (index, rate) = samples.nearest(f, outputRate: samples.sampleRate)
+            let recorded = GuitarSamples.notes[index]
+            XCTAssertLessThanOrEqual(abs(midi - recorded), 1, "MIDI \(midi) plays a note at most a semitone away")
+            XCTAssertEqual(rate, pow(2, Double(midi - recorded) / 12), accuracy: 1e-9)
         }
-        let bare = try lowMidShare(false), warm = try lowMidShare(true)
-        print("audio guitar low share: bare \(bare) body \(warm)")
-        XCTAssertGreaterThan(warm, bare * 1.2, "the body adds warmth")
     }
 
     // MARK: - animals

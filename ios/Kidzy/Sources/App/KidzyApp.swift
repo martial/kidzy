@@ -10,7 +10,10 @@ struct KidzyApp: App {
         WindowGroup {
             RootView()
                 .environment(model)
-                .onAppear { model.start() }
+                .onAppear {
+                    model.start()
+                    GuitarSamples.preload()
+                }
                 .onChange(of: phase) { _, new in
                     model.scenePhaseChanged(active: new == .active)
                 }

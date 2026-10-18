@@ -3,6 +3,7 @@ import SwiftUI
 /// The parents page: a switch per toy, the purchase, restore, the links, the mic line.
 struct ParentView: View {
     @Environment(SketchesModel.self) private var model
+    @State private var showLicenses = false
 
     var body: some View {
         let store = model.store
@@ -99,6 +100,8 @@ struct ParentView: View {
                             Link(destination: Links.privacy) { rowLabel(String(localized: "parent.privacy")) }
                             Divider().overlay(Brand.divider)
                             Link(destination: Links.support) { rowLabel(String(localized: "parent.support")) }
+                            Divider().overlay(Brand.divider)
+                            row(String(localized: "parent.licenses")) { showLicenses = true }
                             Text(String(localized: "parent.mic") + " " + String(localized: "parent.version \(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "")"))
                                 .font(Brand.font(14, .semibold, relativeTo: .footnote))
                                 .foregroundStyle(Brand.inkSoft)
@@ -121,6 +124,7 @@ struct ParentView: View {
             .scrollBounceBehavior(.basedOnSize)
         }
         .accessibilityIdentifier("parent")
+        .sheet(isPresented: $showLicenses) { LicensesView() }
     }
 
     private func row(_ title: String, action: @escaping () -> Void) -> some View {
@@ -157,5 +161,36 @@ struct ToyThumb: View {
         }
         .frame(width: 42, height: 42)
         .accessibilityHidden(true)
+    }
+}
+
+/// The open-source works the app ships, with their licences (`Licenses.txt`, from
+/// `ios/scripts/make-licenses.sh`).
+struct LicensesView: View {
+    @Environment(\.dismiss) private var dismiss
+    private let text: String = {
+        guard let url = Bundle.main.url(forResource: "Licenses", withExtension: "txt") else { return "" }
+        return (try? String(contentsOf: url, encoding: .utf8)) ?? ""
+    }()
+
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                Text(verbatim: text)
+                    .font(.system(size: 12, design: .monospaced))
+                    .foregroundStyle(Brand.ink)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(16)
+                    .textSelection(.enabled)
+            }
+            .navigationTitle(String(localized: "parent.licenses"))
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button { dismiss() } label: { Image(systemName: "xmark") }
+                        .accessibilityLabel(String(localized: "gate.close"))
+                }
+            }
+        }
     }
 }

@@ -11,7 +11,10 @@ struct SketchesApp: App {
         WindowGroup {
             RootView()
                 .environment(model)
-                .onAppear { model.start() }
+                .onAppear {
+                    model.start()
+                    GuitarSamples.preload()
+                }
         }
     }
 }
