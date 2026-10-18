@@ -80,6 +80,16 @@ struct ParentView: View {
                         .buttonStyle(PressStyle())
                         .accessibilityIdentifier("parent.unlock")
                     }
+                    #if DEBUG
+                    GrownUpCard {
+                        Toggle(isOn: Binding(get: { store.testUnlock }, set: { store.testUnlock = $0 })) {
+                            Text(verbatim: "Debug: all toys open (test builds only)")
+                                .font(Brand.font(16, .bold))
+                                .foregroundStyle(Brand.ink)
+                        }
+                        .tint(Brand.tangerine)
+                    }
+                    #endif
                     GrownUpCard(padding: EdgeInsets(top: 6, leading: 18, bottom: 14, trailing: 18)) {
                         VStack(alignment: .leading, spacing: 0) {
                             if !store.isUnlocked {

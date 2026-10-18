@@ -13,6 +13,7 @@ final class StoreTests: XCTestCase {
         session.disableDialogs = true
         session.clearTransactions()
         UserDefaults.standard.removeObject(forKey: Store.cacheKey)
+        UserDefaults.standard.removeObject(forKey: "sketches.test-unlock")
     }
 
     func testFreeToysAndLockedOnes() async {

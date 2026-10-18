@@ -17,11 +17,12 @@ final class Store {
     private(set) var lastError: String?
     private var listener: Task<Void, Never>?
     private var forced = false
+    private static let testUnlockKey = "sketches.test-unlock"
 
     init() {
         isUnlocked = UserDefaults.standard.bool(forKey: Self.cacheKey)
         #if DEBUG
-        if ProcessInfo.processInfo.environment["KIDZY_UNLOCK"] == "1" {
+        if ProcessInfo.processInfo.environment["KIDZY_UNLOCK"] == "1" || UserDefaults.standard.bool(forKey: Self.testUnlockKey) {
             isUnlocked = true
             forced = true
         }
@@ -29,6 +30,20 @@ final class Store {
     }
 
     func isFree(_ id: String) -> Bool { Self.freeToys.contains(id) }
+
+    #if DEBUG
+    /// Debug builds only: every toy open without the App Store, for trying the app on a phone
+    /// before the purchase exists in App Store Connect. Never compiled into a release.
+    var testUnlock: Bool {
+        get { forced }
+        set {
+            forced = newValue
+            UserDefaults.standard.set(newValue, forKey: Self.testUnlockKey)
+            isUnlocked = newValue || UserDefaults.standard.bool(forKey: Self.cacheKey)
+            if !newValue { Task { await refresh() } }
+        }
+    }
+    #endif
     func isAvailable(_ id: String) -> Bool { isUnlocked || isFree(id) }
     var lockedToys: [ToyEntry] { Toys.all.filter { !isFree($0.id) } }
 
