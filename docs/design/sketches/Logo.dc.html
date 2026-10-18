@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Logo</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#1F2A44}a:hover{color:#1F2A44}
+.wall{background:radial-gradient(120% 55% at 50% 0%,rgba(255,255,255,.5),rgba(255,255,255,0) 60%),radial-gradient(circle at 14px 14px,rgba(255,255,255,.32) 2.6px,transparent 3.6px) 0 0/32px 32px,linear-gradient(180deg,#FFC530,#FFD95C 72%)}
+.night{background:radial-gradient(90% 50% at 50% 0%,rgba(120,160,255,.35),rgba(120,160,255,0) 70%),linear-gradient(180deg,#2A3768,#3D57A6)}
+.cap{margin:0;font-size:14px;font-weight:700;color:#4A5878}
+</style>
+</helmet>
+<div style="width: 900px; height: 560px; box-sizing: border-box; padding: 20px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; background: #FFFFFF; font-family: 'Baloo 2', sans-serif; color: #1F2A44">
+  <div class="wall" style="grid-row: span 2; border-radius: 26px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px">
+    <img src="/_blob/84dee0aadd7f5c8fe36935ea73ec8621" alt="The logo: white 3D letters Sketches with an orange outline, a coral for kids! pill, the parrot waving" style="width: 390px; filter: drop-shadow(0 14px 18px rgba(150,70,0,.3))">
+    <p class="cap" style="color: #7A4D00">The logo, on the wall</p>
+  </div>
+  <div class="night" style="border-radius: 26px; display: flex; align-items: center; justify-content: center">
+    <img src="/_blob/84dee0aadd7f5c8fe36935ea73ec8621" alt="" style="width: 300px; filter: drop-shadow(0 12px 16px rgba(0,0,30,.4))">
+  </div>
+  <div style="border-radius: 26px; background: #F6F7FB; display: flex; align-items: center; justify-content: space-around; padding: 0 18px">
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 8px">
+      <img src="/_blob/ab809c157a5934831a4cf26c3d341036" alt="The round badge: the parrot in a sunny disc, Sketches arched above, for kids! on a blue banner" style="width: 150px">
+      <p class="cap">Badge (avatar, stickers)</p>
+    </div>
+    <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 12px">
+      <img src="/_blob/84dee0aadd7f5c8fe36935ea73ec8621" alt="" style="width: 140px">
+      <img src="/_blob/84dee0aadd7f5c8fe36935ea73ec8621" alt="" style="width: 80px">
+      <img src="/_blob/ab809c157a5934831a4cf26c3d341036" alt="" style="width: 34px">
+      <p class="cap">Small sizes</p>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":900,"height":560}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

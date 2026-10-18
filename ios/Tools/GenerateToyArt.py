@@ -37,13 +37,28 @@ ICONS = {
 }
 
 
-def generate(token, out, prompt, refs=(), size=None):
+# The logo: first rendered on white (logo-white), then re-rendered from that image on chroma green so
+# Keyout.swift can make it transparent (Vision's subject lift drops the « for kids! » pill and punches
+# holes in white letters); TrimBands.swift then drops any stray floor strip under it.
+LOGO_SPELL = 'Logo for a kids toy app named "Sketches for kids!". Spell exactly: Sketches, then for kids! — no other words, no other letters.'
+GREEN = ("Place it on a perfectly flat, uniform, pure chroma-key green background (#00FF00) filling the whole image edge to edge: "
+         "no gradient, no floor, no shadow or reflection on the background, no green anywhere in the logo itself. Keep every letter "
+         "exactly as spelled: Sketches, then for kids!.")
+LOGOS = {
+    "logo-white": ("toy-parrot", "3:2", LOGO_SPELL + " The word Sketches in big chunky white rounded 3D letters with a thick sunny-orange glossy outline and a deep orange extruded side, like a toy sign, on one gently rising line; the S starts with a little paint swirl. Below it, a coral-red rounded pill with for kids! in white. The cute toy parrot from the reference peeking from behind the right end of the word, one wing waving. Plain pure white background, centered, soft studio light."),
+    "logo-green": ("logo-white", "3:2", "Recreate exactly this logo design, same letters, colours, 3D style, paint swirl on the S, coral pill and waving parrot, centered with a comfortable margin. " + GREEN),
+    "badge-white": ("toy-parrot", "1:1", LOGO_SPELL + " A playful round sticker emblem: a thick white rim around a sunny yellow disc with tiny white polka dots; the cute toy parrot from the reference in the middle; the word Sketches arched across the top of the badge in chunky coral-red rounded 3D letters; a small sky-blue banner across the bottom with for kids! in white. Glossy soft vinyl style like the reference toys. Plain pure white background, centered."),
+    "badge-green": ("badge-white", "1:1", "Recreate exactly this round badge logo, same parrot, arched coral Sketches lettering, sky-blue for kids! banner, sunny yellow polka-dot disc and thick white rim, centered with a comfortable margin. " + GREEN),
+}
+
+
+def generate(token, out, prompt, refs=(), size=None, aspect="1:1"):
     if os.path.exists(out):
         print("have", os.path.basename(out))
         return
     parts = [{"inlineData": {"mimeType": "image/png", "data": base64.b64encode(open(r, "rb").read()).decode()}} for r in refs]
     parts.append({"text": prompt})
-    image_config = {"aspectRatio": "1:1"}
+    image_config = {"aspectRatio": aspect}
     if size:
         image_config["imageSize"] = size
     body = {"contents": [{"role": "user", "parts": parts}],
@@ -77,6 +92,9 @@ def main():
     for name, (ref, prompt) in ICONS.items():
         if not wanted or name in wanted:
             generate(token, path(name), prompt, refs=[path(ref)], size="2K")
+    for name, (ref, aspect, prompt) in LOGOS.items():
+        if not wanted or name in wanted:
+            generate(token, path(name), prompt, refs=[path(ref)], size="2K", aspect=aspect)
 
 
 if __name__ == "__main__":

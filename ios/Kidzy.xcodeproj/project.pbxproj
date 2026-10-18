@@ -185,6 +185,7 @@
 		E2D644E24E1E8D03F6007418 /* chien.png in Resources */ = {isa = PBXBuildFile; fileRef = E9B0D1515FE221A03738C953 /* chien.png */; };
 		E6003511C827B14D1E19E9F7 /* chime.wav in Resources */ = {isa = PBXBuildFile; fileRef = 131879AA49E450B70BE258DB /* chime.wav */; };
 		E6690F41990F13D8CE991E92 /* animal-lion.wav in Resources */ = {isa = PBXBuildFile; fileRef = A0BD43C34919E9D9CA75D9DC /* animal-lion.wav */; };
+		E6E1F6FF7702883D31E16694 /* logo.png in Resources */ = {isa = PBXBuildFile; fileRef = F41BB5F455356EFED39EEEAC /* logo.png */; };
 		E8627914CDFEC19C4D3FDF4D /* parrot-idle.png in Resources */ = {isa = PBXBuildFile; fileRef = 12DD6F59021CA0DA2B6D4882 /* parrot-idle.png */; };
 		E96A6F38928683806FD80E03 /* toy3d-tiles.png in Resources */ = {isa = PBXBuildFile; fileRef = AA27A821C4C96D3157E69DB8 /* toy3d-tiles.png */; };
 		EA61FD9772D18F883311D945 /* ToyAudioTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 841C1454585C474A89E39135 /* ToyAudioTests.swift */; };
@@ -352,6 +353,7 @@
 		F03E375186D53EB3F616FC79 /* toy3d-paint.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "toy3d-paint.png"; sourceTree = "<group>"; };
 		F06FAF7792B16968F36825A9 /* name-mouton.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "name-mouton.wav"; sourceTree = "<group>"; };
 		F26AB19D091A6960C6107913 /* canard.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = canard.png; sourceTree = "<group>"; };
+		F41BB5F455356EFED39EEEAC /* logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = logo.png; sourceTree = "<group>"; };
 		F44D801B4DDD526A30E12FDE /* ParentAreaView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParentAreaView.swift; sourceTree = "<group>"; };
 		F71B4FB99B7270D24C7E0C31 /* parrot-talk.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "parrot-talk.png"; sourceTree = "<group>"; };
 		F8B00A6346E34F7D45E4868D /* FingerMusic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FingerMusic.swift; sourceTree = "<group>"; };
@@ -778,6 +780,7 @@
 		C951E934027B02EA80FEDC89 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				F41BB5F455356EFED39EEEAC /* logo.png */,
 				689F207FDEBFE22B8FBDE6C6 /* Fonts */,
 				EF5ADE83DA72D23B71016D91 /* Toys3D */,
 			);
@@ -1060,6 +1063,7 @@
 				B2B9C4C6081DD2BBB9B59A59 /* giggle.wav in Resources */,
 				0AF9B61007502CD832167B25 /* grenouille.png in Resources */,
 				BDEE8B8A63A75717FF68257D /* lion.png in Resources */,
+				E6E1F6FF7702883D31E16694 /* logo.png in Resources */,
 				C13C2A23F1AAE5BEA3928A91 /* mouton.png in Resources */,
 				4BE9D36F778589B0614D3E02 /* name-ane.wav in Resources */,
 				6F3B3A003F239512960DB56F /* name-canard.wav in Resources */,

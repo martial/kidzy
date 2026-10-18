@@ -18,6 +18,7 @@
     "Store5.dc.html": { "x": 2040, "y": 1250, "w": 430, "h": 932, "title": "App Store 5 · for parents" },
     "Icon.dc.html": { "x": 0, "y": 2560, "w": 900, "h": 560, "title": "App icon" },
     "Brand.dc.html": { "x": 980, "y": 2560, "w": 900, "h": 560, "title": "Brand kit" },
+    "Logo.dc.html": { "x": 1960, "y": 2560, "w": 900, "h": 560, "title": "Logo and badge" },
     "Explore.dc.html": { "x": 0, "y": 3480, "w": 1300, "h": 1040, "title": "Explorations, rounds 1 to 4" }
   },
   "order": [
@@ -34,6 +35,7 @@
     "Store5.dc.html",
     "Icon.dc.html",
     "Brand.dc.html",
+    "Logo.dc.html",
     "Explore.dc.html"
   ],
   "notes": {
@@ -41,7 +43,7 @@
     "n-app": { "x": 2830, "y": 0, "w": 320, "text": "A sunny toy cabinet: each toy is a glossy 3D toy in its own coloured cubby, big enough for a two-year-old's thumb, and it bobs gently so it asks to be touched. Kid screens have no text. Free: the sea and the animals. Paint, shapes, guitar and parrot open with one purchase, behind a sum only a grown-up can do. Parent screens are drawn in English; French ships too.", "fill": "orange" },
     "t-store": { "x": 0, "y": 1000, "text": "App Store screenshots", "kind": "title1", "maxW": 2470 },
     "n-store": { "x": 2550, "y": 1250, "w": 320, "text": "Five screenshots, 1290 × 2796 when exported at 3×. Each one has its own cubby colour so the carousel reads as a rainbow of toys, a real capture of the toy in the phone, and one 3D toy breaking out of the frame. Captions are short so they translate.", "fill": "blue" },
-    "t-brand": { "x": 0, "y": 2310, "text": "Icon and brand", "kind": "title1", "maxW": 1880 },
+    "t-brand": { "x": 0, "y": 2310, "text": "Icon, logo and brand", "kind": "title1", "maxW": 2860 },
     "t-explore": { "x": 0, "y": 3230, "text": "How we got here", "kind": "title1", "maxW": 1300 }
   },
   "designSystems": []

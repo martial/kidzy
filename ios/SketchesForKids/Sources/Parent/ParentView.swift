@@ -105,6 +105,15 @@ struct ParentView: View {
                                 .padding(.top, 8)
                         }
                     }
+                    if let logo = UIImage(named: "logo") {
+                        Image(uiImage: logo)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 190)
+                            .shadow(color: .black.opacity(0.25), radius: 10, y: 8)
+                            .padding(.top, 8)
+                            .accessibilityLabel("Sketches for kids!")
+                    }
                 }
                 .padding(.horizontal, 16)
                 .padding(.bottom, 30)

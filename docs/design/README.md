@@ -50,6 +50,7 @@ the app icon, and it peeks over the gate. Kid screens have no text.
 | `sketches/Toy.dc.html` | A toy | the real toy full screen, a 58 pt white home button with a coral house, top-left below the Dynamic Island |
 | `sketches/Store1…5.dc.html` | App Store | 430 × 932 (export at 3× = 1290 × 2796): hero with the wordmark, then sea (tilted), paint, parrot, parents; one cubby colour per shot |
 | `sketches/Icon.dc.html` | Icon | the 3D parrot on sunny orange, at 1024, 60, 40, 29 pt; « Sketches » under the icon |
+| `sketches/Logo.dc.html` | Logo | white 3D « Sketches » with a glossy orange outline and a paint swirl on the S, the coral « for kids! » pill, the parrot waving from behind; on the wall, on night blue, on white; the round badge (parrot in a sunny disc) for avatars and stickers; `sketches/art/logo.png`, `logo-badge.png` |
 | `sketches/Brand.dc.html` | Brand kit | wordmark, colours, Baloo 2, buttons, badge, home button, cubby |
 | `sketches/Explore.dc.html` | Explorations | rounds 1 to 4: shelf / bubbles / cards, cabinet colours, lock styles, icons |
 
