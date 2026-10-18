@@ -53,7 +53,9 @@ struct PaintSketchView: View {
     }
 }
 
-/// A bump on the table or a shake: user acceleration above a threshold.
+/// A real knock on the table or a real shake: user acceleration above ~1.1 g, at
+/// most once a second. (At 0.45 g a phone held while playing set it off, and toys
+/// changed song or rang a chime out of nowhere.)
 @MainActor
 final class ShakeSensor {
     private let manager = CMMotionManager()
@@ -74,7 +76,7 @@ final class ShakeSensor {
     func stop() { manager.stopDeviceMotionUpdates() }
 
     private func bump(_ magnitude: Double) {
-        guard magnitude > 0.45, Date().timeIntervalSince(last) > 0.6 else { return }
+        guard magnitude > 1.1, Date().timeIntervalSince(last) > 1.0 else { return }
         last = Date()
         onShake?()
     }

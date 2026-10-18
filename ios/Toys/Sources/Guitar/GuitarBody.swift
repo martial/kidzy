@@ -21,7 +21,8 @@ final class GuitarDSP: RenderDSP, @unchecked Sendable {
     struct Tuning: Sendable {
         var dry: Float = 0.6
         var body: Float = 2.6
-        var sympathetic: Float = 0.5
+        /// Off: six fixed open strings rang on for seconds under any chord, a "diiing" drone.
+        var sympathetic: Float = 0
         var pick: Float = 0.35
         var chorus: Float = 0.2
         var room: Float = 1

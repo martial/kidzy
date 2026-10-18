@@ -10,7 +10,6 @@ struct GuitarSketchView: View {
     @State private var box = GuitarBox()
     @State private var synth = GuitarSynth()
     @State private var shake = ShakeSensor()
-    @State private var sounds = SoundBank()
 
     var body: some View {
         TimelineView(.animation(paused: phase != .active)) { ctx in
@@ -24,21 +23,20 @@ struct GuitarSketchView: View {
         .gesture(
             DragGesture(minimumDistance: 0, coordinateSpace: .local)
                 .onChanged { v in box.current?.dragChanged(location: v.location, start: v.startLocation, synth: synth) }
-                .onEnded { v in box.current?.dragEnded(location: v.location, start: v.startLocation, synth: synth, sounds: sounds) }
+                .onEnded { v in box.current?.dragEnded(location: v.location, start: v.startLocation, synth: synth) }
         )
         .onAppear {
             synth.start()
-            sounds.load()
             shake.onShake = {
                 box.current?.nextSong()
-                sounds.play("chime", volume: 0.5, rate: 1.1)
+                // the new song announces itself with its first chord, not a chime
+                box.current?.strum(synth: synth, velocity: 0.6)
             }
             shake.start()
         }
         .onDisappear {
             shake.stop()
             synth.stop()
-            sounds.unload()
         }
         .onChange(of: phase) { _, p in
             if p == .active {
@@ -174,7 +172,7 @@ final class GuitarState {
         }
     }
 
-    func dragEnded(location p: CGPoint, start: CGPoint, synth: GuitarSynth, sounds: SoundBank) {
+    func dragEnded(location p: CGPoint, start: CGPoint, synth: GuitarSynth) {
         defer {
             lastX = nil
             lastMelodyNote = -1
@@ -194,7 +192,7 @@ final class GuitarState {
         }
         if hypot(p.x - holeCenter.x, p.y - holeCenter.y) < holeRadius {
             nextSong()
-            sounds.play("chime", volume: 0.5, rate: 1.1)
+            strum(synth: synth, velocity: 0.6)
             return
         }
         if touchMode == .strum {

@@ -176,7 +176,8 @@ final class SeaToy {
             }
             sound.water(acoustics.wash)
         }
-        let nightNow = night > 0.5
+        // a margin each way, so a sun near the horizon rings once, not on every wobble
+        let nightNow = wasNight ? night > 0.4 : night > 0.6
         if nightNow != wasNight {
             wasNight = nightNow
             onSound?("chime")
