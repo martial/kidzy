@@ -43,7 +43,7 @@ struct ToyHost: View {
         case .secretCorner:
             SecretCorner(onUnlock: onExit)
         case .backSticker:
-            StickerButton(size: 56, systemImage: "house.fill", label: String(localized: "toy.back", defaultValue: "Back to the toys", table: "Toys"), action: onExit)
+            HomeButton(label: String(localized: "toy.back", defaultValue: "Back to the toys", table: "Toys"), action: onExit)
                 .accessibilityIdentifier("toy.back")
                 .padding(.leading, 16)
                 .padding(.top, 12)

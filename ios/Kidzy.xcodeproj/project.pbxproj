@@ -11,6 +11,7 @@
 		019E37493FF4CBE4F12476B4 /* SeaSketchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A9CC3927FBCFF2D8DD98A59 /* SeaSketchView.swift */; };
 		031E4F2FAE8393A61239EAC9 /* SeaSimulation.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA89C33767A05306879C99D4 /* SeaSimulation.swift */; };
 		059E817AA4776E0EA424079E /* name-cochon.wav in Resources */ = {isa = PBXBuildFile; fileRef = 8638612426228B24E1BA1624 /* name-cochon.wav */; };
+		05EBD7EC3AEB40593761B0D0 /* toy3d-sea.png in Resources */ = {isa = PBXBuildFile; fileRef = 280943675B136570C7247818 /* toy3d-sea.png */; };
 		06A8753CA1A56ECE4B94A328 /* Toys.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 5C627E5EA7198A477C9AF556 /* Toys.xcstrings */; };
 		07606B2AA7D261E04747DEED /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDC5C6DD2A337C381B6E7071 /* Theme.swift */; };
 		076427AF353AB8F06119DA94 /* ToyAudio.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85867F24BB0B85706C956FF2 /* ToyAudio.swift */; };
@@ -36,10 +37,12 @@
 		2AF8BCF4F73A02F0F5445413 /* animal-cochon.wav in Resources */ = {isa = PBXBuildFile; fileRef = 9F43C5A24433DC559BA9D2CD /* animal-cochon.wav */; };
 		2C4B53C459708FA327F29BBD /* ParrotEar.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFF50F9CE7E2F65FED985645 /* ParrotEar.swift */; };
 		2F93822D1002B996D4187F11 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 78B0123AEB63B6835F47D912 /* PrivacyInfo.xcprivacy */; };
+		332F42D7F4F62BC7857E00AA /* GateQuestion.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEA96C0CD64B68566CD3CFF5 /* GateQuestion.swift */; };
 		33B4DD2A260BCDB2EC3AC602 /* ToyRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 619AAACA29163B97B42BA851 /* ToyRegistry.swift */; };
 		3453D1C9E585337F47AE4175 /* parrot-listen.png in Resources */ = {isa = PBXBuildFile; fileRef = FF85D00F37008CB689576289 /* parrot-listen.png */; };
 		36C0F61645EF0949B1FF37CA /* Fluid.metal.txt in Resources */ = {isa = PBXBuildFile; fileRef = 4E85DD2D1FEF5411D8600288 /* Fluid.metal.txt */; };
 		36F5881C0C4699CF48B2695C /* SeaToy.swift in Sources */ = {isa = PBXBuildFile; fileRef = B437D2D96227A8B032EE3306 /* SeaToy.swift */; };
+		38CC597F11E6774BD4CE09C2 /* Brand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32B9C602C342F58C46EF4548 /* Brand.swift */; };
 		3B4D0E45E6AA9AA20511B8A2 /* PairingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44754D6331EB8454A01866D4 /* PairingView.swift */; };
 		3F2C5404BABF8AC33D77D7A3 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = E23A9D57F4EBB334E6A0039A /* Localizable.xcstrings */; };
 		3F4102E196F622E803004373 /* CornerTapLock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 202FB40944E3E381EEF16BC7 /* CornerTapLock.swift */; };
@@ -68,6 +71,7 @@
 		55D4D33E396785D9A3A1F075 /* name-coq.wav in Resources */ = {isa = PBXBuildFile; fileRef = 2FF128B20686649342858B22 /* name-coq.wav */; };
 		589156E452B8B658569A96FD /* animal-grenouille.wav in Resources */ = {isa = PBXBuildFile; fileRef = 54FBB24C8BF8B85B62C6F894 /* animal-grenouille.wav */; };
 		58C4BF0E7EFBD7604DEC1CC0 /* PaintSketchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E266B9BE61A9A668EDF283 /* PaintSketchView.swift */; };
+		5CFDB8F743CF2B84EEE1E6C8 /* toy3d-paint.png in Resources */ = {isa = PBXBuildFile; fileRef = F03E375186D53EB3F616FC79 /* toy3d-paint.png */; };
 		5D23CBB41778F3AA2DE632F3 /* AudioKitEX in Frameworks */ = {isa = PBXBuildFile; productRef = 7F7EDC4FBF3D00AB9552D3A6 /* AudioKitEX */; };
 		5D561F791E4AC1BC00BE0620 /* PickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C6B5753661C6ACB36BBF065 /* PickerView.swift */; };
 		5DDA44353114DA9A9DD17097 /* DunneAudioKit in Frameworks */ = {isa = PBXBuildFile; productRef = 3E7A8D5BAF162CB6C02C8898 /* DunneAudioKit */; };
@@ -84,6 +88,7 @@
 		6D3B970EC2BF6582C8AB42BC /* Stickers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96332842A38908205D087B48 /* Stickers.swift */; };
 		6D718AA64915B93493905BEC /* PlayerLayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB916C04F96AFFD97D2A77F2 /* PlayerLayerView.swift */; };
 		6DF77747C647C6D02E2E75DB /* Fluid.metal.txt in Resources */ = {isa = PBXBuildFile; fileRef = 4E85DD2D1FEF5411D8600288 /* Fluid.metal.txt */; };
+		6EF347350CF6065044167BBD /* GateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDB9D3CC8ADDBC685894A4B3 /* GateTests.swift */; };
 		6F3333F0EDD819DFD39CE879 /* TilesSketchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ED0ABEA2C6521FFECAFCE01 /* TilesSketchView.swift */; };
 		6F3B3A003F239512960DB56F /* name-canard.wav in Resources */ = {isa = PBXBuildFile; fileRef = FAF57753993FAA51DA2EE8DA /* name-canard.wav */; };
 		71A041C776CD60769CC1338B /* PaintSketchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E266B9BE61A9A668EDF283 /* PaintSketchView.swift */; };
@@ -96,9 +101,11 @@
 		7A1D8E7271D6FE7A3A06FFE7 /* animal-ane.wav in Resources */ = {isa = PBXBuildFile; fileRef = 8944EDCAF493B854B73C90C8 /* animal-ane.wav */; };
 		7AEBE83482821C1E7F62C2A8 /* FingerMusic.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8B00A6346E34F7D45E4868D /* FingerMusic.swift */; };
 		7B9A03345E1E4741E78E306E /* chien.png in Resources */ = {isa = PBXBuildFile; fileRef = E9B0D1515FE221A03738C953 /* chien.png */; };
+		7BCD320570C81BC4A82AC1F7 /* HomeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7BEBFE8E716CF8EBA72A6FA /* HomeButton.swift */; };
 		7E227AA74F63FCE4F192C64D /* Toys.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 5C627E5EA7198A477C9AF556 /* Toys.xcstrings */; };
 		8077142FD775A4BAC020DAF7 /* ParentGateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4809529667C9B86E5FAF9D0C /* ParentGateView.swift */; };
 		81A10C221C2BEB7A83E98CE2 /* name-canard.wav in Resources */ = {isa = PBXBuildFile; fileRef = FAF57753993FAA51DA2EE8DA /* name-canard.wav */; };
+		82DBECCF813CA089EEB7419A /* HomeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7BEBFE8E716CF8EBA72A6FA /* HomeButton.swift */; };
 		854402A163E512A7655F8ED8 /* ParentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89AE498AD00E38C098DD2DAC /* ParentView.swift */; };
 		85BB0FB605AE50ABB41AEA3D /* parrot-idle.png in Resources */ = {isa = PBXBuildFile; fileRef = 12DD6F59021CA0DA2B6D4882 /* parrot-idle.png */; };
 		85CDD81C605E0165E73135F1 /* animal-canard.wav in Resources */ = {isa = PBXBuildFile; fileRef = 16DB6461C642ED2CD1E56C13 /* animal-canard.wav */; };
@@ -117,12 +124,14 @@
 		98F7CBF29D9ADB9B194ABC98 /* CornerTapLock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 202FB40944E3E381EEF16BC7 /* CornerTapLock.swift */; };
 		9BC76B792470F811CEA9FF53 /* name-grenouille.wav in Resources */ = {isa = PBXBuildFile; fileRef = 7387E959315DAA11246C6BD6 /* name-grenouille.wav */; };
 		9E595D0D2865C4ABCFFE11AF /* ane.png in Resources */ = {isa = PBXBuildFile; fileRef = B8749E0741FC47DEDAC7C776 /* ane.png */; };
+		9E898168F1FD28350B7DF661 /* Baloo2-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 46B9656EF91C4314D7DC06AE /* Baloo2-Bold.ttf */; };
 		9E8E5052DA65E8A90BB381E1 /* vache.png in Resources */ = {isa = PBXBuildFile; fileRef = 702E91DA1615A5BBA8ABE284 /* vache.png */; };
 		9EB9B84B6A9FA6825295379E /* Guitar.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1962DD46D8C11643264D966 /* Guitar.swift */; };
 		A14AD3CAB0A45A5BB2CDD828 /* name-mouton.wav in Resources */ = {isa = PBXBuildFile; fileRef = F06FAF7792B16968F36825A9 /* name-mouton.wav */; };
 		A19E155C7C9F6FE25B2B7888 /* FluidSimulator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA9621BCFAD52AC6D20DFCC /* FluidSimulator.swift */; };
 		A1EFF63B5A1DB1B2B2427566 /* animal-mouton.wav in Resources */ = {isa = PBXBuildFile; fileRef = 9D905F897D0D675924F17C73 /* animal-mouton.wav */; };
 		A26B37A2CB0E493C042B8D11 /* ane.png in Resources */ = {isa = PBXBuildFile; fileRef = B8749E0741FC47DEDAC7C776 /* ane.png */; };
+		A33A9FB49D14932380997B85 /* Baloo2-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D4B0775FBA0D4871981F156E /* Baloo2-SemiBold.ttf */; };
 		A5C1DB2FD9D6EC5A77AE01EB /* animal-perroquet.wav in Resources */ = {isa = PBXBuildFile; fileRef = 95A818B42631E735A3BBDCBE /* animal-perroquet.wav */; };
 		A5C9D5C2CED7145222631BF8 /* animal-vache.wav in Resources */ = {isa = PBXBuildFile; fileRef = 86FB63EF19A339D2D6828877 /* animal-vache.wav */; };
 		A61D9AEA7FD7D6866E087C69 /* chat.png in Resources */ = {isa = PBXBuildFile; fileRef = 1B5AEE0371898B2718F360A7 /* chat.png */; };
@@ -151,29 +160,33 @@
 		BD2B4C5628726CCB2E957F35 /* animal-chien.wav in Resources */ = {isa = PBXBuildFile; fileRef = FABCE28697E0AE796A97C4A4 /* animal-chien.wav */; };
 		BDEE8B8A63A75717FF68257D /* lion.png in Resources */ = {isa = PBXBuildFile; fileRef = 095C5E38E18EFCB156993372 /* lion.png */; };
 		BDFE161FC9D1D7FE2DCC3E8F /* ToyAudio.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85867F24BB0B85706C956FF2 /* ToyAudio.swift */; };
+		BFFB71844CAEB618D18D05DF /* toy3d-parrot.png in Resources */ = {isa = PBXBuildFile; fileRef = 72EAC2242B50BEB5049670AB /* toy3d-parrot.png */; };
 		C13C2A23F1AAE5BEA3928A91 /* mouton.png in Resources */ = {isa = PBXBuildFile; fileRef = 83AFF61D96720B6BF0DDA77E /* mouton.png */; };
 		C1B0AC03505F3DCE830C217E /* FingerMusic.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8B00A6346E34F7D45E4868D /* FingerMusic.swift */; };
 		C2DE021983312604C9F6248F /* animal-chat.wav in Resources */ = {isa = PBXBuildFile; fileRef = B43801A741FFBC3A66010C47 /* animal-chat.wav */; };
 		C3C43842E8480B538E5BF993 /* chime.wav in Resources */ = {isa = PBXBuildFile; fileRef = 131879AA49E450B70BE258DB /* chime.wav */; };
+		CB821B82FA1E8D73EEAEC339 /* toy3d-animals.png in Resources */ = {isa = PBXBuildFile; fileRef = D048543AB97FE34FA0066C99 /* toy3d-animals.png */; };
 		CC0972115A387B1DAE812ED7 /* KidzyClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD3FBBFB3F83BFC391F3E60B /* KidzyClient.swift */; };
 		CC6BF6CC2E7B62D00E690DE0 /* name-mouton.wav in Resources */ = {isa = PBXBuildFile; fileRef = F06FAF7792B16968F36825A9 /* name-mouton.wav */; };
 		CD324EC850DEB827A1403C72 /* lion.png in Resources */ = {isa = PBXBuildFile; fileRef = 095C5E38E18EFCB156993372 /* lion.png */; };
 		CE54FD7282CE049DD1B7595D /* parrot-talk.png in Resources */ = {isa = PBXBuildFile; fileRef = F71B4FB99B7270D24C7E0C31 /* parrot-talk.png */; };
 		D03968A24A3833B2A0062D74 /* ParentGateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1103A9D14CB60C117A6C1AA8 /* ParentGateView.swift */; };
 		D0BC7EA5696B6F61CEAB812B /* RemoteImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01D689DBB65C6AD4D03DB372 /* RemoteImage.swift */; };
-		D0FC0C8847584B048B44A815 /* ParentScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33D41FF305FECB5402E67C3A /* ParentScreen.swift */; };
 		D43CCF8089F7D5726B8488B5 /* OrientationLock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 545E008E619A8A32D2168456 /* OrientationLock.swift */; };
 		D5475FC15D79FA020D51ED8E /* FingerSynth.swift in Sources */ = {isa = PBXBuildFile; fileRef = C013221F797DDB3C865F36CF /* FingerSynth.swift */; };
 		D74344A8239C28297EB6A483 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 418AE499204D2C3580E2DDE6 /* Models.swift */; };
 		D90FE38292C237515CB65E97 /* SeaArt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B0984B14A3C2062A0CCF863 /* SeaArt.swift */; };
+		DB3FB2D749DBFDD86D5FD66F /* Baloo2-OFL.txt in Resources */ = {isa = PBXBuildFile; fileRef = D9A05B2C7C0A9529D89A51C7 /* Baloo2-OFL.txt */; };
 		DEC383043A5A2E0C94B11C9B /* name-cochon.wav in Resources */ = {isa = PBXBuildFile; fileRef = 8638612426228B24E1BA1624 /* name-cochon.wav */; };
 		E04F986EDAF79376ACCE5DE5 /* ToyExitUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9B6DAF358FD417AA94006CA /* ToyExitUITests.swift */; };
 		E1A770F1E9F4F1C0A2D630C4 /* OrientationLock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 545E008E619A8A32D2168456 /* OrientationLock.swift */; };
 		E2BA46193DA467D2AFD57A4F /* splash.wav in Resources */ = {isa = PBXBuildFile; fileRef = 7C13B3A867D8945F6D658C23 /* splash.wav */; };
+		E2C378317E090BFADAA0F4C1 /* toy3d-guitar.png in Resources */ = {isa = PBXBuildFile; fileRef = C60D093BAFFA98F271E793CD /* toy3d-guitar.png */; };
 		E2D644E24E1E8D03F6007418 /* chien.png in Resources */ = {isa = PBXBuildFile; fileRef = E9B0D1515FE221A03738C953 /* chien.png */; };
 		E6003511C827B14D1E19E9F7 /* chime.wav in Resources */ = {isa = PBXBuildFile; fileRef = 131879AA49E450B70BE258DB /* chime.wav */; };
 		E6690F41990F13D8CE991E92 /* animal-lion.wav in Resources */ = {isa = PBXBuildFile; fileRef = A0BD43C34919E9D9CA75D9DC /* animal-lion.wav */; };
 		E8627914CDFEC19C4D3FDF4D /* parrot-idle.png in Resources */ = {isa = PBXBuildFile; fileRef = 12DD6F59021CA0DA2B6D4882 /* parrot-idle.png */; };
+		E96A6F38928683806FD80E03 /* toy3d-tiles.png in Resources */ = {isa = PBXBuildFile; fileRef = AA27A821C4C96D3157E69DB8 /* toy3d-tiles.png */; };
 		EA61FD9772D18F883311D945 /* ToyAudioTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 841C1454585C474A89E39135 /* ToyAudioTests.swift */; };
 		EA6A732D981D365D5ABCF3DB /* ToyRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 619AAACA29163B97B42BA851 /* ToyRegistry.swift */; };
 		EB1AC433D673EDB3C1AD1D64 /* animal-coq.wav in Resources */ = {isa = PBXBuildFile; fileRef = 8C296D2B945A9F74C657AA4B /* animal-coq.wav */; };
@@ -188,6 +201,7 @@
 		F4AFD78E3C15CCB3EFECEF42 /* Boat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FD76D73AE92A8654FB6C45F /* Boat.swift */; };
 		F543173B17795D2568CAD435 /* SeaToy.swift in Sources */ = {isa = PBXBuildFile; fileRef = B437D2D96227A8B032EE3306 /* SeaToy.swift */; };
 		F5D460D2D7C2A800A36CFBFC /* FingerSynth.swift in Sources */ = {isa = PBXBuildFile; fileRef = C013221F797DDB3C865F36CF /* FingerSynth.swift */; };
+		F5F6DB1B87FDC068819EB772 /* Baloo2-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 881469E1F53D754450C898F8 /* Baloo2-ExtraBold.ttf */; };
 		F81793DEF96F931A2718D7D5 /* animal-ane.wav in Resources */ = {isa = PBXBuildFile; fileRef = 8944EDCAF493B854B73C90C8 /* animal-ane.wav */; };
 		F9B262D8D1EF150ADCA9EDD4 /* ParrotSketchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA748A96B8D2F0A12E75BCB /* ParrotSketchView.swift */; };
 		FA40C2FEAE2004EDFEE9097D /* LibraryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38F1F20DC1C2891731D65E24 /* LibraryView.swift */; };
@@ -233,16 +247,18 @@
 		202FB40944E3E381EEF16BC7 /* CornerTapLock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CornerTapLock.swift; sourceTree = "<group>"; };
 		205792F2B2559DC7241F6F01 /* SketchesModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SketchesModel.swift; sourceTree = "<group>"; };
 		211CE19FEECE79ED0335B3F7 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		280943675B136570C7247818 /* toy3d-sea.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "toy3d-sea.png"; sourceTree = "<group>"; };
 		2ED0ABEA2C6521FFECAFCE01 /* TilesSketchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TilesSketchView.swift; sourceTree = "<group>"; };
 		2FF128B20686649342858B22 /* name-coq.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "name-coq.wav"; sourceTree = "<group>"; };
 		322A5D87CF3319438347E806 /* name-chien.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "name-chien.wav"; sourceTree = "<group>"; };
-		33D41FF305FECB5402E67C3A /* ParentScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParentScreen.swift; sourceTree = "<group>"; };
+		32B9C602C342F58C46EF4548 /* Brand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Brand.swift; sourceTree = "<group>"; };
 		38E266B9BE61A9A668EDF283 /* PaintSketchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaintSketchView.swift; sourceTree = "<group>"; };
 		38F1F20DC1C2891731D65E24 /* LibraryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryView.swift; sourceTree = "<group>"; };
 		3C6B5753661C6ACB36BBF065 /* PickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickerView.swift; sourceTree = "<group>"; };
 		3F10C69FFC043E0BAC94FA1D /* BlockedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockedView.swift; sourceTree = "<group>"; };
 		418AE499204D2C3580E2DDE6 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
 		44754D6331EB8454A01866D4 /* PairingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PairingView.swift; sourceTree = "<group>"; };
+		46B9656EF91C4314D7DC06AE /* Baloo2-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Baloo2-Bold.ttf"; sourceTree = "<group>"; };
 		4809529667C9B86E5FAF9D0C /* ParentGateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParentGateView.swift; sourceTree = "<group>"; };
 		4873F3D7228C4D9531EA3F0B /* TileGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TileGrid.swift; sourceTree = "<group>"; };
 		4D681CAB879619553F6A58C3 /* GuitarSketchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuitarSketchView.swift; sourceTree = "<group>"; };
@@ -265,6 +281,7 @@
 		702E91DA1615A5BBA8ABE284 /* vache.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = vache.png; sourceTree = "<group>"; };
 		704B702D6CF38F69D84C4B52 /* AutoplayQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoplayQueue.swift; sourceTree = "<group>"; };
 		7212026A8066436378B9D26F /* AnimalsSketchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimalsSketchView.swift; sourceTree = "<group>"; };
+		72EAC2242B50BEB5049670AB /* toy3d-parrot.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "toy3d-parrot.png"; sourceTree = "<group>"; };
 		7387E959315DAA11246C6BD6 /* name-grenouille.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "name-grenouille.wav"; sourceTree = "<group>"; };
 		78B0123AEB63B6835F47D912 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		792ED0E7D8AACB8DB0ABC5AA /* InfoPlist.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = InfoPlist.xcstrings; sourceTree = "<group>"; };
@@ -277,6 +294,7 @@
 		85867F24BB0B85706C956FF2 /* ToyAudio.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToyAudio.swift; sourceTree = "<group>"; };
 		8638612426228B24E1BA1624 /* name-cochon.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "name-cochon.wav"; sourceTree = "<group>"; };
 		86FB63EF19A339D2D6828877 /* animal-vache.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "animal-vache.wav"; sourceTree = "<group>"; };
+		881469E1F53D754450C898F8 /* Baloo2-ExtraBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Baloo2-ExtraBold.ttf"; sourceTree = "<group>"; };
 		8944EDCAF493B854B73C90C8 /* animal-ane.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "animal-ane.wav"; sourceTree = "<group>"; };
 		89AE498AD00E38C098DD2DAC /* ParentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParentView.swift; sourceTree = "<group>"; };
 		8B9AE447B00D8B5EE694B625 /* Keychain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keychain.swift; sourceTree = "<group>"; };
@@ -297,6 +315,8 @@
 		A0BD43C34919E9D9CA75D9DC /* animal-lion.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "animal-lion.wav"; sourceTree = "<group>"; };
 		A41A23814CD1C9001DFABF02 /* name-vache.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "name-vache.wav"; sourceTree = "<group>"; };
 		A557182CD5AE387D41E98CA9 /* bump.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = bump.wav; sourceTree = "<group>"; };
+		A7BEBFE8E716CF8EBA72A6FA /* HomeButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeButton.swift; sourceTree = "<group>"; };
+		AA27A821C4C96D3157E69DB8 /* toy3d-tiles.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "toy3d-tiles.png"; sourceTree = "<group>"; };
 		ABFBAE21EC29B7DCB9034549 /* FluidView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FluidView.swift; sourceTree = "<group>"; };
 		AEA9621BCFAD52AC6D20DFCC /* FluidSimulator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FluidSimulator.swift; sourceTree = "<group>"; };
 		B380B781BE8186060A7953DF /* name-lion.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "name-lion.wav"; sourceTree = "<group>"; };
@@ -312,11 +332,16 @@
 		BDC5C6DD2A337C381B6E7071 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		C013221F797DDB3C865F36CF /* FingerSynth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FingerSynth.swift; sourceTree = "<group>"; };
 		C1962DD46D8C11643264D966 /* Guitar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guitar.swift; sourceTree = "<group>"; };
+		C60D093BAFFA98F271E793CD /* toy3d-guitar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "toy3d-guitar.png"; sourceTree = "<group>"; };
 		CA89C33767A05306879C99D4 /* SeaSimulation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeaSimulation.swift; sourceTree = "<group>"; };
 		CD3FBBFB3F83BFC391F3E60B /* KidzyClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KidzyClient.swift; sourceTree = "<group>"; };
+		CDB9D3CC8ADDBC685894A4B3 /* GateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GateTests.swift; sourceTree = "<group>"; };
 		CE6BF9CFFFCE4286F1A5C426 /* SketchesForKidsTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = SketchesForKidsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		D048543AB97FE34FA0066C99 /* toy3d-animals.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "toy3d-animals.png"; sourceTree = "<group>"; };
 		D2DF8115C281FB3AC945D76C /* ToyHost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToyHost.swift; sourceTree = "<group>"; };
+		D4B0775FBA0D4871981F156E /* Baloo2-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Baloo2-SemiBold.ttf"; sourceTree = "<group>"; };
 		D91DA44ABCE79D6415E58E14 /* cochon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cochon.png; sourceTree = "<group>"; };
+		D9A05B2C7C0A9529D89A51C7 /* Baloo2-OFL.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "Baloo2-OFL.txt"; sourceTree = "<group>"; };
 		DB338A2BA8BDAE7EC7D6DB71 /* Store.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Store.swift; sourceTree = "<group>"; };
 		DEA748A96B8D2F0A12E75BCB /* ParrotSketchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParrotSketchView.swift; sourceTree = "<group>"; };
 		DFF50F9CE7E2F65FED985645 /* ParrotEar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParrotEar.swift; sourceTree = "<group>"; };
@@ -324,6 +349,7 @@
 		E9B0D1515FE221A03738C953 /* chien.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = chien.png; sourceTree = "<group>"; };
 		EA2F982FC2C26C8C24F43605 /* AppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModel.swift; sourceTree = "<group>"; };
 		EECD9FD7037492AB0BEF3102 /* ToyExitUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToyExitUITests.swift; sourceTree = "<group>"; };
+		F03E375186D53EB3F616FC79 /* toy3d-paint.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "toy3d-paint.png"; sourceTree = "<group>"; };
 		F06FAF7792B16968F36825A9 /* name-mouton.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "name-mouton.wav"; sourceTree = "<group>"; };
 		F26AB19D091A6960C6107913 /* canard.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = canard.png; sourceTree = "<group>"; };
 		F44D801B4DDD526A30E12FDE /* ParentAreaView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParentAreaView.swift; sourceTree = "<group>"; };
@@ -333,6 +359,7 @@
 		FAF57753993FAA51DA2EE8DA /* name-canard.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "name-canard.wav"; sourceTree = "<group>"; };
 		FB14F83CE72B32CB3A61CC1E /* coq.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = coq.png; sourceTree = "<group>"; };
 		FCDC10BE1D0E3F652683B740 /* PinEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinEntry.swift; sourceTree = "<group>"; };
+		FEA96C0CD64B68566CD3CFF5 /* GateQuestion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GateQuestion.swift; sourceTree = "<group>"; };
 		FF85D00F37008CB689576289 /* parrot-listen.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "parrot-listen.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -365,6 +392,7 @@
 		00E510768CC2A9EDCE285E2E /* Tests */ = {
 			isa = PBXGroup;
 			children = (
+				CDB9D3CC8ADDBC685894A4B3 /* GateTests.swift */,
 				BD4FF95088B6A25BBA48FD42 /* StoreTests.swift */,
 				841C1454585C474A89E39135 /* ToyAudioTests.swift */,
 			);
@@ -497,6 +525,7 @@
 				211CE19FEECE79ED0335B3F7 /* PrivacyInfo.xcprivacy */,
 				97B0D11982F034FD6100D64C /* Store.storekit */,
 				93642DCF33944A52300E1B60 /* Config */,
+				C951E934027B02EA80FEDC89 /* Resources */,
 				EEC06DA680D5791C0493C2BA /* Sources */,
 				00E510768CC2A9EDCE285E2E /* Tests */,
 				9C9E6F5940B76C4BFAB9825C /* UITests */,
@@ -540,8 +569,8 @@
 		3FFE920A2E07A077FA7A9ABD /* Parent */ = {
 			isa = PBXGroup;
 			children = (
+				FEA96C0CD64B68566CD3CFF5 /* GateQuestion.swift */,
 				4809529667C9B86E5FAF9D0C /* ParentGateView.swift */,
-				33D41FF305FECB5402E67C3A /* ParentScreen.swift */,
 				89AE498AD00E38C098DD2DAC /* ParentView.swift */,
 				B581603F94ED6617EF038A5F /* UnlockView.swift */,
 			);
@@ -605,6 +634,17 @@
 			path = Toys;
 			sourceTree = "<group>";
 		};
+		689F207FDEBFE22B8FBDE6C6 /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				46B9656EF91C4314D7DC06AE /* Baloo2-Bold.ttf */,
+				881469E1F53D754450C898F8 /* Baloo2-ExtraBold.ttf */,
+				D9A05B2C7C0A9529D89A51C7 /* Baloo2-OFL.txt */,
+				D4B0775FBA0D4871981F156E /* Baloo2-SemiBold.ttf */,
+			);
+			path = Fonts;
+			sourceTree = "<group>";
+		};
 		70A57AE1985736DF6E206B40 /* Library */ = {
 			isa = PBXGroup;
 			children = (
@@ -620,6 +660,14 @@
 				7212026A8066436378B9D26F /* AnimalsSketchView.swift */,
 			);
 			path = Animals;
+			sourceTree = "<group>";
+		};
+		821C236F0049BFF395FE1875 /* Brand */ = {
+			isa = PBXGroup;
+			children = (
+				32B9C602C342F58C46EF4548 /* Brand.swift */,
+			);
+			path = Brand;
 			sourceTree = "<group>";
 		};
 		8E1B4B1A03BD66DCBA02D783 /* Kidzy */ = {
@@ -727,6 +775,15 @@
 			path = Discovery;
 			sourceTree = "<group>";
 		};
+		C951E934027B02EA80FEDC89 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				689F207FDEBFE22B8FBDE6C6 /* Fonts */,
+				EF5ADE83DA72D23B71016D91 /* Toys3D */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
 		CA6ECC963FAC4C46DF67F870 /* Parrot */ = {
 			isa = PBXGroup;
 			children = (
@@ -749,6 +806,7 @@
 			isa = PBXGroup;
 			children = (
 				C013221F797DDB3C865F36CF /* FingerSynth.swift */,
+				A7BEBFE8E716CF8EBA72A6FA /* HomeButton.swift */,
 				545E008E619A8A32D2168456 /* OrientationLock.swift */,
 				923C71F8EFFD007535CA2E18 /* SoundBank.swift */,
 				96332842A38908205D087B48 /* Stickers.swift */,
@@ -765,10 +823,24 @@
 			isa = PBXGroup;
 			children = (
 				1A60E2387C9A036BEACD7359 /* App */,
+				821C236F0049BFF395FE1875 /* Brand */,
 				3FFE920A2E07A077FA7A9ABD /* Parent */,
 				0B3775ABF00B0F89C73045C1 /* Picker */,
 			);
 			path = Sources;
+			sourceTree = "<group>";
+		};
+		EF5ADE83DA72D23B71016D91 /* Toys3D */ = {
+			isa = PBXGroup;
+			children = (
+				D048543AB97FE34FA0066C99 /* toy3d-animals.png */,
+				C60D093BAFFA98F271E793CD /* toy3d-guitar.png */,
+				F03E375186D53EB3F616FC79 /* toy3d-paint.png */,
+				72EAC2242B50BEB5049670AB /* toy3d-parrot.png */,
+				280943675B136570C7247818 /* toy3d-sea.png */,
+				AA27A821C4C96D3157E69DB8 /* toy3d-tiles.png */,
+			);
+			path = Toys3D;
 			sourceTree = "<group>";
 		};
 		F49A838065763B14879CD369 /* Config */ = {
@@ -957,6 +1029,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				F23B880D9133614550FE9359 /* Assets.xcassets in Resources */,
+				9E898168F1FD28350B7DF661 /* Baloo2-Bold.ttf in Resources */,
+				F5F6DB1B87FDC068819EB772 /* Baloo2-ExtraBold.ttf in Resources */,
+				DB3FB2D749DBFDD86D5FD66F /* Baloo2-OFL.txt in Resources */,
+				A33A9FB49D14932380997B85 /* Baloo2-SemiBold.ttf in Resources */,
 				6DF77747C647C6D02E2E75DB /* Fluid.metal.txt in Resources */,
 				B80A2993383D832F5AB5BADD /* InfoPlist.xcstrings in Resources */,
 				3F2C5404BABF8AC33D77D7A3 /* Localizable.xcstrings in Resources */,
@@ -1000,6 +1076,12 @@
 				B78342244336423F14B6E680 /* parrot-talk.png in Resources */,
 				530BB5773B408852A7F41F8D /* plop.wav in Resources */,
 				E2BA46193DA467D2AFD57A4F /* splash.wav in Resources */,
+				CB821B82FA1E8D73EEAEC339 /* toy3d-animals.png in Resources */,
+				E2C378317E090BFADAA0F4C1 /* toy3d-guitar.png in Resources */,
+				5CFDB8F743CF2B84EEE1E6C8 /* toy3d-paint.png in Resources */,
+				BFFB71844CAEB618D18D05DF /* toy3d-parrot.png in Resources */,
+				05EBD7EC3AEB40593761B0D0 /* toy3d-sea.png in Resources */,
+				E96A6F38928683806FD80E03 /* toy3d-tiles.png in Resources */,
 				9E8E5052DA65E8A90BB381E1 /* vache.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1063,18 +1145,20 @@
 			files = (
 				8B2A49C6A88465A0EAA6D4C7 /* AnimalsSketchView.swift in Sources */,
 				5E6FBBBFE5653B0E06BF16BC /* Boat.swift in Sources */,
+				38CC597F11E6774BD4CE09C2 /* Brand.swift in Sources */,
 				3F4102E196F622E803004373 /* CornerTapLock.swift in Sources */,
 				7AEBE83482821C1E7F62C2A8 /* FingerMusic.swift in Sources */,
 				D5475FC15D79FA020D51ED8E /* FingerSynth.swift in Sources */,
 				A19E155C7C9F6FE25B2B7888 /* FluidSimulator.swift in Sources */,
 				ECD006661858FC3BEBF1284B /* FluidView.swift in Sources */,
+				332F42D7F4F62BC7857E00AA /* GateQuestion.swift in Sources */,
 				6AFD8679095A1F2F808E3FC7 /* Guitar.swift in Sources */,
 				4FA95C645FD62A8EEA18ABC8 /* GuitarSketchView.swift in Sources */,
 				18FC7B319993569B0B7FE40F /* GuitarSynth.swift in Sources */,
+				82DBECCF813CA089EEB7419A /* HomeButton.swift in Sources */,
 				D43CCF8089F7D5726B8488B5 /* OrientationLock.swift in Sources */,
 				58C4BF0E7EFBD7604DEC1CC0 /* PaintSketchView.swift in Sources */,
 				8077142FD775A4BAC020DAF7 /* ParentGateView.swift in Sources */,
-				D0FC0C8847584B048B44A815 /* ParentScreen.swift in Sources */,
 				854402A163E512A7655F8ED8 /* ParentView.swift in Sources */,
 				2C4B53C459708FA327F29BBD /* ParrotEar.swift in Sources */,
 				F9B262D8D1EF150ADCA9EDD4 /* ParrotSketchView.swift in Sources */,
@@ -1134,6 +1218,7 @@
 				9EB9B84B6A9FA6825295379E /* Guitar.swift in Sources */,
 				ABCF8C7E69C17048F40CE625 /* GuitarSketchView.swift in Sources */,
 				6A12E5778E936F1A6D20660E /* GuitarSynth.swift in Sources */,
+				7BCD320570C81BC4A82AC1F7 /* HomeButton.swift in Sources */,
 				7513EB34A6AD9074A2BF95A0 /* Keychain.swift in Sources */,
 				B78D8B74336EB65060AF2C15 /* KidzyApp.swift in Sources */,
 				CC0972115A387B1DAE812ED7 /* KidzyClient.swift in Sources */,
@@ -1175,6 +1260,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6EF347350CF6065044167BBD /* GateTests.swift in Sources */,
 				4DE87E716F76E89FDE18C054 /* StoreTests.swift in Sources */,
 				EA61FD9772D18F883311D945 /* ToyAudioTests.swift in Sources */,
 			);
