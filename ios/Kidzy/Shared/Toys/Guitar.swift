@@ -27,6 +27,19 @@ public struct Chord: Equatable, Sendable {
     public static let palette: [Chord] = [.c, .g, .d, .a, .e, .f, .am, .em]
 
     public static func frequency(midi: Int) -> Double { 440 * pow(2, Double(midi - 69) / 12) }
+
+    /// The open strings, low E to high E.
+    public static let openStrings = [40, 45, 50, 55, 59, 64]
+
+    /// What string `i` plays when plucked alone: the chord's note, or for a string the
+    /// chord leaves out, the lowest chord tone at or above the open string (a guitarist
+    /// would fret one), so a single pluck is never silent and always fits.
+    public func note(forString i: Int) -> Int? {
+        guard notes.indices.contains(i) else { return nil }
+        if let n = notes[i] { return n }
+        let classes = Set(notes.compactMap { $0.map { $0 % 12 } })
+        return (Self.openStrings[i]...(Self.openStrings[i] + 11)).first { classes.contains($0 % 12) }
+    }
 }
 
 /// A chord progression in the spirit of a song, with its key for the melody pad.
@@ -48,11 +61,13 @@ public struct Song: Equatable, Sendable {
     ]
 
     /// Major pentatonic of the key over two octaves, low to high: the melody pad's notes.
+    /// From the octave below the key, where a guitar sings (two octaves above the key
+    /// climbed past MIDI 90, thin and plinky on a nylon guitar).
     public var melodyNotes: [Int] {
         let degrees = [0, 2, 4, 7, 9]
         var out: [Int] = []
-        for octave in 0..<2 { out += degrees.map { key + 12 * octave + $0 } }
-        out.append(key + 24)
+        for octave in 0..<2 { out += degrees.map { key - 12 + 12 * octave + $0 } }
+        out.append(key + 12)
         return out
     }
 
@@ -96,10 +111,11 @@ public struct GuitarModel: Sendable {
         return x1 > x0 ? hit : hit.reversed()
     }
 
-    /// The melody note for a position on the neck, 0 = top (high) ... 1 = bottom (low).
+    /// The melody note for a position on the neck, as on a real guitar: 0 = at the head
+    /// (low) ... 1 = down by the body (high).
     public func melodyNote(at fraction: Double) -> Int {
         let notes = song.melodyNotes
-        let i = min(notes.count - 1, max(0, Int((1 - min(1, max(0, fraction))) * Double(notes.count))))
+        let i = min(notes.count - 1, max(0, Int(min(1, max(0, fraction)) * Double(notes.count))))
         return notes[i]
     }
 

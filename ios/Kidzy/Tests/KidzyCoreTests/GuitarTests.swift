@@ -39,6 +39,36 @@ final class GuitarTests: XCTestCase {
         XCTAssertEqual(m.song.title, "Hey Jude")
     }
 
+    /// As on a real guitar: low at the head of the neck, higher toward the body, in a guitar's range.
+    func testTheNeckRisesTowardTheBody() {
+        var m = GuitarModel()
+        for _ in 0..<Song.all.count {
+            let notes = (0...10).map { m.melodyNote(at: Double($0) / 10) }
+            XCTAssertEqual(notes, notes.sorted(), "\(m.song.title): pitch only rises toward the body")
+            XCTAssertLessThan(notes.first!, notes.last!)
+            XCTAssertTrue(notes.allSatisfy { (45...80).contains($0) }, "\(m.song.title): \(notes) sits where a guitar sings")
+            m.nextSong()
+        }
+    }
+
+    /// A string the chord leaves out still sounds when plucked alone: a chord tone, at or above the open string.
+    func testEveryStringSoundsAChordTone() {
+        for chord in Chord.palette + [.c7, .bb] {
+            let classes = Set(chord.notes.compactMap { $0.map { $0 % 12 } })
+            for i in 0..<6 {
+                let n = chord.note(forString: i)
+                XCTAssertNotNil(n, "\(chord.name) string \(i)")
+                if let n {
+                    XCTAssertTrue(classes.contains(n % 12), "\(chord.name) string \(i) plays a chord tone")
+                    XCTAssertGreaterThanOrEqual(n, Chord.openStrings[i])
+                    if let fretted = chord.notes[i] { XCTAssertEqual(n, fretted) }
+                }
+            }
+        }
+        XCTAssertEqual(Chord.c.note(forString: 0), 40, "the low E is the C chord's third")
+        XCTAssertEqual(Chord.bb.note(forString: 0), 41, "under Bb, F: no tritone")
+    }
+
     func testChordFrequencies() {
         XCTAssertEqual(Chord.frequency(midi: 69), 440, accuracy: 1e-9)
         XCTAssertEqual(Chord.frequency(midi: 40), 82.41, accuracy: 0.01)

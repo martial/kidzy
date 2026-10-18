@@ -130,6 +130,49 @@ final class VoicesAudioTests: XCTestCase {
         }
     }
 
+    /// What the guitar plays is in tune: notes taken straight from a recording and notes
+    /// retuned a semitone from their neighbour, measured on the sampler's output.
+    func testTheGuitarPlaysInTune() throws {
+        for midi in [40, 47, 55, 62, 64, 71] {
+            let sr: Float = 48000
+            let dsp = NylonDSP(sampleRate: sr)
+            let f = Chord.frequency(midi: midi)
+            dsp.queue.send(.init(kind: .pluck, voice: 0, frequency: Float(f), velocity: 0.8, pan: 0))
+            let n = Int(sr)
+            var left = [Float](repeating: 0, count: n), right = [Float](repeating: 0, count: n)
+            var at = 0
+            while at < n {
+                left.withUnsafeMutableBufferPointer { l in
+                    right.withUnsafeMutableBufferPointer { r in
+                        let abl = AudioBufferList.allocate(maximumBuffers: 2)
+                        defer { free(abl.unsafeMutablePointer) }
+                        abl[0] = AudioBuffer(mNumberChannels: 1, mDataByteSize: 2048, mData: l.baseAddress! + at)
+                        abl[1] = AudioBuffer(mNumberChannels: 1, mDataByteSize: 2048, mData: r.baseAddress! + at)
+                        dsp.render(frameCount: 512, buffers: abl)
+                    }
+                }
+                at += 512
+            }
+            // squared-difference minimum near the expected period, from 0.3 s, refined by a parabola
+            let x = zip(left, right).map { $0 + $1 }
+            let start = Int(0.3 * sr), window = Int(0.3 * sr)
+            let period = Double(sr) / f
+            let lo = Int(period * 0.6), hi = Int(period * 1.4) + 2
+            let values: [Double] = (lo...hi).map { lag in
+                var s = 0.0
+                for i in 0..<window { let v = Double(x[start + i] - x[start + i + lag]); s += v * v }
+                return s
+            }
+            let k = values.indices.min(by: { values[$0] < values[$1] })!
+            var lag = Double(lo + k)
+            if k > 0, k < values.count - 1 { lag += 0.5 * (values[k - 1] - values[k + 1]) / (values[k - 1] - 2 * values[k] + values[k + 1]) }
+            let cents = 1200 * log2(Double(sr) / lag / f)
+            print("audio guitar tuning: MIDI \(midi) \(String(format: "%+.1f", cents)) cents")
+            // the sampler adds up to ±4 cents of human detune on purpose
+            XCTAssertLessThan(abs(cents), 12, "MIDI \(midi) is in tune")
+        }
+    }
+
     // MARK: - animals
 
     func testAnimalWhooshAndBoing() throws {

@@ -111,6 +111,23 @@ final class GuitarState {
         return CGPoint(x: size.width * 0.18 + span * Double(col) / 3, y: size.height * (row == 0 ? 0.845 : 0.93))
     }
 
+    static let fretCount = 9
+
+    /// The y of fret `f` (0 = the nut), spaced as on a real neck: each fret a
+    /// semitone, so they close up toward the body.
+    func fretY(_ f: Double) -> Double {
+        let n = Double(Self.fretCount)
+        return nutY + (neckBottom - nutY) * (1 - pow(2, -f / 12)) / (1 - pow(2, -n / 12))
+    }
+
+    /// Where a finger is along the neck, 0 (nut) ... 1 (last fret), counted in frets,
+    /// so each melody note spans the same number of frets, like on a guitar.
+    func neckFraction(_ y: Double) -> Double {
+        let n = Double(Self.fretCount)
+        let u = min(1, max(0, (y - nutY) / (neckBottom - nutY)))
+        return -12 * log2(1 - u * (1 - pow(2, -n / 12))) / n
+    }
+
     /// String x at a given y: narrow at the nut, wide at the bridge.
     func stringX(_ i: Int, atY y: Double) -> Double {
         let spread = min(1, max(0, (y - nutY) / (bridgeY - nutY)))
@@ -145,8 +162,7 @@ final class GuitarState {
         }
         switch touchMode {
         case .melody:
-            let fraction = (p.y - nutY) / (neckBottom - nutY)
-            let note = model.melodyNote(at: fraction)
+            let note = model.melodyNote(at: neckFraction(p.y))
             if note != lastMelodyNote {
                 lastMelodyNote = note
                 synth.melody(midi: note, velocity: 0.75)
@@ -199,7 +215,7 @@ final class GuitarState {
             let nearest = (0..<GuitarModel.strings).min { abs(stringX($0, atY: p.y) - p.x) < abs(stringX($1, atY: p.y) - p.x) }!
             if abs(stringX(nearest, atY: p.y) - p.x) < 24 { pluck(nearest, velocity: 0.6, synth: synth) }
         } else if touchMode == .melody, lastMelodyNote < 0 {
-            let note = model.melodyNote(at: (p.y - nutY) / (neckBottom - nutY))
+            let note = model.melodyNote(at: neckFraction(p.y))
             synth.melody(midi: note, velocity: 0.75)
             melodyGlow = (y: Double(p.y), until: time + 0.5, note: note)
         }
@@ -208,7 +224,7 @@ final class GuitarState {
     func pluck(_ i: Int, velocity: Double, synth: GuitarSynth) {
         model.pluckedStrings(1)
         wobble[i] = 6 + 8 * velocity
-        if let midi = model.chord.notes[i] {
+        if let midi = model.chord.note(forString: i) {
             synth.pluck(string: i, frequency: Chord.frequency(midi: midi), velocity: velocity)
         } else {
             synth.mute(string: i)
@@ -283,13 +299,12 @@ enum GuitarPainter {
         let neck = CGRect(x: w * 0.5 - w * 0.165, y: s.headBottom - 8, width: w * 0.33, height: s.neckBottom - s.headBottom + 8)
         gc.fill(Path(roundedRect: neck, cornerRadius: 10), with: .linearGradient(Gradient(colors: [neckLight, neckWood]), startPoint: CGPoint(x: neck.minX, y: 0), endPoint: CGPoint(x: neck.maxX, y: 0)))
         gc.stroke(Path(roundedRect: neck, cornerRadius: 10), with: .color(Theme.ink), lineWidth: 5)
-        let fretCount = 9
-        for f in 0...fretCount {
-            let y = s.nutY + (s.neckBottom - s.nutY) * Double(f) / Double(fretCount)
+        for f in 0...GuitarState.fretCount {
+            let y = s.fretY(Double(f))
             gc.stroke(Path { $0.move(to: CGPoint(x: neck.minX + 4, y: y)); $0.addLine(to: CGPoint(x: neck.maxX - 4, y: y)) }, with: .color(f == 0 ? .white : Theme.lemon), lineWidth: f == 0 ? 6 : 3)
         }
-        for f in [3, 5, 7] {
-            let y = s.nutY + (s.neckBottom - s.nutY) * (Double(f) - 0.5) / Double(fretCount)
+        for f in [3, 5, 7, 9] {
+            let y = (s.fretY(Double(f - 1)) + s.fretY(Double(f))) / 2
             gc.fill(Path(ellipseIn: CGRect(x: neck.midX - 5, y: y - 5, width: 10, height: 10)), with: .color(.white.opacity(0.9)))
         }
         if let glow = s.melodyGlow, glow.until > s.time {
