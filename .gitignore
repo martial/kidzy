@@ -37,3 +37,6 @@ admin/src/sources/*
 !admin/src/sources/.gitkeep
 docs/sources-*.md
 .claude/skills/source-*
+
+# agent worktrees
+.claude/worktrees/
