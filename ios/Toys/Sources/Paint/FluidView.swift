@@ -12,7 +12,7 @@ final class FluidMTKView: MTKView {
     var onFingerBegan: ((Int, CGPoint) -> Void)?
     var onFingerMoved: ((Int, CGPoint, Double, Double) -> Void)?
     var onFingerEnded: ((Int) -> Void)?
-    private var fingers: [ObjectIdentifier: (previous: CGPoint, color: SIMD3<Float>, id: Int, time: TimeInterval)] = [:]
+    private var fingers: [ObjectIdentifier: (previous: CGPoint, pigment: Int, id: Int, time: TimeInterval)] = [:]
     private var colorIndex = 0
     private var fingerIds = 0
     private var lastTime: CFTimeInterval = 0
@@ -109,7 +109,7 @@ final class FluidMTKView: MTKView {
                     return SIMD2(0.5 + 0.3 * cos(t * 1.7 + phase), 0.5 + 0.35 * sin(t * 1.3 + phase * 1.4))
                 }
                 let p = at(t), q = at(t - 1.0 / 60)
-                sim.touch(at: p, delta: p - q, color: palette[k % palette.count])
+                sim.touch(at: p, delta: p - q, pigment: k % palette.count)
             }
             return
         }
@@ -123,18 +123,18 @@ final class FluidMTKView: MTKView {
         for stroke in strokes where t >= stroke.start && t < stroke.start + stroke.length + 1.0 / 60 {
             let u = (t - stroke.start) / stroke.length
             if u >= 1 {
-                sim.touch(at: stroke.path(1), delta: .zero, color: palette[stroke.color], radius: FluidSimulator.splatRadius * 0.9, strength: 2.2, brush: false)
+                sim.touch(at: stroke.path(1), delta: .zero, pigment: stroke.color, radius: FluidSimulator.splatRadius * 0.9, strength: 2.2, brush: false)
                 continue
             }
             let p = stroke.path(u), q = stroke.path(max(0, u - 1 / (60 * stroke.length)))
-            sim.touch(at: p, delta: p - q, color: palette[stroke.color])
+            sim.touch(at: p, delta: p - q, pigment: stroke.color)
         }
         // dots: a dab a quarter of a second each
         let dots: [SIMD2<Float>] = [SIMD2(0.2, 0.86), SIMD2(0.35, 0.9), SIMD2(0.5, 0.87), SIMD2(0.65, 0.91), SIMD2(0.8, 0.86)]
         let dotStart: Float = 4.4
         let k = Int((t - dotStart) / 0.25)
         if t >= dotStart, k < dots.count, (t - dotStart).truncatingRemainder(dividingBy: 0.25) < 0.08 {
-            sim.touch(at: dots[k], delta: .zero, color: palette[(k + 5) % palette.count], radius: FluidSimulator.splatRadius * 1.5, strength: 1.6)
+            sim.touch(at: dots[k], delta: .zero, pigment: (k + 5) % palette.count, radius: FluidSimulator.splatRadius * 1.5, strength: 1.6)
         }
     }
     #endif
@@ -146,12 +146,12 @@ final class FluidMTKView: MTKView {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         guard let sim, !palette.isEmpty else { return }
         for t in touches {
-            let color = palette[colorIndex % palette.count]
+            let pigment = colorIndex % palette.count
             colorIndex += 1
             let p = t.location(in: self)
             fingerIds += 1
-            fingers[ObjectIdentifier(t)] = (p, color, fingerIds, t.timestamp)
-            sim.touch(at: uv(p), delta: .zero, color: color, radius: FluidSimulator.splatRadius * 1.5, strength: 1.6)
+            fingers[ObjectIdentifier(t)] = (p, pigment, fingerIds, t.timestamp)
+            sim.touch(at: uv(p), delta: .zero, pigment: pigment, radius: FluidSimulator.splatRadius * 1.5, strength: 1.6)
             onFingerBegan?(fingerIds, CGPoint(x: p.x / max(1, bounds.width), y: p.y / max(1, bounds.height)))
         }
         onTouchDown?()
@@ -163,12 +163,12 @@ final class FluidMTKView: MTKView {
             guard let f = fingers[ObjectIdentifier(t)] else { continue }
             let p = t.location(in: self)
             let d = uv(p) - uv(f.previous)
-            sim.touch(at: uv(p), delta: d, color: f.color)
+            sim.touch(at: uv(p), delta: d, pigment: f.pigment)
             let dt = max(1.0 / 120, t.timestamp - f.time)
             let dx = p.x - f.previous.x, dy = p.y - f.previous.y
             let speed = hypot(dx, dy) / dt
             onFingerMoved?(f.id, CGPoint(x: p.x / max(1, bounds.width), y: p.y / max(1, bounds.height)), speed, atan2(dy, dx))
-            fingers[ObjectIdentifier(t)] = (p, f.color, f.id, t.timestamp)
+            fingers[ObjectIdentifier(t)] = (p, f.pigment, f.id, t.timestamp)
         }
     }
 
@@ -176,7 +176,7 @@ final class FluidMTKView: MTKView {
         for t in touches {
             if let f = fingers[ObjectIdentifier(t)] {
                 // a finger lifting leaves a little glob of paint
-                sim?.touch(at: uv(t.location(in: self)), delta: .zero, color: f.color, radius: FluidSimulator.splatRadius * 0.9, strength: 2.2, brush: false)
+                sim?.touch(at: uv(t.location(in: self)), delta: .zero, pigment: f.pigment, radius: FluidSimulator.splatRadius * 0.9, strength: 2.2, brush: false)
                 onFingerEnded?(f.id)
             }
             fingers[ObjectIdentifier(t)] = nil
@@ -202,6 +202,7 @@ struct FluidView: UIViewRepresentable {
         let view = FluidMTKView(frame: .zero, device: sim?.device)
         view.sim = sim
         view.palette = palette
+        sim?.setPalette(palette)
         view.onTouchDown = onTouchDown
         let brush = self.brush
         view.onFingerBegan = { id, p in brush.began(id: id, x: p.x) }
@@ -214,7 +215,7 @@ struct FluidView: UIViewRepresentable {
     func updateUIView(_ uiView: FluidMTKView, context: Context) {
         if context.coordinator.seenBursts != burstRequests {
             context.coordinator.seenBursts = burstRequests
-            uiView.sim?.burst(palette: palette)
+            uiView.sim?.burst(pigments: palette.count)
         }
     }
 

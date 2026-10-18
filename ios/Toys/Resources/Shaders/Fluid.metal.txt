@@ -1,8 +1,9 @@
 // Stable-fluids simulation (Jos Stam) on textures: advection, vorticity
 // confinement, pressure projection. Velocity lives on a small grid in
-// texels per second; pigment (dye) on a larger grid, as Kubelka-Munk
-// absorption/scattering (K/S) weighted by amount, so blue and yellow make
-// green as real paint does; a third grid holds the bristle grooves the
+// texels per second; the paint on a larger grid as the amounts of the seven
+// palette pigments (two RGBA textures: pigments 0-3 and 4-6), mixed into a
+// colour each frame the way spectral.js mixes paint (Kubelka-Munk over 38
+// wavelengths, see `surface`); a third grid holds the bristle grooves the
 // brush leaves in the paint, carried by the flow like the pigment.
 #include <metal_stdlib>
 using namespace metal;
@@ -41,7 +42,7 @@ kernel void advect(texture2d<float, access::sample> velocity [[texture(0)]],
 struct Splat {
     float2 point;     // uv
     float2 dir;       // the groove's normal (grooves only)
-    float4 value;     // velocity (xy), or pigment (K/S rgb, amount)
+    float4 value;     // velocity (xy), or paint (x = pigment 0-6, y = amount)
     float radius;
     float3 pad;
 };
@@ -73,25 +74,34 @@ kernel void velocitySplats(texture2d<float, access::read> source [[texture(0)]],
 // adding to it, so colours stay clean and only blend at the edges. The brush is
 // a round tip with a defined edge (not a Gaussian), so a stroke keeps its width
 // however long the finger stays.
-kernel void paintSplats(texture2d<float, access::read> source [[texture(0)]],
-                        texture2d<float, access::write> dest [[texture(1)]],
+kernel void paintSplats(texture2d<float, access::read> sourceA [[texture(0)]],
+                        texture2d<float, access::write> destA [[texture(1)]],
+                        texture2d<float, access::read> sourceB [[texture(2)]],
+                        texture2d<float, access::write> destB [[texture(3)]],
                         constant Splat *splats [[buffer(0)]],
                         constant uint &count [[buffer(1)]],
                         constant float &aspect [[buffer(2)]],
                         constant float &cover [[buffer(3)]],
                         uint2 gid [[thread_position_in_grid]]) {
-    if (outside(gid, dest)) return;
-    float2 uv = (float2(gid) + 0.5) / float2(dest.get_width(), dest.get_height());
-    float4 v = source.read(gid);
+    if (outside(gid, destA)) return;
+    float2 uv = (float2(gid) + 0.5) / float2(destA.get_width(), destA.get_height());
+    float4 a = sourceA.read(gid), b = sourceB.read(gid);
     for (uint i = 0; i < count; i++) {
         float tip = sqrt(splats[i].radius) * 0.9;
         float dist = length(splatOffset(uv, splats[i].point, aspect));
         if (dist >= tip) continue;
         float s = 1.0 - smoothstep(tip * 0.55, tip, dist);
-        v = v * (1.0 - cover * s) + splats[i].value * s;
+        int k = int(splats[i].value.x + 0.5);
+        float amount = splats[i].value.y * s;
+        a *= 1.0 - cover * s;
+        b *= 1.0 - cover * s;
+        if (k < 4) a[k] += amount; else b[k - 4] += amount;
     }
     // a ceiling on thickness: old paint can always be painted over
-    dest.write(v / max(1.0, v.a / 3.0), gid);
+    float total = a.x + a.y + a.z + a.w + b.x + b.y + b.z;
+    float scale = 1.0 / max(1.0, total / 3.0);
+    destA.write(a * scale, gid);
+    destB.write(b * scale, gid);
 }
 
 // The brush's hairs leave parallel grooves along the stroke: stripes across
@@ -261,23 +271,68 @@ static inline float paintCoverage(float amount, float n, float m) {
     return smoothstep(lo, lo + 0.06 + 0.22 * m, amount);
 }
 
-// Each frame, on the pigment grid: the paint's surface. A layer (flat on top,
-// not a tube), a little thicker where more paint piled up, the ridge a brush
-// pushes up along the edge of its stroke, the bristles' grooves.
-// r = height, g = layer (0 on bare paper).
-kernel void surface(texture2d<float, access::read> dye [[texture(0)]],
-                    texture2d<float, access::read> grooves [[texture(1)]],
-                    texture2d<float, access::sample> paper [[texture(2)]],
-                    texture2d<float, access::write> dest [[texture(3)]],
+// The palette pigments' K/S curves (7 x 38), their luminance, and the CIE colour
+// matching functions under D65 (3 x 38): from `Spectral.tables` (spectral.js 3.0.0).
+struct SpectralData {
+    float ks[7 * 38];
+    float luminance[8];
+    float cmf[3 * 38];
+};
+
+static inline float compand(float x) {
+    return x > 0.0031308 ? 1.055 * pow(x, 1.0 / 2.4) - 0.055 : x * 12.92;
+}
+
+// The paint's colour, mixed as spectral.js mixes: each pigment weighted by its
+// amount squared times its luminance, K/S averaged per wavelength, back to a
+// reflectance (Kubelka-Munk), to XYZ, to sRGB.
+static inline float3 spectralMix(float c[7], constant SpectralData &sd) {
+    float w[7];
+    float total = 0.0;
+    for (int k = 0; k < 7; k++) {
+        w[k] = c[k] * c[k] * sd.luminance[k];
+        total += w[k];
+    }
+    if (total < 1e-8) return float3(1.0);
+    for (int k = 0; k < 7; k++) w[k] /= total;
+    float3 xyz = float3(0.0);
+    for (int i = 0; i < 38; i++) {
+        float ks = 0.0;
+        for (int k = 0; k < 7; k++) ks += w[k] * sd.ks[k * 38 + i];
+        float r = 1.0 + ks - sqrt(ks * ks + 2.0 * ks);
+        xyz += float3(sd.cmf[i], sd.cmf[38 + i], sd.cmf[76 + i]) * r;
+    }
+    float3 l = float3(
+        3.2409699419045226 * xyz.x - 1.537383177570094 * xyz.y - 0.4986107602930034 * xyz.z,
+        -0.9692436362808796 * xyz.x + 1.8759675015077202 * xyz.y + 0.04155505740717559 * xyz.z,
+        0.05563007969699366 * xyz.x - 0.20397695888897652 * xyz.y + 1.0569715142428786 * xyz.z);
+    l = clamp(l, 0.0, 1.0);
+    return float3(compand(l.x), compand(l.y), compand(l.z));
+}
+
+// Each frame, on the pigment grid: the paint's colour (rgb, and its amount in a)
+// and its surface. A layer (flat on top, not a tube), a little thicker where
+// more paint piled up, the ridge a brush pushes up along the edge of its
+// stroke, the bristles' grooves. surface: r = height, g = layer (0 on paper).
+kernel void surface(texture2d<float, access::read> pigmentsA [[texture(0)]],
+                    texture2d<float, access::read> pigmentsB [[texture(1)]],
+                    texture2d<float, access::read> grooves [[texture(2)]],
+                    texture2d<float, access::sample> paper [[texture(3)]],
+                    texture2d<float, access::write> dest [[texture(4)]],
+                    texture2d<float, access::write> colorOut [[texture(5)]],
+                    constant SpectralData &sd [[buffer(0)]],
                     uint2 gid [[thread_position_in_grid]]) {
     if (outside(gid, dest)) return;
     float2 uv = (float2(gid) + 0.5) / float2(dest.get_width(), dest.get_height());
+    float4 pa = pigmentsA.read(gid), pb = pigmentsB.read(gid);
+    float c[7] = { max(pa.x, 0.0), max(pa.y, 0.0), max(pa.z, 0.0), max(pa.w, 0.0), max(pb.x, 0.0), max(pb.y, 0.0), max(pb.z, 0.0) };
+    float a = c[0] + c[1] + c[2] + c[3] + c[4] + c[5] + c[6];
+    colorOut.write(float4(a > 0.002 ? spectralMix(c, sd) : float3(1.0), a), gid);
     float4 noise = paper.sample(linearSampler, uv);
-    float a = dye.read(gid).a;
-    float c = paintAmount(a);
-    float layer = paintCoverage(c, noise.g, noise.b) * smoothstep(0.3, 0.7, c);
+    float amount = paintAmount(a);
+    float layer = paintCoverage(amount, noise.g, noise.b) * smoothstep(0.3, 0.7, amount);
     float glob = 1.0 - exp(-a * 0.45);
-    float ridge = smoothstep(0.3, 0.5, c) * (1.0 - smoothstep(0.55, 0.95, c));
+    float ridge = smoothstep(0.3, 0.5, amount) * (1.0 - smoothstep(0.55, 0.95, amount));
     float groove = grooves.read(gid).x;
     float h = 0.5 * layer + 0.35 * glob + 0.035 * ridge + 0.11 * groove * layer;
     dest.write(float4(h, layer, 0, 0), gid);
@@ -301,19 +356,15 @@ static inline float4 sampleSmooth(texture2d<float, access::sample> t, float2 uv)
          + g1.y * (g0.x * t.sample(linearSampler, float2(h0.x, h1.y)) + g1.x * t.sample(linearSampler, float2(h1.x, h1.y)));
 }
 
-static inline float3 fromKS(float3 ks) {
-    return 1.0 + ks - sqrt(ks * ks + 2.0 * ks);
-}
-
-// The colour comes back from K/S (Kubelka-Munk, per channel), with a slight
-// saturation lift; thin paint is a little translucent over the paper. Then the
+// The colour is the surface pass's spectral mix; thin paint is a little
+// translucent over the paper. Then the
 // light: a soft key from the top left on the surface normal (the paint's from
 // the surface pass, the paper's bumps from the baked paper), a GGX sheen with a
 // patchy roughness, a coloured shade side, a shadow marched toward the light,
 // darkening in the crease where paint meets paper, and a faint coloured bounce
 // from the paint onto the paper next to it.
 fragment float4 paintFragment(PaintVertex in [[stage_in]],
-                              texture2d<float, access::sample> dye [[texture(0)]],
+                              texture2d<float, access::sample> dye [[texture(0)]],   // the mixed colour (rgb) and amount (a)
                               texture2d<float, access::sample> surfaceTex [[texture(1)]],
                               texture2d<float, access::read> paperTex [[texture(2)]]) {
     uint2 pp = uint2(min(in.position.xy, float2(paperTex.get_width() - 2, paperTex.get_height() - 2)));
@@ -322,11 +373,8 @@ fragment float4 paintFragment(PaintVertex in [[stage_in]],
 
     // the edge from the smooth sample, the colour from the sharp one (mixes stay crisp)
     float4 d = sampleSmooth(dye, in.uv);
-    float4 sharpDye = dye.sample(linearSampler, in.uv);
     float3 paperColor = float3(1.0, 0.985, 0.95);
-    float3 color = fromKS(max(sharpDye.rgb / max(sharpDye.a, 1e-4), 0.0));
-    float gray = dot(color, float3(0.299, 0.587, 0.114));
-    color = clamp(gray + (color - gray) * 1.15, 0.0, 1.0);
+    float3 color = dye.sample(linearSampler, in.uv).rgb;
     float amount = paintAmount(d.a);
     float coverage = paintCoverage(amount, paperHere.g, paperHere.b);
     float opacity = mix(0.82, 1.0, smoothstep(0.5, 0.85, amount));
@@ -366,7 +414,7 @@ fragment float4 paintFragment(PaintVertex in [[stage_in]],
         float4 nd = dye.sample(linearSampler, in.uv + dir * 6.0 / size);
         float nc = paintCoverage(paintAmount(nd.a), paperHere.g, paperHere.b);
         around += nc;
-        bounce += fromKS(max(nd.rgb / max(nd.a, 1e-4), 0.0)) * nc;
+        bounce += nd.rgb * nc;
     }
     float occlusion = clamp(around * 0.25 - coverage, 0.0, 1.0) * 0.09;
     float3 bounceColor = around > 0.01 ? bounce / around : paperColor;

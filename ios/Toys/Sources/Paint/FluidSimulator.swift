@@ -4,7 +4,8 @@ import os
 import simd
 
 /// Runs the fluid kernels of Fluid.metal: a small velocity grid, a larger
-/// pigment grid (Kubelka-Munk K/S weighted by amount), a grid of bristle
+/// paint grid (the amounts of the seven palette pigments, mixed each frame as
+/// spectral.js mixes paint: `Spectral`), a grid of bristle
 /// grooves, ping-pong textures, and the frame's finger splats (one pass per
 /// grid for all of them). For the picture: the paper and its noises are baked
 /// once at the drawable's size, and the paint's surface is computed once a
@@ -15,7 +16,7 @@ final class FluidSimulator {
     struct Splat {
         var point: SIMD2<Float>  // uv, origin top-left
         var dir: SIMD2<Float> = .zero   // the groove's normal (grooves only)
-        var value: SIMD4<Float> = .zero // velocity delta (xy), or pigment (K/S rgb, amount)
+        var value: SIMD4<Float> = .zero // velocity delta (xy), or paint (x = pigment 0-6, y = amount)
         var radius: Float
         var pad: SIMD3<Float> = .zero
     }
@@ -43,7 +44,13 @@ final class FluidSimulator {
     private let renderPipeline: MTLRenderPipelineState
 
     private var velocity: [MTLTexture] = []
-    private var dye: [MTLTexture] = []
+    /// The amounts of pigments 0-3 and 4-6 (ping-pong pairs).
+    private var pigmentsA: [MTLTexture] = []
+    private var pigmentsB: [MTLTexture] = []
+    /// The mixed colour (rgb) and the amount of paint (a), from the surface pass.
+    private var color: MTLTexture?
+    /// The palette's spectral tables for the surface pass.
+    private var spectral = Spectral.tables(for: [])
     private var grooves: [MTLTexture] = []
     private var surface: MTLTexture?
     private var paper: MTLTexture?
@@ -100,7 +107,9 @@ final class FluidSimulator {
         simSize = sim
         dyeSize = dyeTex
         velocity = [make(.rg16Float, sim), make(.rg16Float, sim)]
-        dye = [make(.rgba16Float, dyeTex), make(.rgba16Float, dyeTex)]
+        pigmentsA = [make(.rgba16Float, dyeTex), make(.rgba16Float, dyeTex)]
+        pigmentsB = [make(.rgba16Float, dyeTex), make(.rgba16Float, dyeTex)]
+        color = make(.rgba16Float, dyeTex)
         grooves = [make(.r16Float, dyeTex), make(.r16Float, dyeTex)]
         surface = make(.rg16Float, dyeTex)
         pressure = [make(.r16Float, sim), make(.r16Float, sim)]
@@ -117,13 +126,17 @@ final class FluidSimulator {
 
     // MARK: - input
 
-    /// A finger: `point` and `delta` in uv (0...1, origin top-left), `color` the paint colour.
+    /// The seven pigments the fingers paint with (sRGB 0...1); `touch` names them by index.
+    func setPalette(_ palette: [SIMD3<Float>]) {
+        spectral = Spectral.tables(for: palette)
+    }
+
+    /// A finger: `point` and `delta` in uv (0...1, origin top-left), `pigment` 0-6 from the palette.
     /// `brush: false` for thrown drops: no grooves.
-    func touch(at point: SIMD2<Float>, delta: SIMD2<Float>, color: SIMD3<Float>, radius: Float = FluidSimulator.splatRadius, strength: Float = 1.2, brush: Bool = true) {
+    func touch(at point: SIMD2<Float>, delta: SIMD2<Float>, pigment: Int, radius: Float = FluidSimulator.splatRadius, strength: Float = 1.2, brush: Bool = true) {
         velocitySplats.append(Splat(point: point, value: SIMD4(delta.x * Self.splatForce, delta.y * Self.splatForce, 0, 0), radius: radius))
-        // the colour as K/S weighted by amount (alpha), so mixes behave like pigments
-        let ks = Self.ks(color) * strength
-        paintSplats.append(Splat(point: point, value: SIMD4(ks.x, ks.y, ks.z, strength), radius: radius))
+        let k = Float(min(Spectral.GPUTables.pigments - 1, max(0, pigment)))
+        paintSplats.append(Splat(point: point, value: SIMD4(k, strength, 0, 0), radius: radius))
         // the grooves run along the stroke: their stripes go across it
         let motion = SIMD2(delta.x * aspect, delta.y)
         let length = simd_length(motion)
@@ -133,18 +146,12 @@ final class FluidSimulator {
         }
     }
 
-    /// Kubelka-Munk absorption over scattering of a reflectance, per channel.
-    static func ks(_ color: SIMD3<Float>) -> SIMD3<Float> {
-        let c = simd_clamp(color, SIMD3(repeating: 0.03), SIMD3(repeating: 1))
-        return (1 - c) * (1 - c) / (2 * c)
-    }
-
     /// A handful of drops thrown at random (opening, a bump on the table).
-    func burst(count: Int = 8, palette: [SIMD3<Float>]) {
+    func burst(count: Int = 8, pigments: Int = Spectral.GPUTables.pigments) {
         for i in 0..<count {
             let p = SIMD2<Float>(Float.random(in: 0.1...0.9), Float.random(in: 0.1...0.9))
             let d = SIMD2<Float>(Float.random(in: -0.08...0.08), Float.random(in: -0.08...0.08))
-            touch(at: p, delta: d, color: palette[(i + Int.random(in: 0..<palette.count)) % palette.count], radius: Self.splatRadius * 2.5, strength: 2.2, brush: false)
+            touch(at: p, delta: d, pigment: (i + Int.random(in: 0..<pigments)) % pigments, radius: Self.splatRadius * 2.5, strength: 2.2, brush: false)
         }
     }
 
@@ -175,8 +182,10 @@ final class FluidSimulator {
         dispatch(enc, "advect", textures: [velocity[0], velocity[0], velocity[1]], size: simSize, bytes: &av, length: MemoryLayout<AdvectParams>.size)
         velocity.swapAt(0, 1)
         var ad = AdvectParams(dt: dt, dissipation: Self.pigmentDissipation, velTexel: velTexel)
-        dispatch(enc, "advect", textures: [velocity[0], dye[0], dye[1]], size: dyeSize, bytes: &ad, length: MemoryLayout<AdvectParams>.size)
-        dye.swapAt(0, 1)
+        dispatch(enc, "advect", textures: [velocity[0], pigmentsA[0], pigmentsA[1]], size: dyeSize, bytes: &ad, length: MemoryLayout<AdvectParams>.size)
+        pigmentsA.swapAt(0, 1)
+        dispatch(enc, "advect", textures: [velocity[0], pigmentsB[0], pigmentsB[1]], size: dyeSize, bytes: &ad, length: MemoryLayout<AdvectParams>.size)
+        pigmentsB.swapAt(0, 1)
         dispatch(enc, "advect", textures: [velocity[0], grooves[0], grooves[1]], size: dyeSize, bytes: &ad, length: MemoryLayout<AdvectParams>.size)
         grooves.swapAt(0, 1)
         // 4. fingers: every splat of the frame in one pass per grid
@@ -184,7 +193,7 @@ final class FluidSimulator {
             splatPass(enc, "velocitySplats", &velocitySplats, textures: &velocity, size: simSize, extra: nil)
         }
         if !paintSplats.isEmpty {
-            splatPass(enc, "paintSplats", &paintSplats, textures: &dye, size: dyeSize, extra: Self.cover)
+            paintPass(enc, size: dyeSize)
         }
         if !grooveSplats.isEmpty {
             splatPass(enc, "grooveSplats", &grooveSplats, textures: &grooves, size: dyeSize, extra: Self.grooveFrequency)
@@ -194,20 +203,23 @@ final class FluidSimulator {
             dispatch(enc, "paperBake", textures: [paper], size: MTLSize(width: paper.width, height: paper.height, depth: 1))
             paperBaked = true
         }
-        if let surface, let paper {
-            dispatch(enc, "surface", textures: [dye[0], grooves[0], paper, surface], size: dyeSize)
+        if let surface, let paper, let color, let p = pipelines["surface"] {
+            enc.setComputePipelineState(p)
+            for (i, t) in [pigmentsA[0], pigmentsB[0], grooves[0], paper, surface, color].enumerated() { enc.setTexture(t, index: i) }
+            spectral.bytes.withUnsafeBytes { enc.setBytes($0.baseAddress!, length: $0.count, index: 0) }
+            enc.dispatchThreads(dyeSize, threadsPerThreadgroup: MTLSize(width: 16, height: 16, depth: 1))
         }
         enc.endEncoding()
     }
 
     func encodeRender(into cb: MTLCommandBuffer, descriptor: MTLRenderPassDescriptor) {
-        guard dye.count == 2, let enc = cb.makeRenderCommandEncoder(descriptor: descriptor) else { return }
+        guard pigmentsA.count == 2, let enc = cb.makeRenderCommandEncoder(descriptor: descriptor) else { return }
         enc.setRenderPipelineState(renderPipeline)
-        guard let surface, let paper else {
+        guard let surface, let paper, let color else {
             enc.endEncoding()
             return
         }
-        enc.setFragmentTexture(dye[0], index: 0)
+        enc.setFragmentTexture(color, index: 0)
         enc.setFragmentTexture(surface, index: 1)
         enc.setFragmentTexture(paper, index: 2)
         enc.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 3)
@@ -218,6 +230,23 @@ final class FluidSimulator {
         var dt: Float
         var dissipation: Float
         var velTexel: SIMD2<Float>
+    }
+
+    /// The paint splats of the frame, on both pigment textures at once.
+    private func paintPass(_ enc: MTLComputeCommandEncoder, size: MTLSize) {
+        guard let p = pipelines["paintSplats"] else { return }
+        let n = min(paintSplats.count, Self.maxSplats)
+        enc.setComputePipelineState(p)
+        for (i, t) in [pigmentsA[0], pigmentsA[1], pigmentsB[0], pigmentsB[1]].enumerated() { enc.setTexture(t, index: i) }
+        paintSplats.withUnsafeBytes { enc.setBytes($0.baseAddress!, length: n * MemoryLayout<Splat>.stride, index: 0) }
+        var count = UInt32(n), a = aspect, cover = Self.cover
+        enc.setBytes(&count, length: MemoryLayout<UInt32>.size, index: 1)
+        enc.setBytes(&a, length: MemoryLayout<Float>.size, index: 2)
+        enc.setBytes(&cover, length: MemoryLayout<Float>.size, index: 3)
+        enc.dispatchThreads(size, threadsPerThreadgroup: MTLSize(width: 16, height: 16, depth: 1))
+        pigmentsA.swapAt(0, 1)
+        pigmentsB.swapAt(0, 1)
+        paintSplats.removeFirst(n)
     }
 
     /// Up to `maxSplats` splats of one kind in one dispatch; the rest wait for the next frame.
