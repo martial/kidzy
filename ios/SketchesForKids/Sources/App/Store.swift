@@ -22,7 +22,7 @@ final class Store {
     init() {
         isUnlocked = UserDefaults.standard.bool(forKey: Self.cacheKey)
         #if DEBUG
-        if ProcessInfo.processInfo.environment["KIDZY_UNLOCK"] == "1" || UserDefaults.standard.bool(forKey: Self.testUnlockKey) {
+        if ProcessInfo.processInfo.environment["KIDZY_UNLOCK"] == "1" || Self.testUnlockStored {
             isUnlocked = true
             forced = true
         }
@@ -32,6 +32,18 @@ final class Store {
     func isFree(_ id: String) -> Bool { Self.freeToys.contains(id) }
 
     #if DEBUG
+    /// A debug build on a phone starts with every toy open (the purchase does not exist in App
+    /// Store Connect yet); the simulator and the tests start locked. The parents page switch
+    /// overrides both.
+    private static var testUnlockStored: Bool {
+        if let stored = UserDefaults.standard.object(forKey: testUnlockKey) as? Bool { return stored }
+        #if targetEnvironment(simulator)
+        return false
+        #else
+        return true
+        #endif
+    }
+
     /// Debug builds only: every toy open without the App Store, for trying the app on a phone
     /// before the purchase exists in App Store Connect. Never compiled into a release.
     var testUnlock: Bool {
