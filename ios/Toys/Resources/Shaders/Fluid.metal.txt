@@ -1,7 +1,9 @@
 // Stable-fluids simulation (Jos Stam) on textures: advection, vorticity
 // confinement, pressure projection. Velocity lives on a small grid in
-// texels per second; pigment (dye) on a larger grid. The finger adds
-// pigment and velocity; the paper shows white minus pigment, like paint.
+// texels per second; pigment (dye) on a larger grid, as Kubelka-Munk
+// absorption/scattering (K/S) weighted by amount, so blue and yellow make
+// green as real paint does; a third grid holds the bristle grooves the
+// brush leaves in the paint, carried by the flow like the pigment.
 #include <metal_stdlib>
 using namespace metal;
 
@@ -53,6 +55,68 @@ kernel void splat(texture2d<float, access::read> source [[texture(0)]],
     d.x *= p.aspect;
     float s = exp(-dot(d, d) / p.radius);
     dest.write(source.read(gid) + p.value * s, gid);
+}
+
+// Paint is opaque: a new stroke covers what is under it (`cover`) instead of
+// adding to it, so colours stay clean and only blend at the edges. The brush is
+// a round tip with a defined edge (not a Gaussian), so a stroke keeps its width
+// however long the finger stays.
+struct PaintSplatParams {
+    float2 point;
+    float4 value;
+    float radius;
+    float aspect;
+    float cover;
+};
+
+kernel void paintSplat(texture2d<float, access::read> source [[texture(0)]],
+                       texture2d<float, access::write> dest [[texture(1)]],
+                       constant PaintSplatParams &p [[buffer(0)]],
+                       uint2 gid [[thread_position_in_grid]]) {
+    if (outside(gid, dest)) return;
+    float2 size = float2(dest.get_width(), dest.get_height());
+    float2 uv = (float2(gid) + 0.5) / size;
+    float2 d = uv - p.point;
+    d.x *= p.aspect;
+    float tip = sqrt(p.radius) * 0.9;
+    float s = 1.0 - smoothstep(tip * 0.55, tip, length(d));
+    float4 old = source.read(gid);
+    float4 v = old * (1.0 - p.cover * s) + p.value * s;
+    // a ceiling on thickness: old paint can always be painted over
+    float excess = max(1.0, v.a / 3.0);
+    dest.write(v / excess, gid);
+}
+
+// The brush's hairs leave parallel grooves along the stroke: stripes across
+// the motion (`dir` is the unit normal to the stroke, in aspect-corrected uv)
+// at a few spacings so they look irregular, blended over older grooves.
+struct GrooveParams {
+    float2 point;
+    float2 dir;
+    float radius;
+    float aspect;
+    float strength;
+    float freq;
+};
+
+kernel void groove(texture2d<float, access::read> source [[texture(0)]],
+                   texture2d<float, access::write> dest [[texture(1)]],
+                   constant GrooveParams &p [[buffer(0)]],
+                   uint2 gid [[thread_position_in_grid]]) {
+    if (outside(gid, dest)) return;
+    float2 size = float2(dest.get_width(), dest.get_height());
+    float2 uv = (float2(gid) + 0.5) / size;
+    float2 d = uv - p.point;
+    d.x *= p.aspect;
+    float tip = sqrt(p.radius) * 0.9;
+    float g = 1.0 - smoothstep(tip * 0.5, tip, length(d));
+    float2 a = float2(uv.x * p.aspect, uv.y);
+    float across = dot(a, p.dir);
+    float along = dot(a, float2(-p.dir.y, p.dir.x));
+    float stripes = sin(across * p.freq) * 0.5 + sin(across * p.freq * 1.63 + 1.3) * 0.3 + sin(across * p.freq * 0.55 + 2.1) * 0.35;
+    stripes *= 0.75 + 0.25 * sin(along * p.freq * 0.13 + across * p.freq * 0.31);
+    float old = source.read(gid).x;
+    dest.write(float4(mix(old, stripes, clamp(g * p.strength, 0.0, 1.0)), 0, 0, 0), gid);
 }
 
 kernel void curl(texture2d<float, access::read> velocity [[texture(0)]],
@@ -169,55 +233,142 @@ static inline float valueNoise(float2 p) {
     return mix(mix(a, b, u.x), mix(c, d, u.x), u.y);
 }
 
-// How thick the paint stands: grows with the amount of pigment, then saturates,
-// so a fresh blob is a soft mound and a thin wash lies flat. A fine grain on
-// top gives the paint and the paper their tooth.
-static inline float paintHeight(texture2d<float, access::sample> dye, float2 uv, float2 px) {
-    float a = dye.sample(linearSampler, uv).a;
-    float paint = 1.0 - exp(-a * 0.9);
-    float grain = valueNoise(px * 0.42) * 0.6 + valueNoise(px * 1.1) * 0.4;
-    float coverage = smoothstep(0.06, 0.7, 1.0 - exp(-a * 3.0));
-    return paint * (0.35 + 0.65 * coverage) + grain * mix(0.012, 0.035, coverage);
+/// The paper's tooth at a pixel (2 px per point): 0...1, a fine grain.
+static inline float tooth(float2 px) {
+    return valueNoise(px * 0.42) * 0.6 + valueNoise(px * 1.1) * 0.4;
 }
 
-// The dye holds colour weighted by amount (rgb = sum of colour * weight, a = sum of
-// weights): mixes average the colours instead of darkening, and a saturation
-// boost keeps blends vivid on the paper. Then the relief: the paint's height
-// gives a normal, lit by a soft key light from the top left (shade on the far
-// side of each mound, a glossy wet highlight on the near side); the paper stays
-// matte with a faint grain.
-fragment float4 paintFragment(PaintVertex in [[stage_in]],
-                              texture2d<float, access::sample> dye [[texture(0)]]) {
-    float4 d = dye.sample(linearSampler, in.uv);
-    float3 paper = float3(1.0, 0.99, 0.96);
-    float weight = max(d.a, 1e-4);
-    float3 color = clamp(d.rgb / weight, 0.0, 1.0);
-    float gray = dot(color, float3(0.299, 0.587, 0.114));
-    color = clamp(gray + (color - gray) * 1.45, 0.0, 1.0);
-    // real paint is there or not: a crisp edge instead of an airbrushed fog
-    float coverage = smoothstep(0.06, 0.7, 1.0 - exp(-d.a * 3.0));
-    float3 base = mix(paper, color, coverage);
+/// Cold-pressed watercolour paper: irregular soft bumps half a millimetre wide, and the fine grain.
+static inline float coldPressed(float2 px) {
+    float bumps = valueNoise(px * 0.11) * 0.5 + valueNoise(px * 0.23 + 7.1) * 0.3;
+    return bumps + tooth(px) * 0.2;
+}
 
-    // relief: central differences, a texel and a half apart, in screen pixels for the grain
+/// Cubic B-spline sampling in four bilinear taps: smooth paint edges from the
+/// coarse pigment grid, without the bilinear staircase.
+static inline float4 sampleSmooth(texture2d<float, access::sample> t, float2 uv) {
+    float2 size = float2(t.get_width(), t.get_height());
+    float2 p = uv * size - 0.5;
+    float2 i = floor(p), f = fract(p);
+    float2 f2 = f * f, f3 = f2 * f;
+    float2 w0 = (-f3 + 3.0 * f2 - 3.0 * f + 1.0) / 6.0;
+    float2 w1 = (3.0 * f3 - 6.0 * f2 + 4.0) / 6.0;
+    float2 w2 = (-3.0 * f3 + 3.0 * f2 + 3.0 * f + 1.0) / 6.0;
+    float2 w3 = f3 / 6.0;
+    float2 g0 = w0 + w1, g1 = w2 + w3;
+    float2 h0 = (i - 1.0 + w1 / g0 + 0.5) / size;
+    float2 h1 = (i + 1.0 + w3 / g1 + 0.5) / size;
+    return g0.y * (g0.x * t.sample(linearSampler, float2(h0.x, h0.y)) + g1.x * t.sample(linearSampler, float2(h1.x, h0.y)))
+         + g1.y * (g0.x * t.sample(linearSampler, float2(h0.x, h1.y)) + g1.x * t.sample(linearSampler, float2(h1.x, h1.y)));
+}
+
+/// 0...1 how much paint there is, from the pigment amount.
+static inline float paintAmount(float a) { return 1.0 - exp(-a * 3.0); }
+
+/// Where the paint layer is: a crisp edge whose bevel changes along the stroke
+/// (steep here, a slow taper there), as real paint's edge does.
+static inline float paintCoverage(float amount, float2 px) {
+    float n = valueNoise(px * 0.025), m = valueNoise(px * 0.04 + 3.7);
+    float lo = 0.26 + 0.12 * n;
+    return smoothstep(lo, lo + 0.06 + 0.22 * m, amount);
+}
+
+/// The surface height: the paint is a layer (flat on top, not a tube), a little
+/// thicker where more paint piled up, with the ridge a brush pushes up along the
+/// edge of its stroke and the bristles' grooves in it; the paper's cold-pressed
+/// bumps show around it and, softened, under thin paint.
+static inline float surfaceHeight(texture2d<float, access::sample> dye, texture2d<float, access::sample> grooves, float2 uv, float2 px) {
+    float a = dye.sample(linearSampler, uv).a;
+    float c = paintAmount(a);
+    float layer = paintCoverage(c, px) * smoothstep(0.3, 0.7, c);
+    float glob = 1.0 - exp(-a * 0.45);
+    float ridge = smoothstep(0.3, 0.5, c) * (1.0 - smoothstep(0.55, 0.95, c));
+    float groove = grooves.sample(linearSampler, uv).x;
+    float paper = coldPressed(px);
+    return 0.5 * layer + 0.35 * glob + 0.035 * ridge + 0.11 * groove * layer + paper * mix(0.06, 0.012, layer);
+}
+
+static inline float3 fromKS(float3 ks) {
+    return 1.0 + ks - sqrt(ks * ks + 2.0 * ks);
+}
+
+// The colour comes back from K/S (Kubelka-Munk, per channel), with a slight
+// saturation lift; thin paint is a little translucent over the paper. Then the
+// light: a soft key from the top left on the surface normal (the paper's bumps
+// included), a satin sheen with sharp highlights only on the steepest ridges,
+// a soft shadow the paint casts, darkening in the crease where paint meets
+// paper, and a faint coloured bounce from the paint onto the paper next to it.
+fragment float4 paintFragment(PaintVertex in [[stage_in]],
+                              texture2d<float, access::sample> dye [[texture(0)]],
+                              texture2d<float, access::sample> grooves [[texture(1)]]) {
+    float2 px = in.position.xy;
+    // the edge from the smooth sample, the colour from the sharp one (mixes stay crisp)
+    float4 d = sampleSmooth(dye, in.uv);
+    float4 sharpDye = dye.sample(linearSampler, in.uv);
+    float3 paper = float3(1.0, 0.985, 0.95);
+    float3 color = fromKS(max(sharpDye.rgb / max(sharpDye.a, 1e-4), 0.0));
+    float gray = dot(color, float3(0.299, 0.587, 0.114));
+    color = clamp(gray + (color - gray) * 1.15, 0.0, 1.0);
+    float amount = paintAmount(d.a);
+    float coverage = paintCoverage(amount, px);
+    float opacity = mix(0.82, 1.0, smoothstep(0.5, 0.85, amount));
+    // thin paint lets the paper's colour through, like a scrape of gouache
+    float3 base = mix(paper, color * mix(paper, float3(1.0), 0.6), coverage * opacity);
+
     float2 size = float2(dye.get_width(), dye.get_height());
     float2 texel = 1.5 / size;
-    float2 px = in.position.xy;
-    float2 pxStep = float2(1.5 * 3.0, 1.5 * 3.0);   // the dye is about a third of the screen's pixels
-    float hL = paintHeight(dye, in.uv - float2(texel.x, 0), px - float2(pxStep.x, 0));
-    float hR = paintHeight(dye, in.uv + float2(texel.x, 0), px + float2(pxStep.x, 0));
-    float hT = paintHeight(dye, in.uv - float2(0, texel.y), px - float2(0, pxStep.y));
-    float hB = paintHeight(dye, in.uv + float2(0, texel.y), px + float2(0, pxStep.y));
-    float relief = 7.0;
+    float pxStep = 3.0;   // the pigment grid is about half the drawable's pixels
+    float hL = surfaceHeight(dye, grooves, in.uv - float2(texel.x, 0), px - float2(pxStep, 0));
+    float hR = surfaceHeight(dye, grooves, in.uv + float2(texel.x, 0), px + float2(pxStep, 0));
+    float hT = surfaceHeight(dye, grooves, in.uv - float2(0, texel.y), px - float2(0, pxStep));
+    float hB = surfaceHeight(dye, grooves, in.uv + float2(0, texel.y), px + float2(0, pxStep));
+    float relief = 6.0;
     float3 n = normalize(float3((hL - hR) * relief, (hT - hB) * relief, 1.0));
-    // the light comes from the top left (uv y points down), towards the viewer
     float3 light = normalize(float3(-0.45, -0.6, 0.75));
     float3 halfway = normalize(light + float3(0, 0, 1));
-    float flat = light.z;
-    float diffuse = clamp(dot(n, light) / flat, 0.0, 1.6);
-    float shade = mix(1.0, diffuse, mix(0.3, 0.7, coverage));
-    float gloss = pow(max(dot(n, halfway), 0.0), 70.0) * coverage;
-    float flatGloss = pow(halfway.z, 70.0);
-    float sheen = max(0.0, gloss - flatGloss * coverage) * 0.75;
-    float3 lit = base * clamp(shade, 0.7, 1.2) + sheen;
+    float diffuse = clamp(dot(n, light) / light.z, 0.0, 1.6);
+    float shade = mix(1.0, diffuse, mix(0.5, 0.7, coverage));
+
+    // shadow: march toward the light with a rising ray; whatever stands above it
+    // (paint, or the paper's own bumps) shades this point, softer the farther it is
+    float hHere = 0.25 * (hL + hR + hT + hB);
+    float2 toLight = normalize(light.xy);
+    float shadow = 0.0;
+    for (int k = 1; k <= 4; k++) {
+        float r = float(k) * 2.5;
+        float h = surfaceHeight(dye, grooves, in.uv + toLight * r / size, px + toLight * r * 2.0);
+        float above = h - (hHere + 0.035 * r);
+        shadow = max(shadow, above * (1.15 - 0.15 * float(k)));
+    }
+    shadow = smoothstep(0.0, 0.3, shadow) * 0.24;
+    // the crease: paint all around, lower here (ambient occlusion), and the paint's colour bouncing on the paper
+    float aoAmount = 0.0;
+    float3 bounce = float3(0.0);
+    float bounceWeight = 0.0;
+    for (int k = 0; k < 4; k++) {
+        float2 dir = float2(k == 0 ? 1 : (k == 1 ? -1 : 0), k == 2 ? 1 : (k == 3 ? -1 : 0));
+        float4 nd = dye.sample(linearSampler, in.uv + dir * 6.0 / size);
+        float nc = paintCoverage(paintAmount(nd.a), px);
+        aoAmount += nc;
+        bounce += fromKS(max(nd.rgb / max(nd.a, 1e-4), 0.0)) * nc;
+        bounceWeight += nc;
+    }
+    float occlusion = clamp(aoAmount * 0.25 - coverage, 0.0, 1.0) * 0.09;
+    float3 bounceColor = bounceWeight > 0.01 ? bounce / bounceWeight : paper;
+    base = mix(base, base * mix(float3(1.0), bounceColor * 1.15, 0.12), (1.0 - coverage) * clamp(bounceWeight * 0.25, 0.0, 1.0));
+
+    // the paint's sheen: a GGX highlight whose roughness changes in patches (some
+    // places wetter, some drying), minus what a flat surface would show
+    float roughness = mix(0.2, 0.42, valueNoise(px * 0.06)) * mix(1.0, 1.6, smoothstep(0.6, 1.0, valueNoise(px * 0.3 + 9.0)));
+    float alpha2 = roughness * roughness * roughness * roughness;
+    float ndh = max(dot(n, halfway), 0.0), flatH = halfway.z;
+    float dh = ndh * ndh * (alpha2 - 1.0) + 1.0, df = flatH * flatH * (alpha2 - 1.0) + 1.0;
+    float ggx = alpha2 / (3.14159 * dh * dh), ggxFlat = alpha2 / (3.14159 * df * df);
+    float sheen = max(0.0, ggx - ggxFlat) * 0.035 * coverage;
+    // light sinks a little into thick paint: its shade side stays coloured (deeper, not greyer)
+    float s = clamp(shade, 0.68, 1.2);
+    float3 body = s < 1.0 ? mix(pow(base, float3(1.0 + (1.0 - s) * 1.6)), base * s, 0.5) : base * s;
+    float3 surface = mix(base * s, body, coverage);
+    float3 lit = surface * (1.0 - shadow) * (1.0 - occlusion) + sheen;
     return float4(clamp(lit, 0.0, 1.0), 1.0);
 }

@@ -24,6 +24,8 @@ final class FluidMTKView: MTKView {
         preferredFramesPerSecond = 60
         colorPixelFormat = .bgra8Unorm
         clearColor = MTLClearColor(red: 1, green: 0.99, blue: 0.96, alpha: 1)
+        // two pixels per point are plenty for paint, and half the GPU work of three
+        contentScaleFactor = 2
         enableSetNeedsDisplay = false
         isPaused = false
     }
@@ -50,22 +52,37 @@ final class FluidMTKView: MTKView {
     }
 
     #if DEBUG
-    /// `KIDZY_PAINT_DEMO=1`: three fingers paint swirls for a few seconds (simulator captures).
+    /// `KIDZY_PAINT_DEMO=1`: a child's painting, stroke by stroke (simulator captures):
+    /// an S, a zigzag, a circle, dots, and a stroke across the others.
     private static let demo = ProcessInfo.processInfo.environment["KIDZY_PAINT_DEMO"] == "1"
     private var demoStart: CFTimeInterval = 0
 
     private func demoStroke(_ sim: FluidSimulator, now: CFTimeInterval) {
-        guard Self.demo, !palette.isEmpty else { return }
-        if demoStart == 0 { demoStart = now + 0.6 }
+        guard Self.demo, palette.count >= 5 else { return }
+        if demoStart == 0 { demoStart = now + 0.8 }
         let t = Float(now - demoStart)
-        guard t > 0, t < 4.5 else { return }
-        for k in 0..<3 {
-            let phase = Float(k) * 2.1
-            func at(_ t: Float) -> SIMD2<Float> {
-                SIMD2(0.5 + 0.32 * sin(t * 1.3 + phase) * cos(t * 0.4), 0.5 + 0.3 * sin(t * 0.9 + phase * 1.7))
+        typealias Path = (Float) -> SIMD2<Float>
+        let strokes: [(start: Float, length: Float, color: Int, path: Path)] = [
+            (0.0, 1.1, 0, { u in SIMD2(0.2 + 0.6 * u, 0.2 + 0.08 * sin(u * 2 * .pi)) }),                    // coral S
+            (1.2, 1.0, 4, { u in SIMD2(0.15 + 0.7 * u, 0.42 + 0.07 * (abs((u * 4).truncatingRemainder(dividingBy: 2) - 1) * 2 - 1)) }),  // ocean zigzag
+            (2.3, 1.0, 2, { u in SIMD2(0.5 + 0.22 * cos(u * 2 * .pi), 0.68 + 0.1 * sin(u * 2 * .pi)) }),     // lemon circle
+            (3.4, 0.9, 3, { u in SIMD2(0.3 + 0.1 * u, 0.15 + 0.75 * u) }),                                    // grass, across everything
+        ]
+        for stroke in strokes where t >= stroke.start && t < stroke.start + stroke.length + 1.0 / 60 {
+            let u = (t - stroke.start) / stroke.length
+            if u >= 1 {
+                sim.touch(at: stroke.path(1), delta: .zero, color: palette[stroke.color], radius: FluidSimulator.splatRadius * 0.9, strength: 2.2, brush: false)
+                continue
             }
-            let p = at(t), q = at(t - 1.0 / 60)
-            sim.touch(at: p, delta: p - q, color: palette[(k * 2) % palette.count])
+            let p = stroke.path(u), q = stroke.path(max(0, u - 1 / (60 * stroke.length)))
+            sim.touch(at: p, delta: p - q, color: palette[stroke.color])
+        }
+        // dots: a dab a quarter of a second each
+        let dots: [SIMD2<Float>] = [SIMD2(0.2, 0.86), SIMD2(0.35, 0.9), SIMD2(0.5, 0.87), SIMD2(0.65, 0.91), SIMD2(0.8, 0.86)]
+        let dotStart: Float = 4.4
+        let k = Int((t - dotStart) / 0.25)
+        if t >= dotStart, k < dots.count, (t - dotStart).truncatingRemainder(dividingBy: 0.25) < 0.08 {
+            sim.touch(at: dots[k], delta: .zero, color: palette[(k + 5) % palette.count], radius: FluidSimulator.splatRadius * 1.5, strength: 1.6)
         }
     }
     #endif
@@ -105,7 +122,11 @@ final class FluidMTKView: MTKView {
 
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         for t in touches {
-            if let f = fingers[ObjectIdentifier(t)] { onFingerEnded?(f.id) }
+            if let f = fingers[ObjectIdentifier(t)] {
+                // a finger lifting leaves a little glob of paint
+                sim?.touch(at: uv(t.location(in: self)), delta: .zero, color: f.color, radius: FluidSimulator.splatRadius * 0.9, strength: 2.2, brush: false)
+                onFingerEnded?(f.id)
+            }
             fingers[ObjectIdentifier(t)] = nil
         }
     }

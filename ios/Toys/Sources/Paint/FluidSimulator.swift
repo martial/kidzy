@@ -4,22 +4,31 @@ import os
 import simd
 
 /// Runs the fluid kernels of Fluid.metal: a small velocity grid, a larger
-/// pigment grid, ping-pong textures, and a queue of finger splats.
+/// pigment grid (Kubelka-Munk K/S weighted by amount), a grid of bristle
+/// grooves, ping-pong textures, and a queue of finger splats.
 @MainActor
 final class FluidSimulator {
     struct Splat {
+        enum Kind { case velocity, pigment, groove }
         var point: SIMD2<Float>  // uv, origin top-left
-        var value: SIMD4<Float>  // velocity delta (xy) or pigment (rgb)
+        var value: SIMD4<Float>  // velocity delta (xy), pigment (K/S rgb, amount), or the groove's normal (xy)
         var radius: Float
-        var isVelocity: Bool
+        var kind: Kind
     }
 
-    static let velocityDissipation: Float = 0.985
+    // paint, not ink in water: a finger pushes the paint a little, the motion settles fast
+    static let velocityDissipation: Float = 0.955
     static let pigmentDissipation: Float = 0.9985
-    static let curlStrength: Float = 25
+    static let curlStrength: Float = 3
     static let pressureIterations = 20
-    static let splatForce: Float = 6000
-    static let splatRadius: Float = 0.0032
+    static let splatForce: Float = 2200
+    /// About a finger wide.
+    static let splatRadius: Float = 0.0016
+    /// How much a new stroke covers the paint under it.
+    static let cover: Float = 0.45
+    /// The bristles' spacing, as a spatial frequency in uv (about 8 points apart: finer
+    /// grooves blur away as the flow resamples them).
+    static let grooveFrequency: Float = 680
 
     let device: MTLDevice
     let queue: MTLCommandQueue
@@ -28,6 +37,7 @@ final class FluidSimulator {
 
     private var velocity: [MTLTexture] = []
     private var dye: [MTLTexture] = []
+    private var grooves: [MTLTexture] = []
     private var pressure: [MTLTexture] = []
     private var divergence: MTLTexture?
     private var curlTexture: MTLTexture?
@@ -50,7 +60,7 @@ final class FluidSimulator {
         }
         self.device = device
         self.queue = queue
-        for name in ["advect", "splat", "curl", "vorticity", "divergence", "scale", "pressure", "gradientSubtract"] {
+        for name in ["advect", "splat", "paintSplat", "groove", "curl", "vorticity", "divergence", "scale", "pressure", "gradientSubtract"] {
             guard let f = library.makeFunction(name: name), let p = try? device.makeComputePipelineState(function: f) else { return nil }
             pipelines[name] = p
         }
@@ -74,6 +84,7 @@ final class FluidSimulator {
         dyeSize = dyeTex
         velocity = [make(.rg16Float, sim), make(.rg16Float, sim)]
         dye = [make(.rgba16Float, dyeTex), make(.rgba16Float, dyeTex)]
+        grooves = [make(.r16Float, dyeTex), make(.r16Float, dyeTex)]
         pressure = [make(.r16Float, sim), make(.r16Float, sim)]
         divergence = make(.r16Float, sim)
         curlTexture = make(.r16Float, sim)
@@ -89,10 +100,25 @@ final class FluidSimulator {
     // MARK: - input
 
     /// A finger: `point` and `delta` in uv (0...1, origin top-left), `color` the paint colour.
-    func touch(at point: SIMD2<Float>, delta: SIMD2<Float>, color: SIMD3<Float>, radius: Float = FluidSimulator.splatRadius, strength: Float = 1.2) {
-        pending.append(Splat(point: point, value: SIMD4(delta.x * Self.splatForce, delta.y * Self.splatForce, 0, 0), radius: radius, isVelocity: true))
-        // colour weighted by amount: rgb premultiplied by the weight in alpha
-        pending.append(Splat(point: point, value: SIMD4(color.x * strength, color.y * strength, color.z * strength, strength), radius: radius, isVelocity: false))
+    /// `brush: false` for thrown drops: no grooves.
+    func touch(at point: SIMD2<Float>, delta: SIMD2<Float>, color: SIMD3<Float>, radius: Float = FluidSimulator.splatRadius, strength: Float = 1.2, brush: Bool = true) {
+        pending.append(Splat(point: point, value: SIMD4(delta.x * Self.splatForce, delta.y * Self.splatForce, 0, 0), radius: radius, kind: .velocity))
+        // the colour as K/S weighted by amount (alpha), so mixes behave like pigments
+        let ks = Self.ks(color) * strength
+        pending.append(Splat(point: point, value: SIMD4(ks.x, ks.y, ks.z, strength), radius: radius, kind: .pigment))
+        // the grooves run along the stroke: their stripes go across it
+        let motion = SIMD2(delta.x * aspect, delta.y)
+        let length = simd_length(motion)
+        if brush, length > 0.0005 {
+            let normal = SIMD2(-motion.y, motion.x) / length
+            pending.append(Splat(point: point, value: SIMD4(normal.x, normal.y, 0, 0), radius: radius, kind: .groove))
+        }
+    }
+
+    /// Kubelka-Munk absorption over scattering of a reflectance, per channel.
+    static func ks(_ color: SIMD3<Float>) -> SIMD3<Float> {
+        let c = simd_clamp(color, SIMD3(repeating: 0.03), SIMD3(repeating: 1))
+        return (1 - c) * (1 - c) / (2 * c)
     }
 
     /// A handful of drops thrown at random (opening, a bump on the table).
@@ -100,7 +126,7 @@ final class FluidSimulator {
         for i in 0..<count {
             let p = SIMD2<Float>(Float.random(in: 0.1...0.9), Float.random(in: 0.1...0.9))
             let d = SIMD2<Float>(Float.random(in: -0.08...0.08), Float.random(in: -0.08...0.08))
-            touch(at: p, delta: d, color: palette[(i + Int.random(in: 0..<palette.count)) % palette.count], radius: Self.splatRadius * 2.5, strength: 2.2)
+            touch(at: p, delta: d, color: palette[(i + Int.random(in: 0..<palette.count)) % palette.count], radius: Self.splatRadius * 2.5, strength: 2.2, brush: false)
         }
     }
 
@@ -133,15 +159,23 @@ final class FluidSimulator {
         var ad = AdvectParams(dt: dt, dissipation: Self.pigmentDissipation, velTexel: velTexel)
         dispatch(enc, "advect", textures: [velocity[0], dye[0], dye[1]], size: dyeSize, bytes: &ad, length: MemoryLayout<AdvectParams>.size)
         dye.swapAt(0, 1)
+        dispatch(enc, "advect", textures: [velocity[0], grooves[0], grooves[1]], size: dyeSize, bytes: &ad, length: MemoryLayout<AdvectParams>.size)
+        grooves.swapAt(0, 1)
         // 4. fingers
         for s in pending {
-            var sp = SplatParams(point: s.point, value: s.value, radius: s.radius, aspect: aspect)
-            if s.isVelocity {
-                dispatch(enc, "splat", textures: [velocity[0], velocity[1]], size: simSize, bytes: &sp, length: MemoryLayout<SplatParams>.size)
+            switch s.kind {
+            case .velocity:
+                var sp = SplatParams(point: s.point, value: s.value, radius: s.radius, aspect: aspect)
+                dispatch(enc, "splat", textures: [velocity[0], velocity[1]], size: simSize, bytes: &sp, length: MemoryLayout<SplatParams>.stride)
                 velocity.swapAt(0, 1)
-            } else {
-                dispatch(enc, "splat", textures: [dye[0], dye[1]], size: dyeSize, bytes: &sp, length: MemoryLayout<SplatParams>.size)
+            case .pigment:
+                var sp = PaintSplatParams(point: s.point, value: s.value, radius: s.radius, aspect: aspect, cover: Self.cover)
+                dispatch(enc, "paintSplat", textures: [dye[0], dye[1]], size: dyeSize, bytes: &sp, length: MemoryLayout<PaintSplatParams>.stride)
                 dye.swapAt(0, 1)
+            case .groove:
+                var gp = GrooveParams(point: s.point, dir: SIMD2(s.value.x, s.value.y), radius: s.radius, aspect: aspect, strength: 0.85, freq: Self.grooveFrequency)
+                dispatch(enc, "groove", textures: [grooves[0], grooves[1]], size: dyeSize, bytes: &gp, length: MemoryLayout<GrooveParams>.stride)
+                grooves.swapAt(0, 1)
             }
         }
         pending.removeAll(keepingCapacity: true)
@@ -152,6 +186,7 @@ final class FluidSimulator {
         guard dye.count == 2, let enc = cb.makeRenderCommandEncoder(descriptor: descriptor) else { return }
         enc.setRenderPipelineState(renderPipeline)
         enc.setFragmentTexture(dye[0], index: 0)
+        enc.setFragmentTexture(grooves[0], index: 1)
         enc.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 3)
         enc.endEncoding()
     }
@@ -167,6 +202,23 @@ final class FluidSimulator {
         var value: SIMD4<Float>
         var radius: Float
         var aspect: Float
+    }
+
+    private struct PaintSplatParams {
+        var point: SIMD2<Float>
+        var value: SIMD4<Float>
+        var radius: Float
+        var aspect: Float
+        var cover: Float
+    }
+
+    private struct GrooveParams {
+        var point: SIMD2<Float>
+        var dir: SIMD2<Float>
+        var radius: Float
+        var aspect: Float
+        var strength: Float
+        var freq: Float
     }
 
     private func dispatch(_ enc: MTLComputeCommandEncoder, _ name: String, textures: [MTLTexture], size: MTLSize, bytes: UnsafeRawPointer? = nil, length: Int = 0) {
