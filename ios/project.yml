@@ -62,6 +62,8 @@ targets:
     platform: iOS
     sources:
       - path: SketchesForKids/Sources
+      - path: SketchesForKids/Resources
+        buildPhase: resources
       - path: Kidzy/Shared/Toys
       - path: Toys/Sources
       - path: Toys/Resources

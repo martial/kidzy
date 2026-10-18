@@ -31,6 +31,12 @@
 	<true/>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>The parrot listens to your voice to repeat it. Nothing is recorded or sent.</string>
+	<key>UIAppFonts</key>
+	<array>
+		<string>Baloo2-ExtraBold.ttf</string>
+		<string>Baloo2-Bold.ttf</string>
+		<string>Baloo2-SemiBold.ttf</string>
+	</array>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

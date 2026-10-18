@@ -7,7 +7,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "For parents"
+            "value": "For grown-ups"
           }
         },
         "fr": {
@@ -41,7 +41,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "For parents"
+            "value": "For grown-ups"
           }
         },
         "fr": {
@@ -52,19 +52,19 @@
         }
       }
     },
-    "gate.question %lld %lld": {
+    "gate.question %@ %@": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "What is %1$lld + %2$lld?"
+            "value": "What is %1$@ plus %2$@?"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Combien font %1$lld + %2$lld ?"
+            "value": "Combien font %1$@ plus %2$@ ?"
           }
         }
       }
@@ -75,13 +75,30 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Type the answer; the sum changes each time."
+            "value": "The question changes every time."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tape la réponse ; la somme change à chaque fois."
+            "value": "La question change à chaque fois."
+          }
+        }
+      }
+    },
+    "gate.empty": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Answer, empty"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Réponse vide"
           }
         }
       }
@@ -126,13 +143,30 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "All toys"
+            "value": "Unlock all toys"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tous les jouets"
+            "value": "Débloquer tous les jouets"
+          }
+        }
+      }
+    },
+    "unlock.body": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Paint, Shapes, Guitar and Parrot join the sea and the animals."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Peinture, Formes, Guitare et Perroquet rejoignent la mer et les animaux."
           }
         }
       }
@@ -143,30 +177,81 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "one-time purchase"
+            "value": "Pay once, no subscription"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "un seul achat"
+            "value": "Un seul paiement, sans abonnement"
           }
         }
       }
     },
-    "unlock.button": {
+    "unlock.family": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Unlock"
+            "value": "Shared with your family"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Débloquer"
+            "value": "Partagé avec votre famille"
+          }
+        }
+      }
+    },
+    "unlock.noads": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No ads, no accounts, ever"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ni pub ni compte, jamais"
+          }
+        }
+      }
+    },
+    "unlock.button %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unlock for %@"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Débloquer pour %@"
+          }
+        }
+      }
+    },
+    "unlock.apple": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Payment goes through Apple."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le paiement passe par Apple."
           }
         }
       }
@@ -228,13 +313,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Restore a purchase"
+            "value": "Restore purchase"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Restaurer un achat"
+            "value": "Restaurer l'achat"
           }
         }
       }
@@ -262,7 +347,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "For parents"
+            "value": "For grown-ups"
           }
         },
         "fr": {
@@ -279,13 +364,47 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Toys shown to the child"
+            "value": "Toys your child sees"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
             "value": "Jouets montrés à l'enfant"
+          }
+        }
+      }
+    },
+    "parent.unlock.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unlock all toys"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Débloquer tous les jouets"
+          }
+        }
+      }
+    },
+    "parent.unlock.sub": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "4 more toys, pay once"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "4 jouets de plus, un seul paiement"
           }
         }
       }
@@ -307,19 +426,19 @@
         }
       }
     },
-    "parent.locked": {
+    "parent.privacy": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Paint, Shapes, Guitar and Parrot open with one purchase."
+            "value": "Privacy policy"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Peinture, Formes, Guitare et Perroquet s'ouvrent avec un seul achat."
+            "value": "Politique de confidentialité"
           }
         }
       }
@@ -330,13 +449,30 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Help by e-mail"
+            "value": "Help"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Aide par e-mail"
+            "value": "Aide"
+          }
+        }
+      }
+    },
+    "parent.mic": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The parrot listens on this phone only. Nothing is recorded or sent anywhere."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le perroquet écoute sur ce téléphone seulement. Rien n'est enregistré ni envoyé."
           }
         }
       }
@@ -354,23 +490,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Version %@"
-          }
-        }
-      }
-    },
-    "parent.mic": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "The parrot listens on the phone only. Nothing is recorded or sent anywhere."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Le perroquet écoute sur le téléphone seulement. Rien n'est enregistré ni envoyé."
           }
         }
       }
