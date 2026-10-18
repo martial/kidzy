@@ -218,9 +218,13 @@ final class GuitarState {
     }
 
     func strum(synth: GuitarSynth, velocity: Double) {
+        // a hand's strum: about 28 ms a string, never quite even
+        var at = 0
         for i in 0..<GuitarModel.strings {
+            let delay = at
+            at += Int.random(in: 22...36)
             Task { @MainActor in
-                try? await Task.sleep(for: .milliseconds(28 * i))
+                try? await Task.sleep(for: .milliseconds(delay))
                 self.wobble[i] = 10
                 if let midi = self.model.chord.notes[i] { synth.pluck(string: i, frequency: Chord.frequency(midi: midi), velocity: velocity) }
             }

@@ -6,12 +6,14 @@ import Foundation
 import os
 
 /// The parrot's ear and voice: listens through the microphone, cuts out each
-/// phrase when the voice stops, and plays it back sped up (or slowed down)
-/// through the shared `ToyAudio` engine. The view reads `state`, `level` (the
-/// voice coming in) and `mouth` (the voice going out).
+/// phrase when the voice stops, and says it again as a character (chipmunk,
+/// squawky parrot, singing robot, canyon echo, little choir, underwater:
+/// `VoiceDSP`), never the same twice in a row, through the
+/// shared `ToyAudio` engine. The view reads `state`, `level` (the voice coming
+/// in) and `mouth` (the voice going out).
 ///
-/// The voice is a varispeed (pitch and speed move together, like a tape played
-/// fast): the time-stretching pitch shifter used before made robotic artefacts.
+/// While the parrot talks, and until its echoes are over, the detector is not
+/// fed: the parrot never answers itself.
 @MainActor
 @Observable
 final class ParrotEar {
@@ -28,7 +30,10 @@ final class ParrotEar {
     var onEvent: ((String) -> Void)?
 
     private let audio: ToyAudio
-    private var voiceNodes: (player: AudioPlayer, speed: VariSpeed, out: Fader)?
+    private var voiceNodes: (voice: RenderNode<VoiceDSP>, out: Fader)?
+    /// The phrase goes in the slot the voice is not reading.
+    private var nextSlot = 0
+    private var lastCharacter: VoiceDSP.Character?
     private var tapped = false
     private let tape = Tape()
     private var detector = RepeatDetector()
@@ -40,13 +45,26 @@ final class ParrotEar {
     private var starting = false
     /// False once the toy is gone: a permission answered after leaving must not open the microphone.
     private var wanted = false
-    private var lastVoice = -1
     private var lastLevelLog = 0.0
     private let traceEvery = ProcessInfo.processInfo.environment["KIDZY_PARROT_TRACE"] == nil ? 2.0 : 0.25
     private let log = Logger(subsystem: Bundle.main.bundleIdentifier ?? "com.screenclub", category: "parrot")
+    #if DEBUG
+    /// `KIDZY_PARROT_VOICE=robot` (any `VoiceDSP.Character` name): always that voice.
+    private let forcedCharacter = ProcessInfo.processInfo.environment["KIDZY_PARROT_VOICE"].flatMap { name in
+        VoiceDSP.Character.allCases.first { String(describing: $0) == name }
+    }
+    #endif
 
-    /// The silly voices, as playback speeds: mostly tiny, now and then a giant.
-    static let voices: [Float] = [1.5, 1.62, 1.74, 1.86, 0.74]
+    /// A character by its weight (the chipmunk most), never the last one again.
+    static func pick(after last: VoiceDSP.Character?) -> VoiceDSP.Character {
+        let options = VoiceDSP.Character.allCases.filter { $0 != last }
+        var roll = Double.random(in: 0..<options.reduce(0) { $0 + VoiceDSP.Settings.weight($1) })
+        for c in options {
+            roll -= VoiceDSP.Settings.weight(c)
+            if roll < 0 { return c }
+        }
+        return options[0]
+    }
 
     init(audio: ToyAudio = .shared) {
         self.audio = audio
@@ -63,9 +81,9 @@ final class ParrotEar {
         }
         guard wanted, state == .idle, !tapped else { return }
         let nodes = voiceNodes ?? {
-            let player = AudioPlayer()
-            let speed = VariSpeed(player)
-            return (player, speed, Fader(speed, gain: 1))
+            let format = AudioKit.Settings.audioFormat
+            let voice = RenderNode(VoiceDSP(sampleRate: Float(format.sampleRate)), format: format)
+            return (voice, Fader(voice, gain: 1))
         }()
         voiceNodes = nodes
         nodes.out.gain = 1
@@ -99,7 +117,7 @@ final class ParrotEar {
             tapped = false
             audio.engine.avEngine.inputNode.removeTap(onBus: 0)
             if let nodes = voiceNodes {
-                if nodes.player.isPlaying { nodes.player.stop() }
+                nodes.voice.dsp.queue.send(.init(kind: .stop))
                 audio.detach(nodes.out)
             }
             audio.release(mic: true)
@@ -175,65 +193,47 @@ final class ParrotEar {
     }
 
     private func speak(_ buffer: AVAudioPCMBuffer) async {
-        guard tapped, audio.isRunning, state != .repeating, let nodes = voiceNodes else { return }
+        guard tapped, audio.isRunning, state != .repeating, let nodes = voiceNodes, let samples = buffer.floatChannelData?[0] else { return }
         state = .repeating
-        var i = Int.random(in: 0..<Self.voices.count)
-        if i == lastVoice { i = (i + 1) % Self.voices.count }
-        lastVoice = i
-        let rate = Self.voices[i]
-        log.notice("repeat: speed \(rate)")
+        var character = Self.pick(after: lastCharacter)
+        #if DEBUG
+        if let forcedCharacter { character = forcedCharacter }
+        #endif
+        lastCharacter = character
+        let settings = VoiceDSP.Settings.of(character)
+        let prefix = VoiceDSP.Settings.prefix(character, roll: Double.random(in: 0..<1))
+        log.notice("repeat: \(String(describing: character), privacy: .public)")
         onEvent?("repeat")
         let window = 0.04
         let envelope = Self.envelope(of: buffer, window: window)
-        let seconds = Double(buffer.frameLength) / buffer.format.sampleRate / Double(rate)
-        if nodes.player.isPlaying { nodes.player.stop() }
-        guard let fitted = Self.fitted(buffer, to: nodes.player.playerNode.outputFormat(forBus: 0)) else {
-            state = .listening
-            return
-        }
-        nodes.player.load(buffer: fitted)
-        nodes.speed.rate = rate
-        nodes.player.play()
+        // the slot the voice is not reading: the last phrase, its echoes included, is over
+        let slot = nextSlot
+        nextSlot = 1 - slot
+        let count = nodes.voice.dsp.load(UnsafeBufferPointer(start: samples, count: Int(buffer.frameLength)), into: slot)
+        audio.setRoom(character == .choir ? .hall : .small)
+        nodes.voice.dsp.queue.send(.init(kind: .play, slot: Int32(slot), length: Int32(count), phraseRate: Float(buffer.format.sampleRate), character: Int32(character.rawValue), prefix: prefix, seed: UInt32.random(in: 1...UInt32.max)))
+        let lead = VoiceDSP.duration(of: prefix)
+        let seconds = Double(count) / buffer.format.sampleRate / settings.rate
         let started = Date()
         while !Task.isCancelled {
             let elapsed = Date().timeIntervalSince(started)
-            if elapsed > seconds + 0.15 { break }
-            let slot = Int(elapsed * Double(rate) / window)
-            mouth += ((slot < envelope.count ? envelope[slot] : 0) - mouth) * 0.6
+            if elapsed > lead + seconds + 0.15 { break }
+            // the beak opens a little for the "hmm?" or the chirp, then follows the words
+            let target = elapsed < lead ? (prefix == .hmm ? 0.15 : 0.4) : {
+                let i = Int((elapsed - lead) * settings.rate / window)
+                return i < envelope.count ? envelope[i] : 0
+            }()
+            mouth += (target - mouth) * 0.6
             try? await Task.sleep(for: .milliseconds(33))
         }
         mouth = 0
         level = 0
-        try? await Task.sleep(for: .milliseconds(350))
+        // the echoes and the choir's tail must be over before the parrot listens again
+        try? await Task.sleep(for: .seconds(settings.tail + 0.35))
+        audio.setRoom(.small)
         detector.reset()
         _ = tape.snapshot()
         if state == .repeating { state = .listening }
-    }
-
-    /// AudioKit's player keeps the format it was first wired with (a buffer in
-    /// another format raises an exception), so a phrase is converted to it:
-    /// sample rate and channels (the mono voice goes to both sides).
-    static func fitted(_ buffer: AVAudioPCMBuffer, to format: AVAudioFormat) -> AVAudioPCMBuffer? {
-        if buffer.format == format { return buffer }
-        guard format.sampleRate > 0, let converter = AVAudioConverter(from: buffer.format, to: format) else { return nil }
-        if buffer.format.channelCount == 1, format.channelCount > 1 {
-            converter.channelMap = [NSNumber](repeating: 0, count: Int(format.channelCount))
-        }
-        let ratio = format.sampleRate / buffer.format.sampleRate
-        guard let out = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: AVAudioFrameCount(Double(buffer.frameLength) * ratio) + 1024) else { return nil }
-        final class Feed: @unchecked Sendable { var given = false }
-        let feed = Feed()
-        var error: NSError?
-        converter.convert(to: out, error: &error) { _, status in
-            if feed.given {
-                status.pointee = .endOfStream
-                return nil
-            }
-            feed.given = true
-            status.pointee = .haveData
-            return buffer
-        }
-        return error == nil && out.frameLength > 0 ? out : nil
     }
 
     /// Loudness per window, 0...1, so the beak follows the voice.

@@ -1,3 +1,5 @@
+@preconcurrency import AudioKit
+@preconcurrency import AudioKitEX
 import AVFoundation
 import SwiftUI
 
@@ -89,6 +91,7 @@ struct AnimalsSketchView: View {
         guard !busy else { return }
         busy = true
         bounce = true
+        sounds.boing()
         UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         Task {
             try? await Task.sleep(for: .milliseconds(250))
@@ -106,7 +109,7 @@ struct AnimalsSketchView: View {
         index = (index + direction + Self.animals.count) % Self.animals.count
         offset = CGFloat(direction) * width
         withAnimation(.spring(duration: 0.45, bounce: 0.3)) { offset = 0 }
-        sounds.plop()
+        sounds.whoosh(-direction)
         Task {
             try? await Task.sleep(for: .milliseconds(350))
             play()
@@ -132,16 +135,29 @@ struct AnimalImage: View {
 
 /// The name (name-<id>.wav, a Gemini TTS voice) then the cry (animal-<id>.wav,
 /// Gemini TTS performing the onomatopoeia), through the shared `ToyAudio`
-/// engine (streamed from disk, one player each); the system voice only as fallback.
+/// engine (streamed from disk, one player each), the cry a little higher or
+/// lower every time; the system voice only as fallback. Around them `AnimalFX`:
+/// a whoosh and a landing pop between animals, a boing on a bounce.
 @MainActor
 final class AnimalSounds {
     private let synthesizer = AVSpeechSynthesizer()
     private let clips = SoundBank(names: AnimalsSketchView.animals.flatMap { ["name-" + $0.id, "animal-" + $0.id] }, copies: 1, buffered: false)
-    private let bank = SoundBank(names: ["plop"], copies: 3)
+    private var fx: (node: RenderNode<AnimalFX>, out: Fader)?
+    private var fxPlugged = false
 
     func prepare() {
-        bank.load()
         clips.load()
+        let f = fx ?? {
+            let format = AudioKit.Settings.audioFormat
+            let node = RenderNode(AnimalFX(sampleRate: Float(format.sampleRate)), format: format)
+            return (node, Fader(node, gain: 1))
+        }()
+        fx = f
+        if !fxPlugged {
+            fxPlugged = true
+            ToyAudio.shared.attach(f.out)
+            ToyAudio.shared.acquire()
+        }
         ToyAudio.shared.setRoom(.small)
     }
 
@@ -154,14 +170,18 @@ final class AnimalSounds {
     func unload() {
         stop()
         clips.unload()
-        bank.unload()
+        if let fx, fxPlugged {
+            fxPlugged = false
+            ToyAudio.shared.detach(fx.out)
+            ToyAudio.shared.release()
+        }
     }
 
     /// Plays the recorded name and waits for it; falls back to the system voice.
     func say(_ id: String, fallback text: String) async {
         let name = "name-" + id
         if clips.has(name) {
-            clips.play(name, volume: 0.95)
+            clips.play(name, volume: 0.95, rate: Double.random(in: 0.98...1.03))
             try? await Task.sleep(for: .seconds(max(0.3, clips.duration(name) + 0.15)))
             return
         }
@@ -172,11 +192,19 @@ final class AnimalSounds {
         try? await Task.sleep(for: .seconds(0.35 + Double(text.count) * 0.07))
     }
 
+    /// The cry, a little higher or lower each time, so it never sounds like a recording.
     func cry(_ id: String) {
-        clips.play("animal-" + id, volume: 0.95)
+        clips.play("animal-" + id, volume: 0.95, rate: Double.random(in: 0.93...1.08))
     }
 
-    func plop() { bank.play("plop", volume: 0.3, rate: Double.random(in: 0.9...1.2)) }
+    /// The next animal slides in: `direction` -1 left, 1 right.
+    func whoosh(_ direction: Int) {
+        fx?.node.dsp.queue.send(.init(kind: .whoosh, direction: Float(direction), seed: UInt32.random(in: 1...UInt32.max)))
+    }
+
+    func boing() {
+        fx?.node.dsp.queue.send(.init(kind: .boing, seed: UInt32.random(in: 1...UInt32.max)))
+    }
 }
 
 /// The library tile: the cow sticker.

@@ -232,44 +232,6 @@ final class ToyAudioTests: XCTestCase {
         XCTAssertGreaterThan(s.rms, 0.005, "they play")
     }
 
-    // MARK: - the parrot's voice
-
-    func testParrotVoiceThroughTheVarispeed() throws {
-        let audio = ToyAudio(offline: true)
-        let player = AudioPlayer()
-        let speed = VariSpeed(player)
-        let voiceOut = Fader(speed, gain: 1)
-        audio.attach(voiceOut)
-        let format = try XCTUnwrap(AVAudioFormat(standardFormatWithSampleRate: 48000, channels: 1))
-        let n = 48000
-        let phrase = try XCTUnwrap(AVAudioPCMBuffer(pcmFormat: format, frameCapacity: AVAudioFrameCount(n)))
-        phrase.frameLength = AVAudioFrameCount(n)
-        let x = try XCTUnwrap(phrase.floatChannelData?[0])
-        // a voice-like phrase: a 180 Hz buzz with harmonics, syllables, the 15 ms fades ParrotEar adds
-        for i in 0..<n {
-            let t = Float(i) / 48000
-            let syllable = max(0, sin(.pi * t * 5))
-            var v: Float = 0
-            for h in 1...8 { v += sin(2 * .pi * 180 * Float(h) * t) / Float(h) }
-            let fade = min(1, Float(i) / 720, Float(n - 1 - i) / 720)
-            x[i] = 0.45 * v * syllable * fade
-        }
-        let out = audio.engine.startTest(totalDuration: 3)
-        let fitted = try XCTUnwrap(ParrotEar.fitted(phrase, to: player.playerNode.outputFormat(forBus: 0)), "the phrase fits the player")
-        XCTAssertEqual(fitted.format.channelCount, player.playerNode.outputFormat(forBus: 0).channelCount)
-        player.load(buffer: fitted)
-        speed.rate = ParrotEar.voices[2]
-        player.play()
-        out.append(audio.engine.render(duration: 1.5))
-        let s = Self.stats(out)
-        report("parrot", s)
-        XCTAssertTrue(s.finite)
-        XCTAssertLessThanOrEqual(s.peak, 1.0)
-        XCTAssertGreaterThan(s.rms, 0.01, "the parrot speaks")
-        let after = Self.stats(out, from: Int(out.frameLength) - 22050)
-        XCTAssertLessThan(after.peak, 0.02, "and stops: 1 s of voice at 1.74× lasts 0.57 s")
-    }
-
     // MARK: - everything at once
 
     func testEverythingAtOnceStaysUnderTheCeiling() throws {
