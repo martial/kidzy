@@ -1,7 +1,8 @@
 import SwiftUI
 
 /// « La mer »: water that sloshes with the tilt, a boat that bobs and slides,
-/// a splash on tap. In background mode it is quieter and ignores touches.
+/// a splash on tap, all of it heard as real water (`SeaSound`). In background
+/// mode it is silent and ignores touches.
 struct SeaSketchView: View {
     enum Mode {
         case toy
@@ -13,13 +14,13 @@ struct SeaSketchView: View {
     @Environment(\.scenePhase) private var phase
     @State private var box = SeaToyBox()
     @State private var sensor = TiltSensor()
-    @State private var sounds = SoundBank()
-    @State private var synth = FingerSynth()
+    @State private var sounds = SoundBank(names: ["giggle", "chime"])
+    @State private var sound = SeaSound()
 
     var body: some View {
         TimelineView(.animation(paused: phase != .active)) { ctx in
             Canvas(rendersAsynchronously: false) { gc, size in
-                let toy = box.toy(for: size, mode: mode, sensorAvailable: sensor.isAvailable, sounds: mode == .toy ? sounds : nil, synth: mode == .toy ? synth : nil)
+                let toy = box.toy(for: size, mode: mode, sensorAvailable: sensor.isAvailable, sounds: mode == .toy ? sounds : nil, sound: mode == .toy ? sound : nil)
                 toy.advance(to: ctx.date)
                 if mode == .toy {
                     // the scene is a square larger than the screen, rotated to follow the phone
@@ -37,16 +38,22 @@ struct SeaSketchView: View {
             startSensor()
             if mode == .toy {
                 sounds.load()
-                synth.start()
+                sound.start()
             }
         }
         .onDisappear {
             sensor.stop()
-            synth.stop()
+            sound.stop()
             sounds.unload()
         }
         .onChange(of: phase) { _, p in
-            if p == .active { startSensor() } else { sensor.stop() }
+            if p == .active {
+                startSensor()
+                if mode == .toy { sound.start() }
+            } else {
+                sensor.stop()
+                sound.stop()
+            }
         }
         .task {
             guard mode == .toy else { return }
@@ -86,7 +93,7 @@ struct SeaSketchView: View {
 final class SeaToyBox {
     private(set) var current: SeaToy?
 
-    func toy(for size: CGSize, mode: SeaSketchView.Mode, sensorAvailable: Bool, sounds: SoundBank?, synth: FingerSynth?) -> SeaToy {
+    func toy(for size: CGSize, mode: SeaSketchView.Mode, sensorAvailable: Bool, sounds: SoundBank?, sound: SeaSound?) -> SeaToy {
         if let current, abs(current.screen.width - size.width) < 1, abs(current.screen.height - size.height) < 1 {
             return current
         }
@@ -98,9 +105,8 @@ final class SeaToyBox {
         t.sensorAvailable = sensorAvailable
         if mode == .toy {
             t.onSplash = { UIImpactFeedbackGenerator(style: .light).impactOccurred() }
-            t.onSound = { [weak sounds] name in sounds?.play(name, volume: name == "bump" ? 0.6 : 0.9, rate: Double.random(in: 0.92...1.08)) }
-            t.onBoatDrag = { [weak synth] x, speed in synth?.update(id: 100, voice: FingerMusic.boatVoice(x: x, speed: speed)) }
-            t.onBoatRelease = { [weak synth] in synth?.ended(id: 100) }
+            t.onSound = { [weak sounds] name in sounds?.play(name, volume: 0.9, rate: Double.random(in: 0.92...1.08)) }
+            t.sound = sound
         }
         #if DEBUG
         if let sunY = ProcessInfo.processInfo.environment["KIDZY_SUN_Y"].flatMap(Double.init) { t.sun.y = sunY }

@@ -34,10 +34,11 @@ final class SeaToy {
     var lastActivity = Date()
     var lastTilt = 0.0
     var onSplash: (() -> Void)?
+    /// The recorded sounds that are not water (the night's chime, the sun's giggle).
     var onSound: ((String) -> Void)?
-    /// The boat's hum while dragged: x in 0...1 and speed in pt/s; nil ends it.
-    var onBoatDrag: ((Double, Double) -> Void)?
-    var onBoatRelease: (() -> Void)?
+    /// The water, the boat's motor and knocks (nil: a silent sea).
+    var sound: SeaSound?
+    private var acoustics = SeaAcoustics()
     private var lastDragX = 0.0
     private var lastDragTime = Date()
 
@@ -91,6 +92,9 @@ final class SeaToy {
     var isNearSun: (CGPoint) -> Bool { { p in hypot(p.x - self.sun.x, p.y - self.sun.y) < Self.sunRadius + 24 } }
 
     var restY: Double { view.minY + view.height * restFraction }
+
+    /// A scene x as a fraction across the screen (0 left, 1 right), for panning.
+    func screenX(_ x: Double) -> Double { (x - view.minX) / view.width }
 
     func surfaceY(at x: Double) -> Double { restY - sea.height(at: x) }
 
@@ -160,7 +164,18 @@ final class SeaToy {
         sceneAngle += delta * min(1, dt * 5)
         sea.step(dt: dt)
         boat.step(dt: dt, in: &sea)
-        if boat.bumped { onSound?("bump") }
+        if let sound {
+            // the boat bounced: its speed before the bounce sets the knock
+            if boat.bumped { sound.knock(x: screenX(boat.x), strength: min(1, abs(boat.vx) / Boat.bounce / 300 + 0.3)) }
+            for hit in acoustics.listen(to: sea, boatX: boat.x) {
+                if case .hull = hit.place {
+                    sound.hit(SeaAcoustics.Hit(place: .hull(screenX(boat.x)), strength: hit.strength))
+                } else {
+                    sound.hit(hit)
+                }
+            }
+            sound.water(acoustics.wash)
+        }
         let nightNow = night > 0.5
         if nightNow != wasNight {
             wasNight = nightNow
@@ -174,7 +189,10 @@ final class SeaToy {
             d.x += d.vx * dt
             d.y += d.vy * dt
             if now - d.born > 1.5 { return nil }
-            if now - d.born > 0.15, d.y > surfaceY(at: d.x) { return nil }
+            if now - d.born > 0.15, d.y > surfaceY(at: d.x) {
+                sound?.droplet(x: screenX(d.x))
+                return nil
+            }
             return d
         }
     }
@@ -188,7 +206,7 @@ final class SeaToy {
             let c = boatCenter
             if hypot(p.x - c.x, p.y - c.y) < Boat.grabRadius {
                 boat.grab()
-                onSound?("plop")
+                sound?.motor(x: screenX(boat.x), speed: 0)
                 lastDragX = p.x
                 lastDragTime = Date()
                 touch = .boat
@@ -206,7 +224,7 @@ final class SeaToy {
             lastDragX = p.x
             lastDragTime = now
             boat.drag(toX: p.x, width: size.width)
-            onBoatDrag?((boat.x - view.minX) / view.width, speed)
+            sound?.motor(x: screenX(boat.x), speed: speed / 900)
         case .sun(let start, _):
             if hypot(p.x - start.x, p.y - start.y) > 12 {
                 sun = CGPoint(x: min(view.maxX - 40, max(view.minX + 40, p.x)), y: min(min(restY + 150, view.maxY - 40), max(view.minY + 70, p.y)))
@@ -222,7 +240,7 @@ final class SeaToy {
         switch touch {
         case .boat:
             boat.release(velocity: velocity)
-            onBoatRelease?()
+            sound?.motorOff()
         case .sun(let start, let date):
             if hypot(p.x - start.x, p.y - start.y) < 12, Date().timeIntervalSince(date) < 0.4 {
                 giggleStart = sea.time
@@ -248,6 +266,6 @@ final class SeaToy {
             droplets.append(Droplet(x: p.x + Double.random(in: -6...6), y: y, vx: Double.random(in: 40...160) * (Bool.random() ? 1 : -1), vy: -Double.random(in: 220...360), born: sea.time, radius: Double.random(in: 3...5)))
         }
         onSplash?()
-        onSound?("splash")
+        sound?.poke(x: screenX(p.x))
     }
 }
