@@ -124,6 +124,8 @@
 		87C6A67A8014448FE7307309 /* RepeatDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6101585DB0CF4B374F7C22D1 /* RepeatDetector.swift */; };
 		87E9A064314EDADD4B3E48C2 /* parrot-listen.png in Resources */ = {isa = PBXBuildFile; fileRef = FF85D00F37008CB689576289 /* parrot-listen.png */; };
 		8857BBDE88FF0E217A49365B /* name-chat.wav in Resources */ = {isa = PBXBuildFile; fileRef = 5664A7883AEEDD484822DB43 /* name-chat.wav */; };
+		892D94E11000073A93300B34 /* MalletDSP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 877D9557FBB15CA2070F6179 /* MalletDSP.swift */; };
+		8A336EAB3E9617B1B229CB35 /* MalletSynth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E3E5546D6421930DFB90C27 /* MalletSynth.swift */; };
 		8B2A49C6A88465A0EAA6D4C7 /* AnimalsSketchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7212026A8066436378B9D26F /* AnimalsSketchView.swift */; };
 		8BEDE40AEC824B11E4F8280A /* SoundBank.swift in Sources */ = {isa = PBXBuildFile; fileRef = 923C71F8EFFD007535CA2E18 /* SoundBank.swift */; };
 		8F724C2CF7B1CFC1F7CBD581 /* splash.wav in Resources */ = {isa = PBXBuildFile; fileRef = 7C13B3A867D8945F6D658C23 /* splash.wav */; };
@@ -146,6 +148,7 @@
 		A5C9D5C2CED7145222631BF8 /* animal-vache.wav in Resources */ = {isa = PBXBuildFile; fileRef = 86FB63EF19A339D2D6828877 /* animal-vache.wav */; };
 		A61D9AEA7FD7D6866E087C69 /* chat.png in Resources */ = {isa = PBXBuildFile; fileRef = 1B5AEE0371898B2718F360A7 /* chat.png */; };
 		A65CEA90A81A6AC8540E48D7 /* VoiceDSP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 624554DFD225253E5B305FB9 /* VoiceDSP.swift */; };
+		AAAE9285B12C51164433297A /* MalletSynth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E3E5546D6421930DFB90C27 /* MalletSynth.swift */; };
 		AADD2DA2D74F08DF95BF61C6 /* AnimalsSketchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7212026A8066436378B9D26F /* AnimalsSketchView.swift */; };
 		ABB394D3D0E788A3A5B44A2E /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB338A2BA8BDAE7EC7D6DB71 /* Store.swift */; };
 		ABCF8C7E69C17048F40CE625 /* GuitarSketchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D681CAB879619553F6A58C3 /* GuitarSketchView.swift */; };
@@ -176,6 +179,8 @@
 		C1B0AC03505F3DCE830C217E /* FingerMusic.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8B00A6346E34F7D45E4868D /* FingerMusic.swift */; };
 		C2DE021983312604C9F6248F /* animal-chat.wav in Resources */ = {isa = PBXBuildFile; fileRef = B43801A741FFBC3A66010C47 /* animal-chat.wav */; };
 		C3C43842E8480B538E5BF993 /* chime.wav in Resources */ = {isa = PBXBuildFile; fileRef = 131879AA49E450B70BE258DB /* chime.wav */; };
+		C4121639B3C1B34B56A95C32 /* TilesAudioTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1E69792EBE3E471A88B823F /* TilesAudioTests.swift */; };
+		CA3BFA17DDB1BBD394E79E6C /* MalletDSP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 877D9557FBB15CA2070F6179 /* MalletDSP.swift */; };
 		CB821B82FA1E8D73EEAEC339 /* toy3d-animals.png in Resources */ = {isa = PBXBuildFile; fileRef = D048543AB97FE34FA0066C99 /* toy3d-animals.png */; };
 		CC0972115A387B1DAE812ED7 /* KidzyClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD3FBBFB3F83BFC391F3E60B /* KidzyClient.swift */; };
 		CC6BF6CC2E7B62D00E690DE0 /* name-mouton.wav in Resources */ = {isa = PBXBuildFile; fileRef = F06FAF7792B16968F36825A9 /* name-mouton.wav */; };
@@ -319,6 +324,7 @@
 		85867F24BB0B85706C956FF2 /* ToyAudio.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToyAudio.swift; sourceTree = "<group>"; };
 		8638612426228B24E1BA1624 /* name-cochon.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "name-cochon.wav"; sourceTree = "<group>"; };
 		86FB63EF19A339D2D6828877 /* animal-vache.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "animal-vache.wav"; sourceTree = "<group>"; };
+		877D9557FBB15CA2070F6179 /* MalletDSP.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MalletDSP.swift; sourceTree = "<group>"; };
 		881469E1F53D754450C898F8 /* Baloo2-ExtraBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Baloo2-ExtraBold.ttf"; sourceTree = "<group>"; };
 		8944EDCAF493B854B73C90C8 /* animal-ane.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "animal-ane.wav"; sourceTree = "<group>"; };
 		89AE498AD00E38C098DD2DAC /* ParentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParentView.swift; sourceTree = "<group>"; };
@@ -326,6 +332,7 @@
 		8C296D2B945A9F74C657AA4B /* animal-coq.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "animal-coq.wav"; sourceTree = "<group>"; };
 		8D732509C74026915F429FF4 /* KidzyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KidzyApp.swift; sourceTree = "<group>"; };
 		8DF85413FD90403F0A5566B6 /* SketchesForKidsUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = SketchesForKidsUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		8E3E5546D6421930DFB90C27 /* MalletSynth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MalletSynth.swift; sourceTree = "<group>"; };
 		923C71F8EFFD007535CA2E18 /* SoundBank.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundBank.swift; sourceTree = "<group>"; };
 		9266A40438F0C16E59BD9EEE /* SketchesApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SketchesApp.swift; sourceTree = "<group>"; };
 		95A818B42631E735A3BBDCBE /* animal-perroquet.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "animal-perroquet.wav"; sourceTree = "<group>"; };
@@ -358,6 +365,7 @@
 		BDC5C6DD2A337C381B6E7071 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		C013221F797DDB3C865F36CF /* FingerSynth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FingerSynth.swift; sourceTree = "<group>"; };
 		C1962DD46D8C11643264D966 /* Guitar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guitar.swift; sourceTree = "<group>"; };
+		C1E69792EBE3E471A88B823F /* TilesAudioTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TilesAudioTests.swift; sourceTree = "<group>"; };
 		C60D093BAFFA98F271E793CD /* toy3d-guitar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "toy3d-guitar.png"; sourceTree = "<group>"; };
 		CA89C33767A05306879C99D4 /* SeaSimulation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeaSimulation.swift; sourceTree = "<group>"; };
 		CD3FBBFB3F83BFC391F3E60B /* KidzyClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KidzyClient.swift; sourceTree = "<group>"; };
@@ -422,6 +430,7 @@
 			children = (
 				CDB9D3CC8ADDBC685894A4B3 /* GateTests.swift */,
 				BD4FF95088B6A25BBA48FD42 /* StoreTests.swift */,
+				C1E69792EBE3E471A88B823F /* TilesAudioTests.swift */,
 				841C1454585C474A89E39135 /* ToyAudioTests.swift */,
 				661BF3D1E0D247D1B96BEEC7 /* VoicesAudioTests.swift */,
 			);
@@ -892,6 +901,8 @@
 		FAD2136D401C7D610C694A8D /* Tiles */ = {
 			isa = PBXGroup;
 			children = (
+				877D9557FBB15CA2070F6179 /* MalletDSP.swift */,
+				8E3E5546D6421930DFB90C27 /* MalletSynth.swift */,
 				2ED0ABEA2C6521FFECAFCE01 /* TilesSketchView.swift */,
 			);
 			path = Tiles;
@@ -1200,6 +1211,8 @@
 				4FA95C645FD62A8EEA18ABC8 /* GuitarSketchView.swift in Sources */,
 				18FC7B319993569B0B7FE40F /* GuitarSynth.swift in Sources */,
 				82DBECCF813CA089EEB7419A /* HomeButton.swift in Sources */,
+				CA3BFA17DDB1BBD394E79E6C /* MalletDSP.swift in Sources */,
+				AAAE9285B12C51164433297A /* MalletSynth.swift in Sources */,
 				D43CCF8089F7D5726B8488B5 /* OrientationLock.swift in Sources */,
 				58C4BF0E7EFBD7604DEC1CC0 /* PaintSketchView.swift in Sources */,
 				8077142FD775A4BAC020DAF7 /* ParentGateView.swift in Sources */,
@@ -1275,6 +1288,8 @@
 				B78D8B74336EB65060AF2C15 /* KidzyApp.swift in Sources */,
 				CC0972115A387B1DAE812ED7 /* KidzyClient.swift in Sources */,
 				FA40C2FEAE2004EDFEE9097D /* LibraryView.swift in Sources */,
+				892D94E11000073A93300B34 /* MalletDSP.swift in Sources */,
+				8A336EAB3E9617B1B229CB35 /* MalletSynth.swift in Sources */,
 				D74344A8239C28297EB6A483 /* Models.swift in Sources */,
 				E1A770F1E9F4F1C0A2D630C4 /* OrientationLock.swift in Sources */,
 				71A041C776CD60769CC1338B /* PaintSketchView.swift in Sources */,
@@ -1317,6 +1332,7 @@
 			files = (
 				6EF347350CF6065044167BBD /* GateTests.swift in Sources */,
 				4DE87E716F76E89FDE18C054 /* StoreTests.swift in Sources */,
+				C4121639B3C1B34B56A95C32 /* TilesAudioTests.swift in Sources */,
 				EA61FD9772D18F883311D945 /* ToyAudioTests.swift in Sources */,
 				37C44F3EFA3FD1FD2A524C59 /* VoicesAudioTests.swift in Sources */,
 			);

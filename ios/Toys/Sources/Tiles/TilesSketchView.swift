@@ -1,14 +1,14 @@
 import SwiftUI
 
 /// « Formes »: a grid of geometric stickers. Tap one: a quarter turn with a
-/// bounce and a note. Swipe: every tile under the finger turns. Bump the
-/// table: everything shuffles.
+/// bounce and a note on its instrument (`MalletSynth`). Swipe: every tile under
+/// the finger turns and plays. Bump the table: everything shuffles, to a
+/// glockenspiel run.
 struct TilesSketchView: View {
     @Environment(\.scenePhase) private var phase
     @State private var box = TilesBox()
-    @State private var synth = FingerSynth()
+    @State private var mallets = MalletSynth()
     @State private var shake = ShakeSensor()
-    @State private var sounds = SoundBank()
 
     static let colors: [Color] = [Theme.coral, Color(hex: "FFA62B"), Theme.lemon, Theme.grass, Theme.ocean, Color(hex: "9B5DE5"), Theme.bubblegum]
 
@@ -27,38 +27,34 @@ struct TilesSketchView: View {
                 .onEnded { v in box.current?.dragEnded(location: v.location, start: v.startLocation, play: play) }
         )
         .onAppear {
-            synth.start()
-            sounds.load()
+            mallets.start()
             shake.onShake = {
                 box.current?.shuffle()
-                sounds.play("chime", volume: 0.5, rate: Double.random(in: 0.9...1.2))
+                mallets.shuffle()
             }
             shake.start()
         }
         .onDisappear {
             shake.stop()
-            synth.stop()
-            sounds.unload()
+            mallets.stop()
         }
         .onChange(of: phase) { _, p in
             if p == .active {
                 shake.start()
-                synth.start()
+                mallets.start()
             } else {
                 shake.stop()
-                synth.stop()
+                mallets.stop()
             }
         }
     }
 
-    private func play(_ column: Int, _ row: Int, _ grid: TileGrid) {
-        let id = 200 + row * grid.columns + column
-        synth.began(id: id, voice: FingerMusic.tileVoice(column: column, row: row, columns: grid.columns, rows: grid.rows))
+    /// `firm`: a tap; a swipe brushes past each tile a little softer.
+    private func play(_ column: Int, _ row: Int, _ grid: TileGrid, _ firm: Bool) {
+        guard let i = grid.index(column: column, row: row) else { return }
+        let velocity = firm ? Double.random(in: 0.78...0.95) : Double.random(in: 0.55...0.72)
+        mallets.strike(column: column, row: row, kind: grid.tiles[i].kind, columns: grid.columns, rows: grid.rows, velocity: velocity)
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
-        Task {
-            try? await Task.sleep(for: .milliseconds(220))
-            synth.ended(id: id)
-        }
     }
 }
 
@@ -107,24 +103,24 @@ final class TilesState {
         return (c, r)
     }
 
-    func dragChanged(location p: CGPoint, start: CGPoint, play: (Int, Int, TileGrid) -> Void) {
+    func dragChanged(location p: CGPoint, start: CGPoint, play: (Int, Int, TileGrid, Bool) -> Void) {
         guard hypot(p.x - start.x, p.y - start.y) > 14 else { return }
         swiping = true
         guard let (c, r) = cellAt(p), let i = grid.index(column: c, row: r), !visited.contains(i) else { return }
         visited.insert(i)
         let direction = (p.x - start.x) + (p.y - start.y) >= 0 ? 1 : -1
         grid.turn(column: c, row: r, direction: direction)
-        play(c, r, grid)
+        play(c, r, grid, false)
     }
 
-    func dragEnded(location p: CGPoint, start: CGPoint, play: (Int, Int, TileGrid) -> Void) {
+    func dragEnded(location p: CGPoint, start: CGPoint, play: (Int, Int, TileGrid, Bool) -> Void) {
         defer {
             visited.removeAll()
             swiping = false
         }
         guard !swiping, let (c, r) = cellAt(p) else { return }
         grid.turn(column: c, row: r)
-        play(c, r, grid)
+        play(c, r, grid, true)
     }
 
     func shuffle() {
