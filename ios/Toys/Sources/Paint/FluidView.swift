@@ -25,16 +25,21 @@ final class FluidMTKView: MTKView {
         colorPixelFormat = .bgra8Unorm
         clearColor = MTLClearColor(red: 1, green: 0.99, blue: 0.96, alpha: 1)
         // two pixels per point are plenty for paint, and half the GPU work of three
-        contentScaleFactor = 2
+        // (UIKit resets contentScaleFactor, so the drawable is sized by hand)
+        autoResizeDrawable = false
         enableSetNeedsDisplay = false
         isPaused = false
     }
 
     required init(coder: NSCoder) { fatalError("not used") }
 
+    static let pixelsPerPoint: CGFloat = 2
+
     override func layoutSubviews() {
         super.layoutSubviews()
-        sim?.configure(viewSize: bounds.size)
+        let size = CGSize(width: (bounds.width * Self.pixelsPerPoint).rounded(), height: (bounds.height * Self.pixelsPerPoint).rounded())
+        if size.width > 0, drawableSize != size { drawableSize = size }
+        sim?.configure(viewSize: bounds.size, drawableSize: size)
     }
 
     override func draw(_ rect: CGRect) {
@@ -48,19 +53,66 @@ final class FluidMTKView: MTKView {
         sim.encodeStep(dt: Float(dt), into: cb)
         sim.encodeRender(into: cb, descriptor: rpd)
         cb.present(drawable)
+        #if DEBUG
+        if Self.perf { measure(cb, now: now) }
+        #endif
         cb.commit()
     }
 
     #if DEBUG
+    /// `KIDZY_PAINT_PERF=1`: prints the GPU time per frame and the frame rate every second (stderr).
+    private static let perf = ProcessInfo.processInfo.environment["KIDZY_PAINT_PERF"] == "1"
+    private var perfFrames = 0
+    private var perfStart: CFTimeInterval = 0
+    private let perfGPU = PerfGPU()
+
+    private final class PerfGPU: @unchecked Sendable {
+        private let lock = NSLock()
+        private var total: Double = 0, worst: Double = 0, count = 0
+        func add(_ ms: Double) { lock.lock(); total += ms; worst = max(worst, ms); count += 1; lock.unlock() }
+        func take() -> (mean: Double, worst: Double) {
+            lock.lock(); defer { total = 0; worst = 0; count = 0; lock.unlock() }
+            return (count > 0 ? total / Double(count) : 0, worst)
+        }
+    }
+
+    private func measure(_ cb: MTLCommandBuffer, now: CFTimeInterval) {
+        let gpu = perfGPU
+        cb.addCompletedHandler { cb in gpu.add((cb.gpuEndTime - cb.gpuStartTime) * 1000) }
+        perfFrames += 1
+        if perfStart == 0 { perfStart = now }
+        if now - perfStart >= 1 {
+            let g = gpu.take()
+            let line = String(format: "paint perf: %.0f fps, GPU %.1f ms mean, %.1f ms worst, drawable %.0fx%.0f\n", Double(perfFrames) / (now - perfStart), g.mean, g.worst, drawableSize.width, drawableSize.height)
+            FileHandle.standardError.write(Data(line.utf8))
+            perfFrames = 0
+            perfStart = now
+        }
+    }
+
     /// `KIDZY_PAINT_DEMO=1`: a child's painting, stroke by stroke (simulator captures):
     /// an S, a zigzag, a circle, dots, and a stroke across the others.
+    /// `KIDZY_PAINT_DEMO=2`: five fingers circle for twenty seconds (a load test).
     private static let demo = ProcessInfo.processInfo.environment["KIDZY_PAINT_DEMO"] == "1"
+    private static let stress = ProcessInfo.processInfo.environment["KIDZY_PAINT_DEMO"] == "2"
     private var demoStart: CFTimeInterval = 0
 
     private func demoStroke(_ sim: FluidSimulator, now: CFTimeInterval) {
-        guard Self.demo, palette.count >= 5 else { return }
+        guard Self.demo || Self.stress, palette.count >= 5 else { return }
         if demoStart == 0 { demoStart = now + 0.8 }
         let t = Float(now - demoStart)
+        if Self.stress {
+            guard t > 0, t < 20 else { return }
+            for k in 0..<5 {
+                func at(_ t: Float) -> SIMD2<Float> {
+                    let phase = Float(k) * 1.26
+                    return SIMD2(0.5 + 0.3 * cos(t * 1.7 + phase), 0.5 + 0.35 * sin(t * 1.3 + phase * 1.4))
+                }
+                let p = at(t), q = at(t - 1.0 / 60)
+                sim.touch(at: p, delta: p - q, color: palette[k % palette.count])
+            }
+            return
+        }
         typealias Path = (Float) -> SIMD2<Float>
         let strokes: [(start: Float, length: Float, color: Int, path: Path)] = [
             (0.0, 1.1, 0, { u in SIMD2(0.2 + 0.6 * u, 0.2 + 0.08 * sin(u * 2 * .pi)) }),                    // coral S

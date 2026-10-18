@@ -82,6 +82,7 @@ final class BrushSynth {
         // phone speakers: nothing below the wet squish, a little air on top
         let low = HighPassButterworthFilter(brush, cutoffFrequency: 140)
         let air = HighShelfParametricEqualizerFilter(low, centerFrequency: 6000, gain: 1.15, q: 0.7)
-        return (brush, Fader(air, gain: 1))
+        // a real brush is quiet: lifted ~8 dB so one finger is clearly heard on a phone (the limiter holds ten)
+        return (brush, Fader(air, gain: 2.5))
     }
 }

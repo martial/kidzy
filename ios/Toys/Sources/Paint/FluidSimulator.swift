@@ -5,16 +5,23 @@ import simd
 
 /// Runs the fluid kernels of Fluid.metal: a small velocity grid, a larger
 /// pigment grid (Kubelka-Munk K/S weighted by amount), a grid of bristle
-/// grooves, ping-pong textures, and a queue of finger splats.
+/// grooves, ping-pong textures, and the frame's finger splats (one pass per
+/// grid for all of them). For the picture: the paper and its noises are baked
+/// once at the drawable's size, and the paint's surface is computed once a
+/// frame on the pigment grid, so the per-pixel pass only samples.
 @MainActor
 final class FluidSimulator {
+    /// One splat, laid out as `Splat` in Fluid.metal.
     struct Splat {
-        enum Kind { case velocity, pigment, groove }
         var point: SIMD2<Float>  // uv, origin top-left
-        var value: SIMD4<Float>  // velocity delta (xy), pigment (K/S rgb, amount), or the groove's normal (xy)
+        var dir: SIMD2<Float> = .zero   // the groove's normal (grooves only)
+        var value: SIMD4<Float> = .zero // velocity delta (xy), or pigment (K/S rgb, amount)
         var radius: Float
-        var kind: Kind
+        var pad: SIMD3<Float> = .zero
     }
+
+    /// Per kind and per frame (setBytes holds 4 KB); more are kept for the next frame.
+    static let maxSplats = 64
 
     // paint, not ink in water: a finger pushes the paint a little, the motion settles fast
     static let velocityDissipation: Float = 0.955
@@ -38,13 +45,18 @@ final class FluidSimulator {
     private var velocity: [MTLTexture] = []
     private var dye: [MTLTexture] = []
     private var grooves: [MTLTexture] = []
+    private var surface: MTLTexture?
+    private var paper: MTLTexture?
+    private var paperBaked = false
     private var pressure: [MTLTexture] = []
     private var divergence: MTLTexture?
     private var curlTexture: MTLTexture?
     private(set) var simSize = MTLSize(width: 1, height: 1, depth: 1)
     private(set) var dyeSize = MTLSize(width: 1, height: 1, depth: 1)
     private var aspect: Float = 1
-    private var pending: [Splat] = []
+    private var velocitySplats: [Splat] = []
+    private var paintSplats: [Splat] = []
+    private var grooveSplats: [Splat] = []
 
     init?(pixelFormat: MTLPixelFormat) {
         guard let device = MTLCreateSystemDefaultDevice(), let queue = device.makeCommandQueue() else { return nil }
@@ -60,7 +72,7 @@ final class FluidSimulator {
         }
         self.device = device
         self.queue = queue
-        for name in ["advect", "splat", "paintSplat", "groove", "curl", "vorticity", "divergence", "scale", "pressure", "gradientSubtract"] {
+        for name in ["advect", "velocitySplats", "paintSplats", "grooveSplats", "curl", "vorticity", "divergence", "scale", "pressure", "gradientSubtract", "paperBake", "surface"] {
             guard let f = library.makeFunction(name: name), let p = try? device.makeComputePipelineState(function: f) else { return nil }
             pipelines[name] = p
         }
@@ -72,9 +84,14 @@ final class FluidSimulator {
         renderPipeline = rp
     }
 
-    /// Sizes the grids for a view (points); call again when the size changes.
-    func configure(viewSize: CGSize) {
+    /// Sizes the grids for a view (points) and its drawable (pixels); call again when they change.
+    func configure(viewSize: CGSize, drawableSize: CGSize) {
         guard viewSize.width > 0, viewSize.height > 0 else { return }
+        let paperSize = MTLSize(width: max(1, Int(drawableSize.width)), height: max(1, Int(drawableSize.height)), depth: 1)
+        if paper?.width != paperSize.width || paper?.height != paperSize.height {
+            paper = make(.rgba8Unorm, paperSize)
+            paperBaked = false
+        }
         aspect = Float(viewSize.width / viewSize.height)
         let sim = MTLSize(width: 128, height: max(16, Int(128 / aspect)), depth: 1)
         let dyeW = 384
@@ -85,6 +102,7 @@ final class FluidSimulator {
         velocity = [make(.rg16Float, sim), make(.rg16Float, sim)]
         dye = [make(.rgba16Float, dyeTex), make(.rgba16Float, dyeTex)]
         grooves = [make(.r16Float, dyeTex), make(.r16Float, dyeTex)]
+        surface = make(.rg16Float, dyeTex)
         pressure = [make(.r16Float, sim), make(.r16Float, sim)]
         divergence = make(.r16Float, sim)
         curlTexture = make(.r16Float, sim)
@@ -102,16 +120,16 @@ final class FluidSimulator {
     /// A finger: `point` and `delta` in uv (0...1, origin top-left), `color` the paint colour.
     /// `brush: false` for thrown drops: no grooves.
     func touch(at point: SIMD2<Float>, delta: SIMD2<Float>, color: SIMD3<Float>, radius: Float = FluidSimulator.splatRadius, strength: Float = 1.2, brush: Bool = true) {
-        pending.append(Splat(point: point, value: SIMD4(delta.x * Self.splatForce, delta.y * Self.splatForce, 0, 0), radius: radius, kind: .velocity))
+        velocitySplats.append(Splat(point: point, value: SIMD4(delta.x * Self.splatForce, delta.y * Self.splatForce, 0, 0), radius: radius))
         // the colour as K/S weighted by amount (alpha), so mixes behave like pigments
         let ks = Self.ks(color) * strength
-        pending.append(Splat(point: point, value: SIMD4(ks.x, ks.y, ks.z, strength), radius: radius, kind: .pigment))
+        paintSplats.append(Splat(point: point, value: SIMD4(ks.x, ks.y, ks.z, strength), radius: radius))
         // the grooves run along the stroke: their stripes go across it
         let motion = SIMD2(delta.x * aspect, delta.y)
         let length = simd_length(motion)
         if brush, length > 0.0005 {
             let normal = SIMD2(-motion.y, motion.x) / length
-            pending.append(Splat(point: point, value: SIMD4(normal.x, normal.y, 0, 0), radius: radius, kind: .groove))
+            grooveSplats.append(Splat(point: point, dir: normal, radius: radius))
         }
     }
 
@@ -161,32 +179,37 @@ final class FluidSimulator {
         dye.swapAt(0, 1)
         dispatch(enc, "advect", textures: [velocity[0], grooves[0], grooves[1]], size: dyeSize, bytes: &ad, length: MemoryLayout<AdvectParams>.size)
         grooves.swapAt(0, 1)
-        // 4. fingers
-        for s in pending {
-            switch s.kind {
-            case .velocity:
-                var sp = SplatParams(point: s.point, value: s.value, radius: s.radius, aspect: aspect)
-                dispatch(enc, "splat", textures: [velocity[0], velocity[1]], size: simSize, bytes: &sp, length: MemoryLayout<SplatParams>.stride)
-                velocity.swapAt(0, 1)
-            case .pigment:
-                var sp = PaintSplatParams(point: s.point, value: s.value, radius: s.radius, aspect: aspect, cover: Self.cover)
-                dispatch(enc, "paintSplat", textures: [dye[0], dye[1]], size: dyeSize, bytes: &sp, length: MemoryLayout<PaintSplatParams>.stride)
-                dye.swapAt(0, 1)
-            case .groove:
-                var gp = GrooveParams(point: s.point, dir: SIMD2(s.value.x, s.value.y), radius: s.radius, aspect: aspect, strength: 0.85, freq: Self.grooveFrequency)
-                dispatch(enc, "groove", textures: [grooves[0], grooves[1]], size: dyeSize, bytes: &gp, length: MemoryLayout<GrooveParams>.stride)
-                grooves.swapAt(0, 1)
-            }
+        // 4. fingers: every splat of the frame in one pass per grid
+        if !velocitySplats.isEmpty {
+            splatPass(enc, "velocitySplats", &velocitySplats, textures: &velocity, size: simSize, extra: nil)
         }
-        pending.removeAll(keepingCapacity: true)
+        if !paintSplats.isEmpty {
+            splatPass(enc, "paintSplats", &paintSplats, textures: &dye, size: dyeSize, extra: Self.cover)
+        }
+        if !grooveSplats.isEmpty {
+            splatPass(enc, "grooveSplats", &grooveSplats, textures: &grooves, size: dyeSize, extra: Self.grooveFrequency)
+        }
+        // 5. the picture's inputs: the paper once, the paint's surface every frame
+        if let paper, !paperBaked {
+            dispatch(enc, "paperBake", textures: [paper], size: MTLSize(width: paper.width, height: paper.height, depth: 1))
+            paperBaked = true
+        }
+        if let surface, let paper {
+            dispatch(enc, "surface", textures: [dye[0], grooves[0], paper, surface], size: dyeSize)
+        }
         enc.endEncoding()
     }
 
     func encodeRender(into cb: MTLCommandBuffer, descriptor: MTLRenderPassDescriptor) {
         guard dye.count == 2, let enc = cb.makeRenderCommandEncoder(descriptor: descriptor) else { return }
         enc.setRenderPipelineState(renderPipeline)
+        guard let surface, let paper else {
+            enc.endEncoding()
+            return
+        }
         enc.setFragmentTexture(dye[0], index: 0)
-        enc.setFragmentTexture(grooves[0], index: 1)
+        enc.setFragmentTexture(surface, index: 1)
+        enc.setFragmentTexture(paper, index: 2)
         enc.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 3)
         enc.endEncoding()
     }
@@ -197,28 +220,24 @@ final class FluidSimulator {
         var velTexel: SIMD2<Float>
     }
 
-    private struct SplatParams {
-        var point: SIMD2<Float>
-        var value: SIMD4<Float>
-        var radius: Float
-        var aspect: Float
-    }
-
-    private struct PaintSplatParams {
-        var point: SIMD2<Float>
-        var value: SIMD4<Float>
-        var radius: Float
-        var aspect: Float
-        var cover: Float
-    }
-
-    private struct GrooveParams {
-        var point: SIMD2<Float>
-        var dir: SIMD2<Float>
-        var radius: Float
-        var aspect: Float
-        var strength: Float
-        var freq: Float
+    /// Up to `maxSplats` splats of one kind in one dispatch; the rest wait for the next frame.
+    private func splatPass(_ enc: MTLComputeCommandEncoder, _ name: String, _ splats: inout [Splat], textures: inout [MTLTexture], size: MTLSize, extra: Float?) {
+        guard let p = pipelines[name] else { return }
+        let n = min(splats.count, Self.maxSplats)
+        enc.setComputePipelineState(p)
+        enc.setTexture(textures[0], index: 0)
+        enc.setTexture(textures[1], index: 1)
+        splats.withUnsafeBytes { raw in
+            enc.setBytes(raw.baseAddress!, length: n * MemoryLayout<Splat>.stride, index: 0)
+        }
+        var count = UInt32(n)
+        enc.setBytes(&count, length: MemoryLayout<UInt32>.size, index: 1)
+        var a = aspect
+        enc.setBytes(&a, length: MemoryLayout<Float>.size, index: 2)
+        if var e = extra { enc.setBytes(&e, length: MemoryLayout<Float>.size, index: 3) }
+        enc.dispatchThreads(size, threadsPerThreadgroup: MTLSize(width: 16, height: 16, depth: 1))
+        textures.swapAt(0, 1)
+        splats.removeFirst(n)
     }
 
     private func dispatch(_ enc: MTLComputeCommandEncoder, _ name: String, textures: [MTLTexture], size: MTLSize, bytes: UnsafeRawPointer? = nil, length: Int = 0) {
