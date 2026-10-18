@@ -53,6 +53,8 @@ struct PairingView: View {
                 .background(Theme.sky.ignoresSafeArea())
             }
         }
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier("pairing")
         .onAppear { OrientationLock.set(.portrait) }
     }
 }
@@ -73,6 +75,8 @@ struct ConnectingView: View {
         .padding(30)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Theme.sky.ignoresSafeArea())
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier("pairing")
         .onAppear { OrientationLock.set(.portrait) }
     }
 }

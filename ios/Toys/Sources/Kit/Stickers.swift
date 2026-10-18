@@ -200,18 +200,25 @@ struct MoonScene: View {
     }
 }
 
-/// A transparent zone that counts the secret taps; taps elsewhere reset it.
+/// A transparent zone that counts the secret taps (four within 2.5 s).
+/// It starts at the screen's physical top-left corner, not at the safe area:
+/// on a notch or Dynamic Island phone a parent taps the very corner, which
+/// lies above the safe area, so the zone is the safe-area insets plus a
+/// `Theme.cornerSide` square. Only the zone takes touches; the rest passes through.
 struct SecretCorner: View {
     var onUnlock: () -> Void
     @State private var lock = CornerTapLock()
 
     var body: some View {
-        Color.clear
-            .frame(width: Theme.cornerSide, height: Theme.cornerSide)
-            .contentShape(Rectangle())
-            .onTapGesture {
-                if lock.tap(inCorner: true) { onUnlock() }
-            }
-            .accessibilityHidden(true)
+        GeometryReader { geo in
+            Color.clear
+                .frame(width: geo.safeAreaInsets.leading + Theme.cornerSide, height: geo.safeAreaInsets.top + Theme.cornerSide)
+                .contentShape(Rectangle())
+                .onTapGesture {
+                    if lock.tap(inCorner: true) { onUnlock() }
+                }
+        }
+        .ignoresSafeArea()
+        .accessibilityHidden(true)
     }
 }

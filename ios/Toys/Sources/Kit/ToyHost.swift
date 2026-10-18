@@ -21,20 +21,33 @@ struct ToyHost: View {
                     .ignoresSafeArea()
                     .environment(\.toyExit, onExit)
             }
-            switch chrome {
-            case .secretCorner:
-                SecretCorner(onUnlock: onExit)
-            case .backSticker:
-                StickerButton(size: 52, systemImage: "house.fill", label: String(localized: "toy.back", defaultValue: "Back to the toys", table: "Toys"), action: onExit)
-                    .padding(16)
-            }
         }
+        // The way out sits over the toy, never inside it: whatever the toy does
+        // with touches (drags, taps, a UIKit Metal view), the exit is hit first.
+        .overlay(alignment: .topLeading) {
+            exit.zIndex(10)
+        }
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier("toy.\(id)")
         .onAppear {
             OrientationLock.set(.portrait)
             UIApplication.shared.isIdleTimerDisabled = true
             if Toys.entry(id) == nil { onExit() }
         }
         .onDisappear { UIApplication.shared.isIdleTimerDisabled = false }
+    }
+
+    @ViewBuilder
+    private var exit: some View {
+        switch chrome {
+        case .secretCorner:
+            SecretCorner(onUnlock: onExit)
+        case .backSticker:
+            StickerButton(size: 56, systemImage: "house.fill", label: String(localized: "toy.back", defaultValue: "Back to the toys", table: "Toys"), action: onExit)
+                .accessibilityIdentifier("toy.back")
+                .padding(.leading, 16)
+                .padding(.top, 12)
+        }
     }
 }
 

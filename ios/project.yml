@@ -35,7 +35,9 @@ targets:
         GENERATE_INFOPLIST_FILE: NO
         INFOPLIST_FILE: Kidzy/Config/Info.plist
         ENABLE_PREVIEWS: YES
-    scheme: {}
+    scheme:
+      testTargets:
+        - KidzyUITests
   SketchesForKids:
     type: application
     platform: iOS
@@ -64,6 +66,7 @@ targets:
       storeKitConfiguration: SketchesForKids/Store.storekit
       testTargets:
         - SketchesForKidsTests
+        - SketchesForKidsUITests
   SketchesForKidsTests:
     type: bundle.unit-test
     platform: iOS
@@ -75,3 +78,27 @@ targets:
     settings:
       base:
         GENERATE_INFOPLIST_FILE: YES
+  KidzyUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources:
+      - path: Kidzy/UITests
+    dependencies:
+      - target: Kidzy
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        SWIFT_VERSION: "5.0"
+        SWIFT_STRICT_CONCURRENCY: minimal
+  SketchesForKidsUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources:
+      - path: SketchesForKids/UITests
+    dependencies:
+      - target: SketchesForKids
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        SWIFT_VERSION: "5.0"
+        SWIFT_STRICT_CONCURRENCY: minimal

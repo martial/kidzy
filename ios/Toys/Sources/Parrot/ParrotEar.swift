@@ -30,6 +30,11 @@ final class ParrotEar {
     private var last: AVAudioPCMBuffer?
     private var voiceFormat: AVAudioFormat?
     private var wired = false
+    /// Set while asking for the microphone: the permission alert makes the
+    /// scene inactive then active again, which calls `start()` a second time.
+    private var starting = false
+    /// False once the toy is gone: a permission answered after leaving must not open the microphone.
+    private var wanted = false
     private var lastVoice = -1
     private var lastLevelLog = 0.0
     private let traceEvery = ProcessInfo.processInfo.environment["KIDZY_PARROT_TRACE"] == nil ? 2.0 : 0.25
@@ -39,11 +44,15 @@ final class ParrotEar {
     static let voices: [(pitch: Float, rate: Float)] = [(900, 1.0), (700, 1.12), (1100, 1.0), (1200, 1.15), (-500, 0.92)]
 
     func start() async {
-        guard state == .idle else { return }
+        wanted = true
+        guard state == .idle, !starting else { return }
+        starting = true
+        defer { starting = false }
         guard await AVAudioApplication.requestRecordPermission() else {
             log.notice("microphone refused")
             return
         }
+        guard wanted, state == .idle, !engine.isRunning else { return }
         let session = AVAudioSession.sharedInstance()
         do {
             try session.setCategory(.playAndRecord, mode: .default, options: [.defaultToSpeaker])
@@ -67,6 +76,7 @@ final class ParrotEar {
         }
         engine.connect(player, to: shifter, format: format)
         engine.connect(shifter, to: engine.mainMixerNode, format: format)
+        input.removeTap(onBus: 0)   // never two taps on one bus: that is an exception, not an error
         input.installTap(onBus: 0, bufferSize: 1024, format: inFormat, block: Self.tapBlock(for: tape))
         engine.prepare()
         do {
@@ -83,6 +93,7 @@ final class ParrotEar {
     }
 
     func stop() {
+        wanted = false
         loop?.cancel()
         loop = nil
         player.stop()

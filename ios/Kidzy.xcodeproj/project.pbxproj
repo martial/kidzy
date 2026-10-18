@@ -85,6 +85,7 @@
 		734493ADD02DD7DC08C5E418 /* animal-vache.wav in Resources */ = {isa = PBXBuildFile; fileRef = 86FB63EF19A339D2D6828877 /* animal-vache.wav */; };
 		7513EB34A6AD9074A2BF95A0 /* Keychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B9AE447B00D8B5EE694B625 /* Keychain.swift */; };
 		7786534E176BF8D6C02EF859 /* ParentAreaView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F44D801B4DDD526A30E12FDE /* ParentAreaView.swift */; };
+		779699EA2C1AB740ED9C8BFC /* ToyExitUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EECD9FD7037492AB0BEF3102 /* ToyExitUITests.swift */; };
 		7818C5F002F6205AF8D1453C /* ToyHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2DF8115C281FB3AC945D76C /* ToyHost.swift */; };
 		7A1D8E7271D6FE7A3A06FFE7 /* animal-ane.wav in Resources */ = {isa = PBXBuildFile; fileRef = 8944EDCAF493B854B73C90C8 /* animal-ane.wav */; };
 		7AEBE83482821C1E7F62C2A8 /* FingerMusic.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8B00A6346E34F7D45E4868D /* FingerMusic.swift */; };
@@ -157,6 +158,7 @@
 		D74344A8239C28297EB6A483 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 418AE499204D2C3580E2DDE6 /* Models.swift */; };
 		D90FE38292C237515CB65E97 /* SeaArt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B0984B14A3C2062A0CCF863 /* SeaArt.swift */; };
 		DEC383043A5A2E0C94B11C9B /* name-cochon.wav in Resources */ = {isa = PBXBuildFile; fileRef = 8638612426228B24E1BA1624 /* name-cochon.wav */; };
+		E04F986EDAF79376ACCE5DE5 /* ToyExitUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9B6DAF358FD417AA94006CA /* ToyExitUITests.swift */; };
 		E1A770F1E9F4F1C0A2D630C4 /* OrientationLock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 545E008E619A8A32D2168456 /* OrientationLock.swift */; };
 		E2BA46193DA467D2AFD57A4F /* splash.wav in Resources */ = {isa = PBXBuildFile; fileRef = 7C13B3A867D8945F6D658C23 /* splash.wav */; };
 		E2D644E24E1E8D03F6007418 /* chien.png in Resources */ = {isa = PBXBuildFile; fileRef = E9B0D1515FE221A03738C953 /* chien.png */; };
@@ -182,12 +184,26 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		16E3239399ABE0A92F38598F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4E4C315252E919E8AD3E2347 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F02593BF197DBA777B6FD672;
+			remoteInfo = SketchesForKids;
+		};
 		B217F1D2BC3D7B970EB62595 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 4E4C315252E919E8AD3E2347 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = F02593BF197DBA777B6FD672;
 			remoteInfo = SketchesForKids;
+		};
+		D5021B2A87796ACF5190C9AE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4E4C315252E919E8AD3E2347 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B98DE0766BE27A2FC20FA1CF;
+			remoteInfo = Kidzy;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -245,6 +261,7 @@
 		7C13B3A867D8945F6D658C23 /* splash.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = splash.wav; sourceTree = "<group>"; };
 		819AC9210F43BD3C9A2B3870 /* Kidzy.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Kidzy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		83AFF61D96720B6BF0DDA77E /* mouton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = mouton.png; sourceTree = "<group>"; };
+		8505999A2287B1647F6A8954 /* KidzyUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = KidzyUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		8638612426228B24E1BA1624 /* name-cochon.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "name-cochon.wav"; sourceTree = "<group>"; };
 		86FB63EF19A339D2D6828877 /* animal-vache.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "animal-vache.wav"; sourceTree = "<group>"; };
 		8944EDCAF493B854B73C90C8 /* animal-ane.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "animal-ane.wav"; sourceTree = "<group>"; };
@@ -252,6 +269,7 @@
 		8B9AE447B00D8B5EE694B625 /* Keychain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keychain.swift; sourceTree = "<group>"; };
 		8C296D2B945A9F74C657AA4B /* animal-coq.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "animal-coq.wav"; sourceTree = "<group>"; };
 		8D732509C74026915F429FF4 /* KidzyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KidzyApp.swift; sourceTree = "<group>"; };
+		8DF85413FD90403F0A5566B6 /* SketchesForKidsUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = SketchesForKidsUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		923C71F8EFFD007535CA2E18 /* SoundBank.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundBank.swift; sourceTree = "<group>"; };
 		9266A40438F0C16E59BD9EEE /* SketchesApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SketchesApp.swift; sourceTree = "<group>"; };
 		95A818B42631E735A3BBDCBE /* animal-perroquet.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "animal-perroquet.wav"; sourceTree = "<group>"; };
@@ -274,6 +292,7 @@
 		B43801A741FFBC3A66010C47 /* animal-chat.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "animal-chat.wav"; sourceTree = "<group>"; };
 		B581603F94ED6617EF038A5F /* UnlockView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnlockView.swift; sourceTree = "<group>"; };
 		B8749E0741FC47DEDAC7C776 /* ane.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ane.png; sourceTree = "<group>"; };
+		B9B6DAF358FD417AA94006CA /* ToyExitUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToyExitUITests.swift; sourceTree = "<group>"; };
 		BB916C04F96AFFD97D2A77F2 /* PlayerLayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerLayerView.swift; sourceTree = "<group>"; };
 		BCEE052AD371DDF7553B366E /* TiltSensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TiltSensor.swift; sourceTree = "<group>"; };
 		BD4FF95088B6A25BBA48FD42 /* StoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreTests.swift; sourceTree = "<group>"; };
@@ -291,6 +310,7 @@
 		E23A9D57F4EBB334E6A0039A /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		E9B0D1515FE221A03738C953 /* chien.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = chien.png; sourceTree = "<group>"; };
 		EA2F982FC2C26C8C24F43605 /* AppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModel.swift; sourceTree = "<group>"; };
+		EECD9FD7037492AB0BEF3102 /* ToyExitUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToyExitUITests.swift; sourceTree = "<group>"; };
 		F06FAF7792B16968F36825A9 /* name-mouton.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "name-mouton.wav"; sourceTree = "<group>"; };
 		F26AB19D091A6960C6107913 /* canard.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = canard.png; sourceTree = "<group>"; };
 		F44D801B4DDD526A30E12FDE /* ParentAreaView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParentAreaView.swift; sourceTree = "<group>"; };
@@ -440,6 +460,7 @@
 				93642DCF33944A52300E1B60 /* Config */,
 				EEC06DA680D5791C0493C2BA /* Sources */,
 				00E510768CC2A9EDCE285E2E /* Tests */,
+				9C9E6F5940B76C4BFAB9825C /* UITests */,
 			);
 			path = SketchesForKids;
 			sourceTree = "<group>";
@@ -456,6 +477,14 @@
 				FAD2136D401C7D610C694A8D /* Tiles */,
 			);
 			path = Sources;
+			sourceTree = "<group>";
+		};
+		2C9AAAC51E1C7291AD76862B /* UITests */ = {
+			isa = PBXGroup;
+			children = (
+				EECD9FD7037492AB0BEF3102 /* ToyExitUITests.swift */,
+			);
+			path = UITests;
 			sourceTree = "<group>";
 		};
 		3A4F9ABCF041232B62E91B82 /* Resources */ = {
@@ -492,8 +521,10 @@
 			isa = PBXGroup;
 			children = (
 				819AC9210F43BD3C9A2B3870 /* Kidzy.app */,
+				8505999A2287B1647F6A8954 /* KidzyUITests.xctest */,
 				7C109E2748CBAE3BF11640E0 /* SketchesForKids.app */,
 				CE6BF9CFFFCE4286F1A5C426 /* SketchesForKidsTests.xctest */,
+				8DF85413FD90403F0A5566B6 /* SketchesForKidsUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -560,6 +591,7 @@
 				F49A838065763B14879CD369 /* Config */,
 				06E760D4505FD92071B8AB26 /* Shared */,
 				BECE6F54B29A6EE69A439F26 /* Sources */,
+				2C9AAAC51E1C7291AD76862B /* UITests */,
 			);
 			path = Kidzy;
 			sourceTree = "<group>";
@@ -602,6 +634,14 @@
 				4873F3D7228C4D9531EA3F0B /* TileGrid.swift */,
 			);
 			path = Toys;
+			sourceTree = "<group>";
+		};
+		9C9E6F5940B76C4BFAB9825C /* UITests */ = {
+			isa = PBXGroup;
+			children = (
+				B9B6DAF358FD417AA94006CA /* ToyExitUITests.swift */,
+			);
+			path = UITests;
 			sourceTree = "<group>";
 		};
 		AAC5EABACDE55B7342D778F6 /* Paint */ = {
@@ -729,6 +769,24 @@
 			productReference = CE6BF9CFFFCE4286F1A5C426 /* SketchesForKidsTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		1E43B9F569B34A95D388FC1E /* KidzyUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F90CFBA8BBAA0A7347098625 /* Build configuration list for PBXNativeTarget "KidzyUITests" */;
+			buildPhases = (
+				92B33DAF3C23969FF782B3E7 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				0738C0D2ADC559CAD971C123 /* PBXTargetDependency */,
+			);
+			name = KidzyUITests;
+			packageProductDependencies = (
+			);
+			productName = KidzyUITests;
+			productReference = 8505999A2287B1647F6A8954 /* KidzyUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 		B98DE0766BE27A2FC20FA1CF /* Kidzy */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = FE9F231F08440EA311E26DAF /* Build configuration list for PBXNativeTarget "Kidzy" */;
@@ -765,6 +823,24 @@
 			productReference = 7C109E2748CBAE3BF11640E0 /* SketchesForKids.app */;
 			productType = "com.apple.product-type.application";
 		};
+		F3856B3FFBD15A22F806475B /* SketchesForKidsUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3D441D956E3ABC2A3848B09D /* Build configuration list for PBXNativeTarget "SketchesForKidsUITests" */;
+			buildPhases = (
+				984AE775AAD86FCDB9BC9F63 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				AE365D77142B7B2F9DC8C654 /* PBXTargetDependency */,
+			);
+			name = SketchesForKidsUITests;
+			packageProductDependencies = (
+			);
+			productName = SketchesForKidsUITests;
+			productReference = 8DF85413FD90403F0A5566B6 /* SketchesForKidsUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -774,11 +850,17 @@
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
+					1E43B9F569B34A95D388FC1E = {
+						TestTargetID = B98DE0766BE27A2FC20FA1CF;
+					};
 					B98DE0766BE27A2FC20FA1CF = {
 						ProvisioningStyle = Automatic;
 					};
 					F02593BF197DBA777B6FD672 = {
 						ProvisioningStyle = Automatic;
+					};
+					F3856B3FFBD15A22F806475B = {
+						TestTargetID = F02593BF197DBA777B6FD672;
 					};
 				};
 			};
@@ -799,6 +881,8 @@
 				B98DE0766BE27A2FC20FA1CF /* Kidzy */,
 				F02593BF197DBA777B6FD672 /* SketchesForKids */,
 				189EAA00A0AA2F9C15A15F4C /* SketchesForKidsTests */,
+				1E43B9F569B34A95D388FC1E /* KidzyUITests */,
+				F3856B3FFBD15A22F806475B /* SketchesForKidsUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -959,6 +1043,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		92B33DAF3C23969FF782B3E7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				779699EA2C1AB740ED9C8BFC /* ToyExitUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		984AE775AAD86FCDB9BC9F63 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E04F986EDAF79376ACCE5DE5 /* ToyExitUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B4B799EEBB40ADEF39A4FF8D /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1024,10 +1124,20 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		0738C0D2ADC559CAD971C123 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B98DE0766BE27A2FC20FA1CF /* Kidzy */;
+			targetProxy = D5021B2A87796ACF5190C9AE /* PBXContainerItemProxy */;
+		};
 		769609A7DE74263853888CD7 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = F02593BF197DBA777B6FD672 /* SketchesForKids */;
 			targetProxy = B217F1D2BC3D7B970EB62595 /* PBXContainerItemProxy */;
+		};
+		AE365D77142B7B2F9DC8C654 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F02593BF197DBA777B6FD672 /* SketchesForKids */;
+			targetProxy = 16E3239399ABE0A92F38598F /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -1043,6 +1153,25 @@
 				SDKROOT = iphoneos;
 			};
 			name = Release;
+		};
+		2112A2CC357BF8415CE9185C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.screenclub.SketchesForKidsUITests;
+				SDKROOT = iphoneos;
+				SWIFT_STRICT_CONCURRENCY = minimal;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = SketchesForKids;
+			};
+			name = Debug;
 		};
 		24AE3B51EF1E3C40B934FB25 /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -1072,6 +1201,25 @@
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
+		};
+		3407B16B3F980BD821642374 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.screenclub.KidzyUITests;
+				SDKROOT = iphoneos;
+				SWIFT_STRICT_CONCURRENCY = minimal;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = Kidzy;
+			};
+			name = Release;
 		};
 		4FACD0D275BE3AEEF5983436 /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -1141,6 +1289,44 @@
 				SWIFT_VERSION = 6.0;
 			};
 			name = Release;
+		};
+		61EC292691B03BF2288A622C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.screenclub.SketchesForKidsUITests;
+				SDKROOT = iphoneos;
+				SWIFT_STRICT_CONCURRENCY = minimal;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = SketchesForKids;
+			};
+			name = Release;
+		};
+		B033FC6EACED27B5506985E8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.screenclub.KidzyUITests;
+				SDKROOT = iphoneos;
+				SWIFT_STRICT_CONCURRENCY = minimal;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = Kidzy;
+			};
+			name = Debug;
 		};
 		BB56C79738F682CC5708285D /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -1247,6 +1433,15 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
+		3D441D956E3ABC2A3848B09D /* Build configuration list for PBXNativeTarget "SketchesForKidsUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2112A2CC357BF8415CE9185C /* Debug */,
+				61EC292691B03BF2288A622C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
 		877EEBFD453491A5A268171E /* Build configuration list for PBXProject "Kidzy" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -1261,6 +1456,15 @@
 			buildConfigurations = (
 				4FACD0D275BE3AEEF5983436 /* Debug */,
 				D023781074D6ED57575CFA9E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		F90CFBA8BBAA0A7347098625 /* Build configuration list for PBXNativeTarget "KidzyUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B033FC6EACED27B5506985E8 /* Debug */,
+				3407B16B3F980BD821642374 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;

@@ -52,6 +52,8 @@ struct PickerView: View {
                 .padding(.trailing, 16)
             }
         }
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier("picker")
         .onAppear { OrientationLock.set(.portrait) }
         .onChange(of: phase) { _, p in
             if p == .active { Task { await model.store.refresh() } }
