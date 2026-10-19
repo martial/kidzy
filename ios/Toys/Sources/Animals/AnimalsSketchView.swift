@@ -7,22 +7,23 @@ import SwiftUI
 /// makes its cry. Swipe left or right: the next or previous animal.
 struct AnimalsSketchView: View {
     struct Animal: Identifiable {
-        let id: String      // image and sound file stem
-        let name: String    // spoken, French with the article
+        let id: String                  // image and sound file stem
+        let names: [String: String]     // per language: the fallback voice and VoiceOver say it
         let color: Color
+        var name: String { names[AnimalVoice.language] ?? names["fr"] ?? id }
     }
 
     static let animals: [Animal] = [
-        Animal(id: "vache", name: "la vache", color: Theme.grass),
-        Animal(id: "chat", name: "le chat", color: Theme.bubblegum),
-        Animal(id: "chien", name: "le chien", color: Theme.lemon),
-        Animal(id: "canard", name: "le canard", color: Theme.ocean),
-        Animal(id: "mouton", name: "le mouton", color: Color(hex: "9B5DE5")),
-        Animal(id: "coq", name: "le coq", color: Theme.coral),
-        Animal(id: "lion", name: "le lion", color: Color(hex: "FFA62B")),
-        Animal(id: "ane", name: "l'âne", color: Theme.sky),
-        Animal(id: "grenouille", name: "la grenouille", color: Theme.grass),
-        Animal(id: "cochon", name: "le cochon", color: Theme.bubblegum),
+        Animal(id: "vache", names: ["fr": "la vache", "en": "cow", "es": "la vaca", "it": "la mucca"], color: Theme.grass),
+        Animal(id: "chat", names: ["fr": "le chat", "en": "cat", "es": "el gato", "it": "il gatto"], color: Theme.bubblegum),
+        Animal(id: "chien", names: ["fr": "le chien", "en": "dog", "es": "el perro", "it": "il cane"], color: Theme.lemon),
+        Animal(id: "canard", names: ["fr": "le canard", "en": "duck", "es": "el pato", "it": "l'anatra"], color: Theme.ocean),
+        Animal(id: "mouton", names: ["fr": "le mouton", "en": "sheep", "es": "la oveja", "it": "la pecora"], color: Color(hex: "9B5DE5")),
+        Animal(id: "coq", names: ["fr": "le coq", "en": "rooster", "es": "el gallo", "it": "il gallo"], color: Theme.coral),
+        Animal(id: "lion", names: ["fr": "le lion", "en": "lion", "es": "el león", "it": "il leone"], color: Color(hex: "FFA62B")),
+        Animal(id: "ane", names: ["fr": "l'âne", "en": "donkey", "es": "el burro", "it": "l'asino"], color: Theme.sky),
+        Animal(id: "grenouille", names: ["fr": "la grenouille", "en": "frog", "es": "la rana", "it": "la rana"], color: Theme.grass),
+        Animal(id: "cochon", names: ["fr": "le cochon", "en": "pig", "es": "el cerdo", "it": "il maiale"], color: Theme.bubblegum),
     ]
 
     @Environment(\.scenePhase) private var phase
@@ -133,15 +134,31 @@ struct AnimalImage: View {
     }
 }
 
-/// The name (name-<id>.wav, a Gemini TTS voice) then the cry (animal-<id>.wav,
-/// Gemini TTS performing the onomatopoeia), through the shared `ToyAudio`
+/// The language the animals speak: the app's interface language when their voices exist in
+/// it (French, English, Spanish, Italian; Kidzy is French), else English, the app's fallback.
+enum AnimalVoice {
+    static let languages = ["fr", "en", "es", "it"]
+    static let language: String = {
+        let ui = Bundle.main.preferredLocalizations.first ?? "en"
+        return languages.first { ui.hasPrefix($0) } ?? "en"
+    }()
+    /// Sound file stems: name-vache.wav is French, name-vache-en.wav English, and so on.
+    static func file(_ kind: String, _ id: String) -> String {
+        language == "fr" ? "\(kind)-\(id)" : "\(kind)-\(id)-\(language)"
+    }
+    static var speechLocale: String { ["fr": "fr-FR", "en": "en-US", "es": "es-ES", "it": "it-IT"][language] ?? "en-US" }
+}
+
+/// The name (name-<id>[-<lang>].wav, a Gemini TTS voice) then the cry (animal-<id>[-<lang>].wav,
+/// Gemini TTS performing the language's onomatopoeia), through the shared `ToyAudio`
 /// engine (streamed from disk, one player each), the cry a little higher or
 /// lower every time; the system voice only as fallback. Around them `AnimalFX`:
 /// a whoosh and a landing pop between animals, a boing on a bounce.
 @MainActor
 final class AnimalSounds {
     private let synthesizer = AVSpeechSynthesizer()
-    private let clips = SoundBank(names: AnimalsSketchView.animals.flatMap { ["name-" + $0.id, "animal-" + $0.id] }, copies: 1, buffered: false)
+    private let clips = SoundBank(names: AnimalsSketchView.animals.flatMap { [AnimalVoice.file("name", $0.id), AnimalVoice.file("animal", $0.id)] },
+                                  copies: 1, buffered: false)
     private var fx: (node: RenderNode<AnimalFX>, out: Fader)?
     private var fxPlugged = false
 
@@ -179,14 +196,14 @@ final class AnimalSounds {
 
     /// Plays the recorded name and waits for it; falls back to the system voice.
     func say(_ id: String, fallback text: String) async {
-        let name = "name-" + id
+        let name = AnimalVoice.file("name", id)
         if clips.has(name) {
             clips.play(name, volume: 0.95, rate: Double.random(in: 0.98...1.03))
             try? await Task.sleep(for: .seconds(max(0.3, clips.duration(name) + 0.15)))
             return
         }
         let u = AVSpeechUtterance(string: text)
-        u.voice = AVSpeechSynthesisVoice(language: "fr-FR")
+        u.voice = AVSpeechSynthesisVoice(language: AnimalVoice.speechLocale)
         u.rate = AVSpeechUtteranceDefaultSpeechRate * 0.85
         synthesizer.speak(u)
         try? await Task.sleep(for: .seconds(0.35 + Double(text.count) * 0.07))
@@ -194,7 +211,7 @@ final class AnimalSounds {
 
     /// The cry, a little higher or lower each time, so it never sounds like a recording.
     func cry(_ id: String) {
-        clips.play("animal-" + id, volume: 0.95, rate: Double.random(in: 0.93...1.08))
+        clips.play(AnimalVoice.file("animal", id), volume: 0.95, rate: Double.random(in: 0.93...1.08))
     }
 
     /// The next animal slides in: `direction` -1 left, 1 right.

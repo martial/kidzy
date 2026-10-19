@@ -15,6 +15,18 @@
             "state": "translated",
             "value": "La mer"
           }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El mar"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Il mare"
+          }
         }
       }
     },
@@ -31,6 +43,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Peinture"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pintura"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pittura"
           }
         }
       }
@@ -49,6 +73,18 @@
             "state": "translated",
             "value": "Formes"
           }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Formas"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Forme"
+          }
         }
       }
     },
@@ -65,6 +101,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Animaux"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Animales"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Animali"
           }
         }
       }
@@ -83,6 +131,18 @@
             "state": "translated",
             "value": "Guitare"
           }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guitarra"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chitarra"
+          }
         }
       }
     },
@@ -100,6 +160,18 @@
             "state": "translated",
             "value": "Perroquet"
           }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Loro"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pappagallo"
+          }
         }
       }
     },
@@ -116,6 +188,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Retour aux jouets"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Volver a los juguetes"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Torna ai giocattoli"
           }
         }
       }

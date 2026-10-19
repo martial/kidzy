@@ -15,6 +15,18 @@
             "state": "translated",
             "value": "Pour les parents"
           }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Para los padres"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Per i genitori"
+          }
         }
       }
     },
@@ -31,6 +43,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "%@, verrouillé"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@, bloqueado"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@, bloccato"
           }
         }
       }
@@ -49,6 +73,18 @@
             "state": "translated",
             "value": "Pour les parents"
           }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Para los padres"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Per i genitori"
+          }
         }
       }
     },
@@ -65,6 +101,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Combien font %1$@ plus %2$@ ?"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¿Cuánto es %1$@ más %2$@?"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quanto fa %1$@ più %2$@?"
           }
         }
       }
@@ -83,6 +131,18 @@
             "state": "translated",
             "value": "La question change à chaque fois."
           }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La pregunta cambia cada vez."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La domanda cambia ogni volta."
+          }
         }
       }
     },
@@ -99,6 +159,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Réponse vide"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Respuesta vacía"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Risposta vuota"
           }
         }
       }
@@ -117,6 +189,18 @@
             "state": "translated",
             "value": "Fermer"
           }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cerrar"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chiudi"
+          }
         }
       }
     },
@@ -133,6 +217,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Effacer"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Borrar"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cancella"
           }
         }
       }
@@ -151,6 +247,18 @@
             "state": "translated",
             "value": "Débloquer tous les jouets"
           }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Desbloquear todos los juguetes"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sblocca tutti i giocattoli"
+          }
         }
       }
     },
@@ -167,6 +275,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Peinture, Formes, Guitare et Perroquet rejoignent la mer et les animaux."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pintura, Formas, Guitarra y Loro se suman al mar y a los animales."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pittura, Forme, Chitarra e Pappagallo si aggiungono al mare e agli animali."
           }
         }
       }
@@ -185,6 +305,18 @@
             "state": "translated",
             "value": "Un seul paiement, sans abonnement"
           }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un solo pago, sin suscripción"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un solo pagamento, nessun abbonamento"
+          }
         }
       }
     },
@@ -201,6 +333,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Partagé avec votre famille"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Compartido con tu familia"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Condiviso con la tua famiglia"
           }
         }
       }
@@ -219,6 +363,18 @@
             "state": "translated",
             "value": "Ni pub ni compte, jamais"
           }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sin anuncios ni cuentas, nunca"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Niente pubblicità né account, mai"
+          }
         }
       }
     },
@@ -235,6 +391,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Débloquer pour %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Desbloquear por %@"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sblocca per %@"
           }
         }
       }
@@ -253,6 +421,18 @@
             "state": "translated",
             "value": "Le paiement passe par Apple."
           }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El pago se hace a través de Apple."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Il pagamento avviene tramite Apple."
+          }
         }
       }
     },
@@ -269,6 +449,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "En attente de l'accord d'un parent pour l'achat."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esperando a que un adulto apruebe la compra."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In attesa che un genitore approvi l'acquisto."
           }
         }
       }
@@ -287,6 +479,18 @@
             "state": "translated",
             "value": "Recherche du prix…"
           }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Buscando el precio…"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recupero del prezzo…"
+          }
         }
       }
     },
@@ -303,6 +507,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "La boutique n'est pas joignable pour l'instant."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La tienda no está disponible en este momento."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lo store non è raggiungibile al momento."
           }
         }
       }
@@ -321,6 +537,18 @@
             "state": "translated",
             "value": "Restaurer l'achat"
           }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restaurar compra"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ripristina acquisto"
+          }
         }
       }
     },
@@ -337,6 +565,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Confidentialité"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Privacidad"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Privacy"
           }
         }
       }
@@ -355,6 +595,18 @@
             "state": "translated",
             "value": "Pour les parents"
           }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Para los padres"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Per i genitori"
+          }
         }
       }
     },
@@ -371,6 +623,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Jouets montrés à l'enfant"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Juguetes que ve tu peque"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Giocattoli che vede il tuo bambino"
           }
         }
       }
@@ -389,6 +653,18 @@
             "state": "translated",
             "value": "Débloquer tous les jouets"
           }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Desbloquear todos los juguetes"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sblocca tutti i giocattoli"
+          }
         }
       }
     },
@@ -405,6 +681,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "4 jouets de plus, un seul paiement"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "4 juguetes más, un solo pago"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "4 giocattoli in più, un solo pagamento"
           }
         }
       }
@@ -423,6 +711,18 @@
             "state": "translated",
             "value": "Tous les jouets sont débloqués. Merci !"
           }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Todos los juguetes están desbloqueados. ¡Gracias!"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tutti i giocattoli sono sbloccati. Grazie!"
+          }
         }
       }
     },
@@ -439,6 +739,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Politique de confidentialité"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Política de privacidad"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Informativa sulla privacy"
           }
         }
       }
@@ -457,6 +769,18 @@
             "state": "translated",
             "value": "Aide"
           }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ayuda"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aiuto"
+          }
         }
       }
     },
@@ -473,6 +797,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Licences et crédits"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Licencias y créditos"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Licenze e crediti"
           }
         }
       }
@@ -491,6 +827,18 @@
             "state": "translated",
             "value": "Le perroquet écoute sur ce téléphone seulement. Rien n'est enregistré ni envoyé."
           }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El loro solo escucha en este teléfono. No se graba ni se envía nada."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Il pappagallo ascolta solo su questo telefono. Niente viene registrato né inviato."
+          }
         }
       }
     },
@@ -507,6 +855,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Version %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Versión %@"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Versione %@"
           }
         }
       }

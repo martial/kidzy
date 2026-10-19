@@ -5,7 +5,9 @@
       "extractionState" : "manual",
       "localizations" : {
         "en" : { "stringUnit" : { "state" : "translated", "value" : "The parrot listens to your voice to repeat it. Nothing is recorded or sent." } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Le perroquet écoute ta voix pour la répéter. Rien n'est enregistré ni envoyé." } }
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Le perroquet écoute ta voix pour la répéter. Rien n'est enregistré ni envoyé." } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "El loro escucha tu voz para repetirla. No se graba ni se envía nada." } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Il pappagallo ascolta la tua voce per ripeterla. Niente viene registrato né inviato." } }
       }
     }
   },
