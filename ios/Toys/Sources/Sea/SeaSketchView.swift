@@ -20,7 +20,7 @@ struct SeaSketchView: View {
     var body: some View {
         TimelineView(.animation(paused: phase != .active)) { ctx in
             Canvas(rendersAsynchronously: false) { gc, size in
-                let toy = box.toy(for: size, mode: mode, sensorAvailable: sensor.isAvailable, sounds: mode == .toy ? sounds : nil, sound: mode == .toy ? sound : nil)
+                let toy = box.toy(for: size, mode: mode, sensorAvailable: sensor.isAvailable && !Self.noTilt, sounds: mode == .toy ? sounds : nil, sound: mode == .toy ? sound : nil)
                 toy.advance(to: ctx.date)
                 if mode == .toy {
                     // the scene is a square larger than the screen, rotated to follow the phone
@@ -77,7 +77,18 @@ struct SeaSketchView: View {
             }
     }
 
+    /// `KIDZY_NO_TILT=1` (debug): the motion sensor stays off and the sky leans the sea, as in
+    /// the simulator, so a UI test can play the sea on a phone lying on the table.
+    private static let noTilt: Bool = {
+        #if DEBUG
+        ProcessInfo.processInfo.environment["KIDZY_NO_TILT"] == "1"
+        #else
+        false
+        #endif
+    }()
+
     private func startSensor() {
+        guard !Self.noTilt else { return }
         if mode == .toy {
             sensor.onGravity = { [box] gx, gy in box.current?.setGravity(gx: gx, gy: gy) }
         } else {

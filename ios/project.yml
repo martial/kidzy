@@ -121,6 +121,7 @@ targets:
     platform: iOS
     sources:
       - path: SketchesForKids/UITests
+      - path: SketchesForKids/Store.storekit
     dependencies:
       - target: SketchesForKids
     settings:

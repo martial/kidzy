@@ -190,6 +190,9 @@ final class ToyAudio {
         fade.gain = 0
         do {
             try engine.start()
+            #if DEBUG
+            AudioCapture.attach(to: fade, engine: engine)
+            #endif
             fadeIn()
         } catch {
             log.error("engine: \(error.localizedDescription)")
@@ -229,3 +232,66 @@ final class ToyAudio {
         })
     }
 }
+
+#if DEBUG
+/// `KIDZY_AUDIO_CAPTURE=<path>`: what the toys play is written to `<path>` as raw
+/// interleaved 32-bit float stereo (the time the engine is stopped is written as
+/// silence), the speakers stay quiet, and `<path>.json` holds the rate and the
+/// wall-clock time of the first sample: soundtracks for App Store previews
+/// recorded in the simulator (`ios/scripts/store-media.sh`).
+final class AudioCapture: @unchecked Sendable {
+    private static let path = ProcessInfo.processInfo.environment["KIDZY_AUDIO_CAPTURE"]
+    @MainActor private static var current: AudioCapture?
+
+    private let file: FileHandle
+    private let sidecar: String
+    private let rate: Double
+    private let secondsPerTick: Double
+    private var nextHost: UInt64?
+
+    private init?(path: String, rate: Double) {
+        guard FileManager.default.createFile(atPath: path, contents: nil), let file = FileHandle(forWritingAtPath: path) else { return nil }
+        self.file = file
+        sidecar = path + ".json"
+        self.rate = rate
+        var info = mach_timebase_info_data_t()
+        mach_timebase_info(&info)
+        secondsPerTick = Double(info.numer) / Double(info.denom) / 1e9
+    }
+
+    @MainActor static func attach(to node: Node, engine: AudioEngine) {
+        guard let path, current == nil else { return }
+        let format = node.avAudioNode.outputFormat(forBus: 0)
+        guard let capture = AudioCapture(path: path, rate: format.sampleRate) else { return }
+        current = capture
+        engine.mainMixerNode?.volume = 0
+        node.avAudioNode.installTap(onBus: 0, bufferSize: 1024, format: format, block: capture.tap())
+    }
+
+    /// Made outside the main actor: the tap runs on the audio messenger's queue.
+    private func tap() -> AVAudioNodeTapBlock {
+        { [self] buffer, when in write(buffer, host: when.isHostTimeValid ? when.hostTime : mach_absolute_time()) }
+    }
+
+    private func write(_ buffer: AVAudioPCMBuffer, host: UInt64) {
+        guard let channels = buffer.floatChannelData else { return }
+        let frames = Int(buffer.frameLength)
+        if let expected = nextHost {
+            let gap = (Double(host) - Double(expected)) * secondsPerTick
+            if gap > 0.03 { file.write(Data(count: Int(gap * rate) * 2 * MemoryLayout<Float>.size)) }
+        } else {
+            let wall = Date().timeIntervalSince1970 - (Double(mach_absolute_time()) - Double(host)) * secondsPerTick
+            let info = "{\"start\": \(wall), \"rate\": \(rate), \"channels\": 2}\n"
+            FileManager.default.createFile(atPath: sidecar, contents: Data(info.utf8))
+        }
+        nextHost = host + UInt64(Double(frames) / rate / secondsPerTick)
+        let right = buffer.format.channelCount > 1 ? 1 : 0
+        var interleaved = [Float](repeating: 0, count: frames * 2)
+        for i in 0..<frames {
+            interleaved[2 * i] = channels[0][i]
+            interleaved[2 * i + 1] = channels[right][i]
+        }
+        interleaved.withUnsafeBytes { file.write(Data($0)) }
+    }
+}
+#endif

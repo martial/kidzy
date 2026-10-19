@@ -46,8 +46,34 @@ struct RootView: View {
         }
         .statusBarHidden(true)
         .persistentSystemOverlays(.hidden)
+        #if DEBUG
+        .overlay(alignment: .topLeading) {
+            if FrameTicker.on { FrameTicker() }
+        }
+        #endif
     }
 }
+
+#if DEBUG
+/// `KIDZY_STORE_MEDIA=1` (ios/Tools/StoreMedia.py): a 3-point corner that changes by one
+/// grey level every frame, hidden under the screen's rounded corner and cropped out of the
+/// preview. The simulator's recorder shortens the time a screen stands still, which puts
+/// the picture out of step with the sound; this keeps a frame coming.
+struct FrameTicker: View {
+    static let on = ProcessInfo.processInfo.environment["KIDZY_STORE_MEDIA"] == "1"
+
+    var body: some View {
+        TimelineView(.animation) { ctx in
+            let odd = Int(ctx.date.timeIntervalSinceReferenceDate * 60) % 2 == 1
+            Color(white: 1, opacity: odd ? 0.004 : 0.008)
+                .frame(width: 3, height: 3)
+        }
+        .ignoresSafeArea()
+        .allowsHitTesting(false)
+        .accessibilityHidden(true)
+    }
+}
+#endif
 
 /// Pages the parent may open; every link out of the app sits behind the gate.
 enum Links {

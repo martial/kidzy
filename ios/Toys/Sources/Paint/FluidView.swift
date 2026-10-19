@@ -93,14 +93,24 @@ final class FluidMTKView: MTKView {
     /// `KIDZY_PAINT_DEMO=1`: a child's painting, stroke by stroke (simulator captures):
     /// an S, a zigzag, a circle, dots, and a stroke across the others.
     /// `KIDZY_PAINT_DEMO=2`: five fingers circle for twenty seconds (a load test).
+    /// `KIDZY_PAINT_DEMO=3`: the App Store opener on clean paper, with the brush heard:
+    /// a blue wave, yellow through it (green where they meet), then more colours.
     private static let demo = ProcessInfo.processInfo.environment["KIDZY_PAINT_DEMO"] == "1"
     private static let stress = ProcessInfo.processInfo.environment["KIDZY_PAINT_DEMO"] == "2"
+    static let opener = ProcessInfo.processInfo.environment["KIDZY_PAINT_DEMO"] == "3"
     private var demoStart: CFTimeInterval = 0
+    private var demoLast: Float = 0
+    private var openerFingers: [Int: Int] = [:]
 
     private func demoStroke(_ sim: FluidSimulator, now: CFTimeInterval) {
-        guard Self.demo || Self.stress, palette.count >= 5 else { return }
-        if demoStart == 0 { demoStart = now + 0.8 }
+        guard Self.demo || Self.stress || Self.opener, palette.count >= 5 else { return }
+        if demoStart == 0 { demoStart = now + (Self.opener ? 3 : 0.8) }   // the opener waits for the screen recording
         let t = Float(now - demoStart)
+        if Self.opener {
+            openerStroke(sim, t: t, dt: max(1.0 / 120, t - demoLast))
+            demoLast = t
+            return
+        }
         if Self.stress {
             guard t > 0, t < 20 else { return }
             for k in 0..<5 {
@@ -135,6 +145,43 @@ final class FluidMTKView: MTKView {
         let k = Int((t - dotStart) / 0.25)
         if t >= dotStart, k < dots.count, (t - dotStart).truncatingRemainder(dividingBy: 0.25) < 0.08 {
             sim.touch(at: dots[k], delta: .zero, pigment: (k + 5) % palette.count, radius: FluidSimulator.splatRadius * 1.5, strength: 1.6)
+        }
+    }
+
+    private func openerStroke(_ sim: FluidSimulator, t: Float, dt: Float) {
+        typealias Path = (Float) -> SIMD2<Float>
+        func loop(_ c: SIMD2<Float>, _ r: SIMD2<Float>, from a0: Float, turns: Float) -> Path {
+            { u in c + r * SIMD2(cos(a0 + u * turns * 2 * .pi), sin(a0 + u * turns * 2 * .pi)) }
+        }
+        let strokes: [(start: Float, length: Float, color: Int, path: Path)] = [
+            (0.0, 1.6, 4, loop(SIMD2(0.5, 0.56), SIMD2(0.29, 0.12), from: .pi, turns: 1.05)),                          // an ocean loop
+            (1.8, 1.4, 2, loop(SIMD2(0.5, 0.565), SIMD2(0.22, 0.08), from: .pi * 0.9, turns: 0.85)),                // lemon along its inner edge: green
+            (3.4, 1.4, 0, { u in SIMD2(0.86 - 0.72 * u, 0.8 + 0.035 * sin(u * 3 * .pi)) }),                          // coral ribbon, right to left
+            (5.0, 1.3, 5, loop(SIMD2(0.3, 0.2), SIMD2(0.13, 0.045), from: 0, turns: 1)),                              // a berry ring
+            (6.5, 1.2, 1, { u in SIMD2(0.9 - 0.28 * u, 0.17 + 0.03 * sin(u * 2 * .pi)) }),                            // tangerine, right to left
+            (7.9, 1.2, 3, { u in SIMD2(0.16 + 0.34 * u, 0.93 - 0.02 * sin(u * 2 * .pi)) }),                           // a grass wave at the bottom
+        ]
+        let size = bounds.size
+        for (k, stroke) in strokes.enumerated() {
+            let u = (t - stroke.start) / stroke.length
+            guard u >= 0 else { continue }
+            if u >= 1 {
+                if let id = openerFingers.removeValue(forKey: k) {
+                    sim.touch(at: stroke.path(1), delta: .zero, pigment: stroke.color, radius: FluidSimulator.splatRadius * 0.9, strength: 2.2, brush: false)
+                    onFingerEnded?(id)
+                }
+                continue
+            }
+            let p = stroke.path(u), q = stroke.path(max(0, u - dt / stroke.length))
+            if openerFingers[k] == nil {
+                fingerIds += 1
+                openerFingers[k] = fingerIds
+                sim.touch(at: p, delta: .zero, pigment: stroke.color, radius: FluidSimulator.splatRadius * 1.5, strength: 1.6)
+                onFingerBegan?(fingerIds, CGPoint(x: CGFloat(p.x), y: CGFloat(p.y)))
+            }
+            sim.touch(at: p, delta: p - q, pigment: stroke.color)
+            let dx = Double(p.x - q.x) * size.width, dy = Double(p.y - q.y) * size.height
+            onFingerMoved?(openerFingers[k] ?? 0, CGPoint(x: CGFloat(p.x), y: CGFloat(p.y)), hypot(dx, dy) / Double(dt), atan2(dy, dx))
         }
     }
     #endif
@@ -215,6 +262,9 @@ struct FluidView: UIViewRepresentable {
     func updateUIView(_ uiView: FluidMTKView, context: Context) {
         if context.coordinator.seenBursts != burstRequests {
             context.coordinator.seenBursts = burstRequests
+            #if DEBUG
+            if FluidMTKView.opener { return }   // the opener starts on clean paper
+            #endif
             uiView.sim?.burst(pigments: palette.count)
         }
     }
