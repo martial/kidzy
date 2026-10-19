@@ -1,0 +1,14 @@
+{
+  "_help": "Each role is one phone screen in the ad. file = a clip or still in screens/ (a stem like \"paint\" finds paint.mov, paint.mp4 or paint.png; a .mov wins over a .mp4); start = second of the clip shown on the shot's first frame; speed = playback speed; crop = [top, bottom, left, right] fractions cut off the source before it is fitted to the screen (e.g. 0.05 at the top for a simulator recording that shows the Dynamic Island). Shots: see scripts/timeline.py. After a change: ./render.sh",
+  "roles": {
+    "home":           {"file": "home",    "start": 0.5, "speed": 1.0, "crop": [0, 0, 0, 0]},
+    "sea":            {"file": "sea",     "start": 4.3, "speed": 1.0, "crop": [0, 0, 0, 0]},
+    "paint":          {"file": "paint",   "start": 3.5, "speed": 1.0, "crop": [0, 0, 0, 0]},
+    "guitar":         {"file": "guitar",  "start": 2.2, "speed": 1.0, "crop": [0, 0, 0, 0]},
+    "animals":        {"file": "animals", "start": 2.3, "speed": 1.0, "crop": [0, 0, 0, 0]},
+    "closeup-paint":  {"file": "paint",   "start": 6.0, "speed": 1.0, "crop": [0, 0, 0, 0]},
+    "closeup-sea":    {"file": "sea",     "start": 7.6, "speed": 1.0, "crop": [0, 0, 0, 0]},
+    "closeup-guitar": {"file": "guitar",  "start": 3.9, "speed": 1.0, "crop": [0, 0, 0, 0]},
+    "home-end":       {"file": "home",    "start": 2.0, "speed": 1.0, "crop": [0, 0, 0, 0]}
+  }
+}

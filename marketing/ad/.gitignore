@@ -1,0 +1,7 @@
+# everything generated: prepared screens, frames, sound, logs, videos
+build/
+scripts/__pycache__/
+
+# the iPhone recordings (scripts/record_phone.py): kept on the Mac, out of the public repo;
+# the small simulator placeholders (.mp4) stay tracked so a fresh clone still renders
+screens/*.mov
