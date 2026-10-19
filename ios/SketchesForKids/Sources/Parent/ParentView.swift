@@ -81,7 +81,7 @@ struct ParentView: View {
                         .buttonStyle(PressStyle())
                         .accessibilityIdentifier("parent.unlock")
                     }
-                    #if DEBUG
+                    #if DEBUG || BETA
                     GrownUpCard {
                         Toggle(isOn: Binding(get: { store.testUnlock }, set: { store.testUnlock = $0 })) {
                             Text(verbatim: "Debug: all toys open (test builds only)")
